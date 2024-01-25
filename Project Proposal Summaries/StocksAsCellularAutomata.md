@@ -12,3 +12,5 @@ Economic markets can be extremely volatile and this could still result in issues
 To simulate the movement of the Dow Jones or some other market metrics over time based on the actions of individual nodes and their neighbors' behaviors.
 
 
+## Potentional Sources/Citations
+https://www.cs.cornell.edu/home/kleinber/networks-book/
