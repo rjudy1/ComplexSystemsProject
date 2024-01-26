@@ -1,6 +1,6 @@
 # Traffic Simulation with Self-Organizing Network
 ## General Approach
-We plan on simulating traffic flow in urban areas in 2D space with real world traffic data from Kaggle. Then using a self-organzed network, develop a traffic management software that is able to control the flow at intersections. This approach would be heavily visual in order to monitor flow of traffic.
+We plan on simulating traffic flow in urban areas in 2D space with real world traffic data from Kaggle. Then using a self-organzed network using ant algorithms, develop a traffic management software that is able to control the flow at intersections. This approach would be heavily visual in order to monitor flow of traffic.
 
 ## Benefits
 Relevant data is avaiable on Kaggle. The simulated world would only exist in a plane with addition of time as another dimension. Results would be easy to verify as decreasing the average time it would take for a car to get to its destiation would be our main objective.
