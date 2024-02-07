@@ -1,4 +1,4 @@
-# Stock Analysis as Cellular
+# Beating the stock market with a networked firm
 ## General Approach
 Split individual brokers into groupings/firms and make decisions based on neighbors' actions within the grouping as well as a sparse randomized connection to brokers in other firms/outside informants/overall group/firm knowledge. This will result in a network of clustered nodes with connections to the outside and some noise that will be treated as probability. Try to develop simple rules for each broker to simulate overall market resembling market shifts over some interval, perhaps 2-50 years. Add variability such as risk adversity in trades, target exit timeline, length of time required to hold trades, and antifragility approach for different brokers. Use data available of stock positions at some given time to start the process, seeing how each results and how the market value is affected. This will isolate world events from the market but might demonstrate the bottom-up results are of higher significance.
 
@@ -15,3 +15,7 @@ Economic markets can be extremely volatile and this could still result in issues
 
 ## Potentional Sources/Citations
 https://www.cs.cornell.edu/home/kleinber/networks-book/
+https://pubs.aeaweb.org/doi/pdfplus/10.1257/jel.20191434
+https://www.sciencedirect.com/science/article/pii/S0927539810000368
+https://www.sciencedirect.com/science/article/pii/S0957417421002414
+
