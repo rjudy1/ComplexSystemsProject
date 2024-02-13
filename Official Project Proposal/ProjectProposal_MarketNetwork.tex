@@ -1,0 +1,110 @@
+
+%\documentclass[10pt,proceedings]{IEEEtran}
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
+
+\documentclass[letterpaper, 10 pt, proceedings]{ieeetran}  % Comment this line out
+%\IEEEoverridecommandlockouts                              % This command is only
+
+
+\usepackage{geometry}
+\usepackage{graphicx}
+\graphicspath{{./Figures/}}
+\usepackage{amsmath}
+%\usepackage{amsfonts}
+\usepackage{amsthm}
+%\usepackage{stfloats}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{mathrsfs}
+\usepackage{placeins}
+\usepackage{subcaption}
+\geometry{letterpaper,top=.75in,left=.69in,bottom=.75in,right=.69in}
+\pagestyle{empty}
+
+
+\newcommand{\A}{_{\textsc{\tiny \textit{A}}}}
+\newcommand{\B}{_{\textsc{\tiny \textit{B}}}}
+\newcommand{\D}{_{\textsc{\tiny \textit{D}}}}
+\newcommand{\T}{_{\textsc{\tiny \textit{T}}}}
+\newcommand{\G}{_{\textsc{\tiny \textit{G}}}}
+\newcommand{\R}{_{\textsc{\tiny \textit{R}}}}
+\newcommand{\sub}[1]{_\textsc{\tiny \textit{#1}}}
+\newcommand{\sgn}{\text{sgn}}
+
+\newtheorem{thm}{Theorem}
+
+
+\title{\LARGE \bf
+	Project Proposal: Examining the impact of antifragility and networked based decision making on the stock market
+}
+
+\author{Rachael Judy, Connor Klein, Josh Smith% <-this % stops a space
+}
+
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+\begin{abstract}
+Using some of the theories from Taleb regarding antifragility, construct a network of firms and networked brokers inside firms to explore the impact of different preferences for risk as well as impact of weighting neighbors actions in decisions. 
+\end{abstract}
+
+\section{Goals}
+\begin{itemize}
+	\item Examine the impact of individual risk adversity within a grouping on profitability of the individual and the firm. Approaches will include an antifragile approach. Results will be viewed over various exit timelines and at different starting points in time.
+	\item Examine the value of making trading decisions based on the variable ratio between influence of neighboring firms and brokers' trades to market absolutes. The parameter in question here is the influence a given broker has. This may be adaptable. The market overall data can also be examined from the perspective of overall market or specific stocks.
+\end{itemize}
+
+\section{Motivation}
+Economic markets are extremely volatile and present an active area of research. This project has the advantages of readily available historical data and a large number of parameters able to be examined at different levels. Determining optimal strategies both at the firm level and at the individual level would be highly beneficial in the real world.
+
+
+\section{Background}
+In Antifragile, Nassim Taleb discussed designing systems that benefit from shocks; these systems will improve when volatile black swan events occur. These events represent randomness and uncertainty, the sort of events that have caused massive crashes and growths in the stock market such as in the 2008 housing crisis and the 2020 pandemic. A firm attempting to make money in the stock market would attempt to have investments that are not only robust and able to remain the same; it would attempt to invest in such a way as to make money at a steady rate but also to benefit from major events and grow stronger from them. Previous attempts to model the market include modeling of the relationships between stocks and locating key stocks to represent the overall market, predicting the market using CNNs and deep learning, examing how network effects shift the market equilibrium, and studying the presence of power law effects in the market. Financial advisors tend to try to spread investments based on exit timeline, often using a small amount of high cap and low cap stocks with the largest percentage of funds in mid cap and fairly safe stocks. These techniques provides openings for studying the relationship of neighboring influence and profitability when buying stocks as well as examining the results of approaches modeling different levels of risk in selecting investments.
+
+\section{Approach}
+\begin{enumerate}
+\item Establish groupings (ie a firm) of nodes (brokers) with adjustable degrees of interconnectivity. Also establish interconnectivities between overall firms and sparse connections between brokers of other firms. Interconnectivity is defined as influence of broker on other broker's decision making. This will result in a network of clustered nodes with connections to the outside and some noise that will be treated as probability.
+\item Each firm will have an exit timeline/time window in which the goal is to maximize profits and risk minimums and maximums. They will have access to the overall market data (ie the Dow Jones and the specific values of their stocks of interest).
+\item The assumption will be that the firms will all be small enough to not change the overall market data over the previous 10-20 decades. Firms will compete with one another.
+\item The firms will deal in individual stocks, not mutual funds.
+\item Develop simple rules for each broker relating neighbor behavior, individual preference for risk (assume gaussian distribution from min to max within two standard deviations of mean within firm), global data, and timeline. Possibly use antifragile approach on some firms and set minimum range and maximum range for risk with gap in the middle.
+\item Use data present from market to examine performance of each firm. Performance will be measured relative to the overall market growth based on the Dow Jones and Standard \& Poor metrics for the given time frame as well as to profit margin of the average firm in the network. Possibly examine some game theoretic balance of nash equilibrium for two firms choosing risk or safe approach.
+\end{enumerate}
+	
+\section{Downsides}
+Economic markets can be extremely volatile and this could still result in issues with fragility because there still is a limited quantity of data of market. Additionally, many directions already explored in this area because of the potential present. This may also not dictate an ideal strategy because if it were to accurately simulate the market, individual behaviors would change to account for it.
+
+
+\bibliographystyle{ieeetran}
+\begin{thebibliography}{99}	
+	\bibitem{antifragile}
+	N. N. Taleb, Antifragile: Things that gain from disorder. Harlow, England: Penguin Books, 2013.
+	
+	\bibitem{networkscrowdsmmarkets}
+	D. Easley and J. Kleinberg, Networks, crowds, and markets: Reasoning about a highly connected world. Cambridge, England: Cambridge University Press, 2012.
+	%- https://www.cs.cornell.edu/home/kleinber/networks-book/, particularly chapters 9-12, 17, 22
+
+	\bibitem{neuralnets}
+	A. Thakkar and K. Chaudhari, “A comprehensive survey on deep neural networks for stock market: The need, challenges, and future directions,” Expert Systems with Applications, vol. 177, p. 114800, Sep. 2021, doi: 10.1016/j.eswa.2021.114800.
+	%- https://www.sciencedirect.com/science/article/pii/S0957417421002414
+	
+	\bibitem{complexmacroeconomics}
+	C. Hommes, “Behavioral and Experimental Macroeconomics and Policy Analysis: A Complex Systems Approach,” Journal of Economic Literature, vol. 59, no. 1, pp. 149–219, Mar. 2021, doi: 10.1257/jel.20191434.
+	%- https://pubs.aeaweb.org/doi/pdfplus/10.1257/jel.20191434
+	
+	\bibitem{networkstocks}
+	C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” Journal of Empirical Finance, vol. 17, no. 4, pp. 659–667, Sep. 2010, doi: 10.1016/j.jempfin.2010.04.008.
+	%- https://www.sciencedirect.com/science/article/pii/S0927539810000368
+
+	\bibitem{marketcrasheswikipedia}
+	“List of stock market crashes and bear markets,” Wikipedia. Jan. 24, 2024. Accessed: Feb. 13, 2024. [Online].
+	%- dates noted as stock crashes (https://en.wikipedia.org/wiki/List_of_stock_market_crashes_and_bear_markets)
+	
+\end{thebibliography}
+
+
+\end{document}
