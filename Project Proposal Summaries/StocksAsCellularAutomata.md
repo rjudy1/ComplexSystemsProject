@@ -1,4 +1,4 @@
-# Examing the impact of antifragility and networked based decision making on the stock market
+# Examining the impact of antifragility and networked based decision making on the stock market
 ## Brief description
 Using some of the theories from Taleb regarding antifragility, construct a network of firms and networked brokers inside firms to explore the impact of different preferences for risk as well as impact of weighting neighbors actions in decisions.
 
