@@ -49,6 +49,8 @@ What equations/parameters will we need?
 How many different stocks to choose from? 
 - we need to make sure to allow stocks that went under but were available at the start of our simulation
 
+We need to get a massive csv file with closing/opening prices each day or whatever interval over maybe a century and we pull the parts we want 
+
 Useful Tools
 - Python3
 - graphviz

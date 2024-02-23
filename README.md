@@ -1,6 +1,9 @@
-# ComplexSystemsProject
+# ComplexSystemsProject - Exploring Stock Market strategies under the assumption of Complex Networks
 
-### Project Ideas
+
+
+
+### Initial Project Ideas
 - use assumptions of power law for randomly selected stocks over various 50 year intervals both - use assumptions of anti-fragility for some individually and as a swarm of brokers with simple rules
 - traffic simulation for optimal flow through traffic lights converging to optimal flow
     - Adaptive traffic management system using self-organizing networks
