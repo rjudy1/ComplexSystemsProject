@@ -31,7 +31,7 @@
 %   - we need to decide which aspects of the complex system we're able to change/gather intel from
 %   - we need to select stocks representative of various aspects of the market
 
-Economic markets are extremely volatile and dynamic and present an active area of research. Previous models of the market treat it as a linear system, which does not fully capture the actual behavior of the market. Developing an accurate model of the market would result not only in a significant economic advantage but provide the possibility of analyzing global financial systems, market sentiment, inter-dependencies, and macroeconomic indicators. Due to the readily available detailed historical data of the stock market and the aforementioned advantages gained by correctly modeling the market, this field has been studied by numerous research groups. Within this field, specific areas of research have included correctly modeling the markets as economic systems, forecasting stock prices in various global markets based on feature selection and through various means, detecting anomalies in the market, and information diffusion in the market. By reviewing previous and active research in the field, new parameters and methods for network models can be developed.
+Economic markets are extremely volatile and dynamic and present an active area of research. Previous models of the market treat it as a linear system, which does not fully capture the actual behavior of the market. Developing an accurate model of the market would result not only in a significant economic advantage but provide the possibility of analyzing global financial systems, market sentiment, inter-dependencies, and macroeconomic indicators. Due to the readily available detailed historical data of the stock market and the aforementioned advantages gained by correctly modeling the market, this field has been studied by numerous research groups. Within this general field, specific areas of research have included correctly modeling the markets as complex networks, forecasting stock prices in various global markets based on feature selection and through various means, detecting anomalies in the market, and studying information diffusion in the market. By reviewing previous and active research in the field of analyzing the stock market with networks, new parameters and methods for network models can be developed.
 
 % TODO: ADD Explanation of how banks tie in
 %We observed that financial stocks, especially Banks, are central position of the network and control information flow - Baydelli
@@ -39,7 +39,7 @@ Economic markets are extremely volatile and dynamic and present an active area o
 
 Modeling the stock market as a complex network involves viewing entities, stocks, or market groups as interconnected nodes with edges representing their relationships, whether these are transactions performed or correlations. This approach provides new perspectives on market dynamics, allowing analysts to discover previously unknown relationships and dependencies not apparent in traditional methods that fail to capture the influence of nodes on one another. This provides key advantages of capturing emerging trends and recognizing feedback loops. Leveraging tools such as power law, centrality measures, and neural networks, researchers can identify critical entities and groups and better understand the forces at play.
 
-The papers summarized here discuss the general modeling approaches taken for representing financial markets and impacts of shock events in those markets in terms of complex systems. This includes examining broker and stock networks and highlighting means for determining edges in the graphs such as correlation and mutual information. They also discuss the results of several models in different global markets and in selecting better representative indices of the stock market and detecting anomalies.
+The papers summarized here discuss the general modeling approaches taken for representing financial markets and impacts of shock events in those markets in terms of complex systems. This includes examining broker and stock networks and highlighting means for determining edges in the graphs such as correlation and mutual information. They also discuss the results of several models in different global markets and in selecting better indices to represent the market state and in detecting anomalies.
 
 
 \subsection{Explaining Financial Markets in Terms of Complex Systems}
@@ -85,8 +85,15 @@ P. Fiedor, “Networks in financial markets based on the mutual information rate
 In this paper, Fiedor argues that correlation, which deals in linear dependencies and is commonly quantified with the Pearson Correlation Coefficient (PCC) within complex system modeling of the market, does not capture the nonlinear behavior of economic markets. He instead proposes using mutual information and the mutual information rate with Lempel-Ziv complexity as a similarity measure between closing prices on consecutive days. Defining minimal spanning trees and planar maximally filtered graphs, he represents the market entities and their relationships, demonstrating greater clustering by sector based on the mutual information metric. He also notes that mutual information rate demonstrates more about the system dynamics than the structure. The results corroborate previous papers using the PCC regarding the predominance of the financial sector in markets and suggest further study of differential and transfer entropy. While the paper highlights how mutual information and mutual information rate provide a different view of the market interconnectivities, it does not clearly demonstrate its claim that using mutual information as the metric is superior in modeling the true relationships of market entities, neither in theory or in simulation.
 
 
+\subsection{Networks of economic market interdependence and systemic risk}
+D. Harmon, B. Stacey, Y. Bar-Yam, and Y. Bar-Yam. "Networks of economic market interdependence and systemic risk," New England Complex Systems Institute, Cambridge, MA, Tech. Report 1011.3707, 1 Mar. 2009.
+\newline
+
+This paper examines the time dependence of a correlation network to relate the financial, technology, and basic materials sectors during the period between 2003 to 2008. Using the t-statistic for link densities, their analysis discusses shifts in the market dynamics such as the technology sector becoming less strongly clustered while the oil cluster became more linked to the basic materials cluster. They reported that the network dynamics were consistent with global events at the time and that economic growth alone does not cause high correlations. Further, they indicated that the financial institutes cross-link weakly correlated sections, and this interconnection increases risk of systemic failure. They propose that enforcing separation of financial relationships can prevent failure propagation leading to global crisis. However, the cost-benefit tradeoffs have not been examined. This paper addresses an active topic and advances understanding of the advantages of economic separation. However, its conclusions are drawn around a single shock event, and its selection of already self-correlated sectors assumes an understanding of the relationships of corporations that shapes the results of the study in a biased way.
+
+
 \subsection{A perspective on complex networks in the stock market}
-J. Park, C. H. Cho, and J. W. Lee, "A perspective on complex networks in the stock market," \textit{Frontiers in Physics}, vol. 10. Dec., 2022. [Online serial] %, doi: 10.3389/fphy.2022.1097489.
+J. Park, C. H. Cho, and J. W. Lee, "A perspective on complex networks in the stock market," \textit{Frontiers in Physics}, vol. 10, Dec., 2022. [Online serial] %, doi: 10.3389/fphy.2022.1097489.
 \newline
 
 This paper sets out to visualize and analyze the connectedness of stocks in the Korean financial market at specific time windows. To accomplish this, the researchers connected their nodes (securities) using an absolute threshold calculated from the cross-correlation coefficients of their logarithmic returns within a small-time window. In other words, securities are linked based on their similarities in changes relative to one another. The findings indicate that stocks were much more connected during the 2008 global financial crisis than before it occurred (2006-07). Specifically, the largest cluster pre-crisis comprised 4.8\% of securities, whereas post-crisis, the largest cluster increased to around 20\%. The researchers focused on analyzing the overall structure of the Korean market, but it appears possible to analyze the variance of any stock and determine if there is a high cross-correlation with others after a set period, effectively allowing for a form of market prediction. Additionally, the researchers only considered a small time window, less than a year, for market analysis; a more comprehensive representation of the network might have been obtained over a longer time period.
@@ -96,7 +103,7 @@ This paper sets out to visualize and analyze the connectedness of stocks in the 
 Y. Y. Baydilli, S. Bayir, and I. Tuker, “A hierarchical view of a national stock market as a complex network,” \textit{Economic Computation \& Economic Cybernetics Studies \& Research}, vol. 51, no. 1, Jan., pp. 205–222, 2017.
 \newline
 
-In this paper, the authors construct a financial network using hierarchical methods for the Borsa Istanbul 100 Index (BIST-100) of 100 stocks bargained during 2011-2012 to investigate stock correlation and identify risky stocks in market. They used a mean spanning tree to determine the sub-dominant ultra-metric distances to analyze clustering and a hierarchical tree to extract factors affecting the dynamics of the complex system. They then calculated normalized tree length and degree distribution with a power law assumption. From the network, they determined that the correlation coefficients became approximately Gaussian and gaps in the MST shrank during crisis. Additionally, the network displayed small-world and scale-free characteristics with some nodes seemingly controlling information flow in a network. They also highlihgted clusters in the final graph representing different sectors of industry as well as clusters with high liquidity, with financial institutes and liquid stocks in central positions. Based on their observations, they claimed the MST concept is a good guide for risk management and highlighted useful features such as normalized tree length for recognizing risk. However, this study did not examine a long enough time period or enough stocks to strongly verify the authors' claims.
+In this paper, the authors construct a financial network using hierarchical methods for the Borsa Istanbul 100 Index (BIST-100) of 100 stocks bargained during 2011-2012 to investigate stock correlation and identify risky stocks in market. They used a mean spanning tree to determine the sub-dominant ultra-metric distances to analyze clustering and a hierarchical tree to extract factors affecting the dynamics of the complex system. They then calculated normalized tree length and degree distribution with a power law assumption. From the network, they determined that the correlation coefficients became approximately Gaussian and gaps in the MST shrank during crisis. Additionally, the network displayed small-world and scale-free characteristics with some nodes seemingly controlling information flow in a network. They also highlighted clusters in the final graph representing different sectors of industry as well as clusters with high liquidity, with financial institutes and liquid stocks in central positions. Based on their observations, they claimed the MST concept is a good guide for risk management and highlighted useful features such as normalized tree length for recognizing risk. However, this study did not examine a long enough time period or enough stocks to strongly verify the authors' claims.
 
 
 \subsection{A network perspective of the stock market}
@@ -116,30 +123,27 @@ Using several different supervised learning approaches, this paper explores dete
 
 
 
-
-
 \section{Q2: ChatGPT Topic Description}
 % TODO: insert sequence of prompts and responses
-\subsection{Chat log of ChatGPT 3.5}
+\subsection{Link to ChatGPT session and screenshots}
+The results of the chat can be viewed at this link:
 https://chat.openai.com/share/da67028b-b775-4cbd-86e7-f2f827bd5aae
 
-1. "Network-Based Asset Allocation Strategies" by Stefano Battiston, Marco D'Errico, Stefano Peluso, and Guido Caldarelli (2020)
-this paper is not real
-2. "Network Analysis of Financial Market Data" by Kimmo Soramäki, Morten L. Bech, Jeffrey Arnold, Robert J. Glass, and Walter E. Beyeler (2007)
-3. "A Network Tour of Financial Risk" by Roni Michaely, Michael R. Roberts, and Amir Sufi (2015)
-4. "Financial Market Networks: A Review of the Literature and Directions for Future Research" by Elettra Agliardi, Mehmet Balcilar, Rangan Gupta, and Riza Demirer (2020)
-5. "Network Science in Finance" edited by Guido Caldarelli and Matteo Marsili (2018)
 
-Our group thought it was a good idea to do this section of the homework assignment first, to make sure we reviewed at least some of these nominal papers.
+\subsection{Discussion}
+The group did this section of the homework in ChatGPT 3.5 before selecting some papers in order to see if any critical papers/authors in the field should be included. The description of the topic of complex networks in the stock market was fairly accurate and agreed with the general approaches and introductions of the papers already reviewed. It also discussed the different approaches being taken currently, although a couple of sentences considering what separates this field of complex systems from others might have been helpful. When it came to generating papers, ChatGPT was not particularly accurate. It produced paper titles that did not exist and associated incorrect authors and dates. It was useful primarily in that it provided the names of researchers and provided keywords for searching Google Scholar. However, the authors tended to be researchers in various areas of either economics, physics, or statistics and had not written specifically about complex networks for the stock market. As an example, the "Network-Based Asset Allocation Strategies" paper did not exist, but its first author does publish in network analysis. On the other hand, "Networks in Finance" is a real book chapter but not easily accessible through the Internet. "Interconnectedness of the CDS Market" exists but has different authors and year published and focuses on credit defaults instead of the stock market. Thus, as far as using ChatGPT 3.5 as a reference librarian, it was not particularly helpful as many of the important keywords were already being used to create the prompt series and as authors were not necessarily in the exact area of research.
 
 
-% TODO: discussion of results
+\subsection{ChatGPT Screenshots}
+Screenshots are included here:
 
-Most of these papers were not real, but the large language model did identify a leader in the field, which can point our research. This lead to find some nice searches with keywords given in the response to the prompt.
-1. "Networks in Finace" was a real chapter of a book, not easily acessible on the internet
-2. "Interconnectedness of the CDS Market" by Viral V. Acharya, Timothy C. Johnson, and Marti G. Subrahmanyam (2009)
-this is a real paper, but wrong authors and year, it was released in 2018
-3. There was a similar story for this paper, correct title (there was a couple papers with this title, but none matched the LLM output)
+\includegraphics{prompt1.png}
+
+\includegraphics{prompt2.png}
+
+\includegraphics{prompt3.png}
+
+\includegraphics{prompt4.png}
 
 
 \end{document}
