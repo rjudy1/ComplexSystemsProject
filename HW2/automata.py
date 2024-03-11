@@ -25,6 +25,7 @@ should return a tuple representing the new position (i, j)
 
 import collections
 from copy import deepcopy
+import matplotlib.pyplot as plt
 import numpy as np
 import random
 from utils import get_x_from_px, display_2D_automata
@@ -149,7 +150,7 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
         agents = list(filter(lambda val: time_series[0][val // L][val % L] != 0, [i for i in range(L*L)]))
         agent_positions = {agent: (agent // L, agent % L) for agent in agents}
 
-        # TODO: Add necessary initialziation for each method
+        # TODO: Add necessary initialization for each method
         if relocation_policy == 1:
             friend_map = {a: random.sample(agents, policy_parameters[0]) for a in agents}
 
@@ -195,12 +196,61 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
 
 policies = {0: random_move, 1: social_network_recommendation, 2: rachael_move, 3: connor_move, 4: josh_move}
 
-# test random
-results = simulate_automata(L=40, alpha=.9, k=5, epochs=20, trials=20, relocation_policy=0, policy_parameters=[100], display_flag=True)
+# test random - control case
+results_base = simulate_automata(L=40, alpha=.9, k=5, epochs=20, trials=20, relocation_policy=0, policy_parameters=[100], display_flag=False)
 
 # test social
-results = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[10, 5, 100], display_flag=True)
+results_n5p3 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[10, 5, 100], display_flag=False)
+results_n5p5 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[10, 5, 100], display_flag=False)
+results_n10p3 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[10, 5, 100], display_flag=False)
+results_n10p5 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[10, 5, 100], display_flag=False)
+results_n20p3 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[10, 5, 100], display_flag=False)
+results_n20p5 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[10, 5, 100], display_flag=False)
 
-print(np.average(results[20]))
+
 
 # TODO: add plotting code for averages/standard deviations
+averages = [
+    [np.average(results_base[row]) for row in results_base],
+    [np.average(results_n5p3[row]) for row in results_n5p3],
+    [np.average(results_n5p5[row]) for row in results_n5p5],
+    [np.average(results_n10p3[row]) for row in results_n10p3],
+    [np.average(results_n10p5[row]) for row in results_n10p5],
+    [np.average(results_n20p3[row]) for row in results_n20p3],
+    [np.average(results_n20p5[row]) for row in results_n20p5],
+]
+
+std_deviations = [
+    [np.std(results_base[row]) for row in results_base],
+    [np.std(results_n5p3[row]) for row in results_n5p3],
+    [np.std(results_n5p5[row]) for row in results_n5p5],
+    [np.std(results_n10p3[row]) for row in results_n10p3],
+    [np.std(results_n10p5[row]) for row in results_n10p5],
+    [np.std(results_n20p3[row]) for row in results_n20p3],
+    [np.std(results_n20p5[row]) for row in results_n20p5],
+]
+
+labels = ['Random Move with q=100', 'Friend Recommendation with n=5, p=3','Friend Recommendation with n=5, p=5',
+          'Friend Recommendation with n=10, p=3','Friend Recommendation with n=10, p=5',
+          'Friend Recommendation with n=20, p=3','Friend Recommendation with n=20, p=5',]
+
+# Plotting
+plt.figure(figsize=(10, 6))
+
+for i in range(len(averages)):
+    plt.errorbar(
+        np.arange(1, 22),
+        averages[i],
+        yerr=std_deviations[i],
+        label=f'{labels[i]}',
+        alpha=0.7
+    )
+
+# Customize the plot
+plt.title('Time Series with Averages and Standard Deviation Bars')
+plt.xlabel('Time Points')
+plt.ylabel('Values')
+plt.legend()
+plt.grid(True)
+plt.show()
+plt.savefig(f'images/time_series1.png')
