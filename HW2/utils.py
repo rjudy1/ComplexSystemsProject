@@ -18,7 +18,7 @@ def display_2D_automata(automata_time_series):
         ax.clear()
         ax.imshow(automata_time_series[time_step], cmap=custom_cmap, vmin=0, vmax=2)
         ax.set_title(f'Time Step: {time_step}')
-        plt.pause(0.01)
+        plt.pause(0.005)
 
         if time_step == 0:
             plt.savefig(f'images/initial{int(time.time())}.png')
