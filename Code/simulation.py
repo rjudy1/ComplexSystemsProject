@@ -23,5 +23,5 @@ broker_network.add_edges_from([(2, 3, {'weight': 8})])
 
 # change with broker_network[source][dest][weight]
 
-nx.draw(broker_network, with_labels = True, font_color = 'white', node_shape = 's')
+nx.draw(broker_network, with_labels=True, font_color='white', node_shape='s')
 plt.show()
