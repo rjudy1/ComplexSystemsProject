@@ -2,6 +2,10 @@ import collections
 import math
 from collections import defaultdict
 
+
+# idea is to increase threshold for a given stock if neighbor reports a good value
+# also need to define randomized order/buy amount of some kind
+# need to figure out if risk reward balance plays in
 class Broker:
     def __init__(self, id: int, initial_money: float, risk_minimum: float=0, risk_maximum: float=math.inf,
                  purchase_rate_limit: int=0, threshold: int=0, neighbor_influence: dict=dict()):
