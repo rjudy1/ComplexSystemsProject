@@ -7,14 +7,14 @@ import time
 
 def generate_combinations():
     l = []
-    for length in range(1, 4):  # Generate combinations of length 2, 3, and 4
+    for length in range(4, 5):  # Generate combinations of length 2, 3, and 4
         for combo in generate_combinations_of_length(length):
             l.append([combo])
     return l
 
 def generate_combinations_of_length(length):
     if length == 1:
-        return [chr(ord('A') + i) for i in range(26)]
+        return [chr(ord('V') + i) for i in range(3)]
     else:
         shorter_combos = generate_combinations_of_length(length - 1)
         return [combo + chr(ord('A') + i) for combo in shorter_combos for i in range(26)]
@@ -22,20 +22,23 @@ def generate_combinations_of_length(length):
 possible_tickers = generate_combinations()
 
 # name of csv file
-filename = "valid_tickers.csv"
+filename = "valid_tickers_VWX.csv"
  
 # writing to csv file
 with open(filename, 'w', newline='') as csvfile:
     # creating a csv dict writer object
     writer = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
  
-    for symbol in possible_tickers:
-        ticker = yf.Ticker(symbol[0])
-        data = ticker.history(start='2006-01-01', end='2009-01-01', interval="1d")
-        if len(data) != 0:
-            writer.writerow(symbol)
-            
-        time.sleep(1.8)
+    try:
+        for symbol in possible_tickers:
+            ticker = yf.Ticker(symbol[0])
+            data = ticker.history(start='2006-01-01', end='2009-01-01', interval="1d")
+            if len(data) != 0:
+                writer.writerow(symbol)
+           
+            time.sleep(0.25)
+    except KeyboardInterrupt:
+        csvfile.close()
 
 # This works but only for data in 2016
 # indices = []
