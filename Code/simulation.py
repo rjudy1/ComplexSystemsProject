@@ -10,7 +10,7 @@ broker_network = nx.DiGraph()
 
 # we need to pull in data over relevant intervals - maybe
 # create list of brokers
-N = 100
+N = 50
 brokers = [Broker(i, 100) for i in range(N)]
 
 broker_network.add_nodes_from([node.id for node in brokers])
@@ -20,6 +20,9 @@ broker_network.add_nodes_from([node.id for node in brokers])
 # add edges somehow setting influence with power law distribution? - need to better define influence though
 # How should the influence be adjusted?
 broker_network.add_edges_from([(2, 3, {'weight': 8})])
+for i in range(N):
+    broker_network.add_edges_from([(random.randint(0,N), random.randint(0,N), {'weight': random.randint(0,N)})])
+
 
 # change with broker_network[source][dest][weight]
 
