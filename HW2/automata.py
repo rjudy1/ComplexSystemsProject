@@ -3,12 +3,16 @@ Authors: Rachael Judy, Connor Klein, Josh Smith
 The `simulate_automata` function is the core part of the functionality. To run a simulation, call the function
 
 simulate_automata(L=50, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=0, policy_parameters=[], display_flag=True)
+    L: length of side of square environment
+    alpha: percent of environment occupied
+    k: threshold of 8 neighbors occupied by agents of its own types for happiness
+    epochs: number of epochs per trial
+    trials: number of trials to run before reporting average and std deviation
+    relocation_policy: integer selection of policy; 0 corresponds to random
+    policy_parameters: list of parameter policies in order as specified by policy function
+    display_flag: boolean indicating whether to display the visual of the time series for each trial
+    return: two collections, one of the average happiness at each epoch, one of the standard deviations at each epoch
 
-with the desired parameters. L is the length of the square grid, alpha determines what percentage of the grid is
-populated, k sets how many neighbors are needed to be completely happy, epochs sets how many epochs to run in a trial,
-trials sets the number of trials, relocation_policy selects the policy to use (currently available are 0-4),
-policy parameters is a list of the parameters for a policy in order, and display_flag determines whether to show
-the visual view of the automata.
 
 The available policies are currently as follows:
 random_move (0): searches q empty spots at random and goes to one with greatest happiness
@@ -80,6 +84,7 @@ def social_network_recommendation(layer, agent: int, agent_positions: dict, k: i
     """
     curri, currj = agent_positions[agent]
     recommendations = set()
+    # go through friends pxp neighborhoods
     for friend in friend_map[agent]:
         fi, fj = agent_positions[friend]
         for i in range(-p // 2, p // 2 + 1):
@@ -87,10 +92,10 @@ def social_network_recommendation(layer, agent: int, agent_positions: dict, k: i
                 if (layer[(fi + i) % len(layer)][(fj + j) % len(layer)] == 0
                         and get_happiness(layer, (fi + i, fj + j), layer[curri][currj], k) == 1):
                     recommendations.add(((fi + i) % len(layer), (fj + j) % len(layer)))
+    # if friends had ideas, sample from this; otherwise, move randomly
     if recommendations:
         return random.sample(list(recommendations), 1)[0]
-    else:
-        return random_move(layer, agent, agent_positions, k, q)
+    return random_move(layer, agent, agent_positions, k, q)
 
 
 def rachael_move(layer, agent: int, agent_positions: dict, k: int, w: int, beta: float, q: int):
@@ -231,8 +236,8 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
             # at end of each epoch, score the performance
             epoch_to_scores[epoch + 1].append(rate_performance(time_series[-1], k))
 
-        if display_flag:
-            display_2D_automata(time_series)
+        if display_flag and trial == 0:
+            display_2D_automata(time_series, f'policy{relocation_policy}_')
     return epoch_to_scores
 
 
@@ -240,10 +245,9 @@ def plot_averages_with_errorbars(averages, std_deviations, labels, filename,
                                  title='Time Series with Averages and Standard Deviation Bars'):
     # Plotting
     plt.figure(figsize=(10, 6))
-
     for i in range(len(averages)):
         plt.errorbar(
-            np.arange(1, 22),
+            np.arange(0, len(averages[i])),
             averages[i],
             yerr=std_deviations[i],
             label=f'{labels[i]}',
@@ -252,7 +256,7 @@ def plot_averages_with_errorbars(averages, std_deviations, labels, filename,
 
     # Customize the plot
     plt.title(title)
-    plt.xlabel('Time Points')
+    plt.xlabel('Epoch')
     plt.ylabel('Values')
     plt.legend()
     plt.grid(True)
@@ -301,12 +305,12 @@ plot_averages_with_errorbars(averages1, std_deviations1, labels1, "policies01.pn
 
 
 # test rachael policy
-results_w5b10 = simulate_automata(L=40, alpha=.8, k=2, epochs=20, trials=20, relocation_policy=2, policy_parameters=[5, .1, 100], display_flag=True)
-results_w10b10 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[10, .1, 100], display_flag=False)
-results_w20b10 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[20, .1, 100], display_flag=False)
-results_w5b20 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[5, .2, 100], display_flag=False)
-results_w10b20 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[10, .2, 100], display_flag=False)
-results_w20b20 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[20, .2, 100], display_flag=False)
+results_w5b10 = simulate_automata(L=40, alpha=.9, k=2, epochs=20, trials=20, relocation_policy=2, policy_parameters=[5, .1, 100], display_flag=True)
+results_w10b10 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[10, .1, 100], display_flag=True)
+results_w20b10 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[20, .1, 100], display_flag=True)
+results_w5b20 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[5, .2, 100], display_flag=True)
+results_w10b20 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[10, .2, 100], display_flag=True)
+results_w20b20 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[20, .2, 100], display_flag=True)
 
 averages2= [
     [np.average(results_base[row]) for row in results_base],

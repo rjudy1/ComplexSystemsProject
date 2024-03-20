@@ -16,7 +16,9 @@
 \usepackage{wrapfig}
 \renewcommand{\familydefault}{\sfdefault}
 \graphicspath{{./images/}}
-\titlespacing*{\section}{0pt}{0.1\baselineskip}{0.1\baselineskip}
+\titlespacing*{\section}{0pt}{0.2\baselineskip}{0.2\baselineskip}
+\titlespacing*{\subsection}{0pt}{0.25\baselineskip}{0.25\baselineskip}
+\titlespacing*{\subsubsection}{0pt}{0.1\baselineskip}{0.1\baselineskip}
 
 \title{Complex Systems and Networks HW 2}
 \author{Rachael Judy, Connor Klein, Josh Smith}
@@ -28,22 +30,21 @@
 	\setlist[enumerate]{noitemsep}
 	
 	\maketitle
-	
 \section{Section 1: Random Policies and Social Recommendation Policy}\label{sec:q1}
 \subsection{Simulation Description}\label{subsec:simulation}
 % discuss hyperparameters like trials, epochs
-This simulation uses variations on the Schelling model exploring Red and Green agents occupying a 2-dimensional LxL grid. This cellular automata can have Red squares, Green squares, or empty squares. The agents prefer to be near their own type and are fully happy if at k or more of the eight neighbors are of the same type. The simulation is designed with hyperparameters of a 40x40 (L=40) square grid with wraparound at the borders. The agents occupy 90\% ($\alpha=.9$) of the cells and k=3 neighbors are define happiness of the agent. The number of trials run for each case is set to 20 trials of 20 epochs each. Different relocation policies and their parameters are applied to determine where unhappy agents move to seek greater satisfaction.
+This simulation uses variations on the Schelling model exploring Red and Green agents occupying a percentage of a 2-dimensional LxL grid. The agents prefer to be near their own type and are fully happy if at k or more of the eight neighbors are of the same type. The simulation is designed with hyperparameters of a 40x40 (L=40) square grid with wraparound at the borders. The agents occupy 90\% ($\alpha=.9$) of the cells and k=3 neighbors define the requirementn for total happiness of the agent. The number of trials run for each case is set to 20 trials of 20 epochs. Each epoch consists of moving every agent in the automata in a random order if the agent is unhappy. Different relocation policies and their parameters are applied to determine where unhappy agents move to seek greater satisfaction.
 
 \subsubsection{Happiness Function}
-An agent is defined as completely happy if k or more of its neighbors are of the same group as itself. The partial happiness (happiness < 1) is defined as the number of neighbors of the same group over the total number of neighbors combined with a small bonus for adjacent empty spaces instead of adjacent mismatched neighbors. This can be expressed as $H(A_i) = \text{count}(N_i) + .25 \text{count}(N_e)$ where H is the happiness of an agent A of type i and $N_i$ is a neighbor of type i and $N_e$ is an adjacent empty square.
+An agent is defined as completely happy if k or more of its neighbors are of the same group as itself. The agent will have partial happiness represented by a linear combination of the count of matching neighbors and empty plots nearby. This function will be $H(A_i) = \frac{\text{count}(N_i) + .125 \text{count}(N_e)}{8}$ where H is the happiness of an agent A of type i, $N_i$ is a neighbor of type i, and $N_e$ is an adjacent empty square.
 
 \subsubsection{Performance Metric}
 The performance metric was selected to simply be the sum of the happiness of every agent in the cellular automata ie $\sum\limits_{a \in A} H(a)$.
 
 \subsection{Policies}\label{subsec:policies}
-The agent will consider moving only if it is unhappy. The basic policies modeled as described in the homework were a random move policy and a social network recommendation. The random move policy has a single parameter $q$ which limits how many random empty cells to visit looking for a cell where the agent will be happier than it is currently. 
+The agent will consider moving only if it is unhappy. The policies modeled as described in the homework description are a random move policy and a social network recommendation policy. The random move policy has a single parameter $q$ which limits how many random empty cells to visit looking for a cell where the agent will be happier than it is currently. 
 
-The social network recommendation (SNR) will take a randomly selected set of n friends for each agent who will look in a pxp square around themselves and report suitable squares found. The agent than randomly selects one of the suitable squares and moves there. If none is available, it defaults to the random move policy. This policy was run over parameter values of p=[3,5] and n=[5, 10, 20].
+The social network recommendation (SNR) will take a randomly selected set of n friends for each agent who will look in a pxp square around themselves and report suitable squares found. The agent than randomly selects one of the suitable squares and moves there. If none is available, it defaults to the random move policy. This policy is considered over parameter values of p=[3,5] and n=[5, 10, 20].
 
 \subsection{Results}
 % for insertion of before/after plots
@@ -77,8 +78,9 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 			\includegraphics[width=\linewidth]{initial_social_n20p5.png}
 			\caption{\centering SNR with n=20, p=5}
 		\end{subfigure}
-		\caption{Initial States}
+		\caption{Initial states for random move and social network recommendation policies}
 	\end{figure}
+	\vspace{-1em} % Adjust the vertical space here
 	\begin{figure}[h]
 		\centering
 		\begin{subfigure}{0.14\textwidth}
@@ -109,13 +111,13 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 			\includegraphics[width=\linewidth]{final_social_n20p5.png}
 			\caption{\centering SNR with n=20, p=5}
 		\end{subfigure}
-		\caption{Final States of Random move and social network recommendation policies}
+		\caption{Final states of random move and social network recommendation policies}
 	\end{figure}
-
+	\vspace{-1em} % Adjust the vertical space here
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\textwidth]{policies01.png}
-		\caption{Time series comparing a random move policy with the network recommendation policy}
+		\caption{Time series comparing a random move policy with the social network recommendation policy}
 	\end{figure}
 	\FloatBarrier
 
@@ -123,7 +125,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\section{Section 2: Specialized Policies}
 	\subsection{Rachael}
 	\subsubsection{Policy Description}
-	With the segregation in housing application of the Schelling Model, this idea can be expanded to include searching within one's own neighborhood (SN) for a better house in the same area. This policy has two parameters $w$ and $\beta$. The parameter $w$ defines the number of moves away from one's own cell that can be asked (a degree of separation sort of idea) and $\beta$ defines the probability that a neighbor who is not the same type as the searcher is asked for available spots. This simulates asking neighbors of the same type who ask neighbors of the same type for available spots. If none of the neighbors have a good spot, the random move policy is applied. This policy is implemented as a BFS from the agent along matching agents to the separation limit.
+	With the segregation in housing idea, this idea can be expanded to include searching within one's own neighborhood (SN) for a better house in the same area. This policy has two parameters $w$ and $\beta$. The parameter $w$ defines the degree of separation from the neighbor defined as the number of plots away from one's own plot the agent will travel to ask for recommendations and $\beta$ defines the probability that a neighbor who is not the same type as the searcher is asked for available spots. This simulates asking neighbors of the same type in the area with a small chance of consulting neighbors of a different type. If none of the neighbors are aware of a good spot, the random move policy is applied. This policy is implemented as a BFS from the agent along matching agents to the separation limit.
 	
 	\subsubsection{Results}
 	% for insertion of before/after plots
@@ -157,8 +159,9 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 			\includegraphics[width=\linewidth]{initial_cluster_w20b20.png}
 			\caption{\centering SN w=20, beta=.2}
 		\end{subfigure}
-		\caption{Initial States}
+		\caption{Initial states of neighborhoods for random move and neighborhood search policy}
 	\end{figure}
+	\vspace{-1em} % Adjust the vertical space here
 	\begin{figure}[h]
 		\centering
 		\begin{subfigure}{0.14\textwidth}
@@ -189,7 +192,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 			\includegraphics[width=\linewidth]{final_cluster_w20b20.png}
 			\caption{\centering SN w=20, beta=.2}
 		\end{subfigure}
-		\caption{Final states of neighborhood search policies}
+		\caption{Final states for random move and neighborhood search policies}
 	\end{figure}
 	\FloatBarrier
 	
@@ -206,13 +209,13 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	
 	
 	
+	
 	\newpage
 	
 	\subsection{Josh}
 	
+	
 
-
-\newpage
 
 	
 \end{document}
