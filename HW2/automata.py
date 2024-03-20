@@ -84,17 +84,33 @@ def social_network_recommendation(layer, agent: int, agent_positions: dict, k: i
     """
     curri, currj = agent_positions[agent]
     recommendations = set()
+    current_happiness = get_happiness(layer, (curri, currj), layer[curri][currj], k)
     # go through friends pxp neighborhoods
     for friend in friend_map[agent]:
         fi, fj = agent_positions[friend]
         for i in range(-p // 2, p // 2 + 1):
             for j in range(-p // 2, p // 2 + 1):
                 if (layer[(fi + i) % len(layer)][(fj + j) % len(layer)] == 0
-                        and get_happiness(layer, (fi + i, fj + j), layer[curri][currj], k) == 1):
+                        and get_happiness(layer, (fi + i, fj + j), layer[curri][currj], k) > current_happiness):
                     recommendations.add(((fi + i) % len(layer), (fj + j) % len(layer)))
-    # if friends had ideas, sample from this; otherwise, move randomly
-    if recommendations:
-        return random.sample(list(recommendations), 1)[0]
+
+    # look over q empty spots for one which would provide maximum happiness
+    best_spot, happiest = agent_positions[agent], -1
+    for _ in range(min(q, len(recommendations))):
+        potential_location = random.sample(list(recommendations), 1)[0]
+        happiness = get_happiness(layer, potential_location, layer[curri][currj], k)
+        if happiness == 1:
+            return potential_location
+        if happiness > happiest:
+            happiest = happiness
+            best_spot = potential_location
+        recommendations.remove(potential_location)
+    if best_spot != agent_positions[agent]:
+        return best_spot
+
+    # # if friends had ideas, sample from this; otherwise, move randomly
+    # if recommendations:
+    #     return random.sample(list(recommendations), 1)[0]
     return random_move(layer, agent, agent_positions, k, q)
 
 
@@ -269,71 +285,29 @@ policies = {0: random_move, 1: social_network_recommendation, 2: rachael_move, 3
 # test random - control case
 results_base = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=0, policy_parameters=[100], display_flag=False)
 
-# test social
-results_n5p3 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[5, 3, 100], display_flag=False)
-results_n5p5 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[5, 5, 100], display_flag=False)
-results_n10p3 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[10, 3, 100], display_flag=False)
-results_n10p5 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[10, 5, 100], display_flag=False)
-results_n20p3 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[20, 3, 100], display_flag=False)
-results_n20p5 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=1, policy_parameters=[20, 5, 100], display_flag=False)
-
-averages1= [
-    [np.average(results_base[row]) for row in results_base],
-    [np.average(results_n5p3[row]) for row in results_n5p3],
-    [np.average(results_n5p5[row]) for row in results_n5p5],
-    [np.average(results_n10p3[row]) for row in results_n10p3],
-    [np.average(results_n10p5[row]) for row in results_n10p5],
-    [np.average(results_n20p3[row]) for row in results_n20p3],
-    [np.average(results_n20p5[row]) for row in results_n20p5],
-]
-
-std_deviations1 = [
-    [np.std(results_base[row]) for row in results_base],
-    [np.std(results_n5p3[row]) for row in results_n5p3],
-    [np.std(results_n5p5[row]) for row in results_n5p5],
-    [np.std(results_n10p3[row]) for row in results_n10p3],
-    [np.std(results_n10p5[row]) for row in results_n10p5],
-    [np.std(results_n20p3[row]) for row in results_n20p3],
-    [np.std(results_n20p5[row]) for row in results_n20p5],
-]
-
-labels1 = ['Random Move with q=100', 'Friend Recommendation with n=5, p=3','Friend Recommendation with n=5, p=5',
-          'Friend Recommendation with n=10, p=3','Friend Recommendation with n=10, p=5',
-          'Friend Recommendation with n=20, p=3','Friend Recommendation with n=20, p=5',]
-
-plot_averages_with_errorbars(averages1, std_deviations1, labels1, "policies01.png")
+# # test social
+# averages1 = [[np.average(results_base[row]) for row in results_base]]
+# std_deviations1 = [[np.std(results_base[row]) for row in results_base]]
+# labels1 = ['Random Move with q=100']
+# for n in [5, 10, 20]:
+#     for p in [3, 5]:
+#         result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=30, relocation_policy=1, policy_parameters=[n, p, 100], display_flag=False)
+#         averages1.append([np.average(result[row]) for row in result])
+#         std_deviations1.append([np.std(result[row]) for row in result])
+#         labels1.append(f'Friend Recommendation with n={n}, p={p}')
+# plot_averages_with_errorbars(averages1, std_deviations1, labels1, "policies01.png", "Random move policy compared to friend recommendation policy")
 
 
 # test rachael policy
-results_w5b10 = simulate_automata(L=40, alpha=.9, k=2, epochs=20, trials=20, relocation_policy=2, policy_parameters=[5, .1, 100], display_flag=True)
-results_w10b10 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[10, .1, 100], display_flag=True)
-results_w20b10 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[20, .1, 100], display_flag=True)
-results_w5b20 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[5, .2, 100], display_flag=True)
-results_w10b20 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[10, .2, 100], display_flag=True)
-results_w20b20 = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[20, .2, 100], display_flag=True)
+averages2 = [[np.average(results_base[row]) for row in results_base]]
+std_deviations2 = [[np.std(results_base[row]) for row in results_base]]
+labels2 = ['Random move with q=100']
+for beta in [.1, .2]:
+    for w in [5, 10, 20]:
+        result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[w, beta, 100], display_flag=True)
+        averages2.append([np.average(result[row]) for row in result])
+        std_deviations2.append([np.std(result[row]) for row in result])
+        labels2.append(f'Search neighborhood with w={w}, beta={beta}')
+plot_averages_with_errorbars(averages2, std_deviations2, labels2, "policies02.png", "Random move policy compared to search neighborhood policy")
 
-averages2= [
-    [np.average(results_base[row]) for row in results_base],
-    [np.average(results_w5b10[row]) for row in results_w5b10],
-    [np.average(results_w10b10[row]) for row in results_w10b10],
-    [np.average(results_w20b10[row]) for row in results_w20b10],
-    [np.average(results_w5b20[row]) for row in results_w5b20],
-    [np.average(results_w10b20[row]) for row in results_w10b20],
-    [np.average(results_w20b20[row]) for row in results_w20b20],
-]
 
-std_deviations2 = [
-    [np.std(results_base[row]) for row in results_base],
-    [np.std(results_w5b10[row]) for row in results_w5b10],
-    [np.std(results_w10b10[row]) for row in results_w10b10],
-    [np.std(results_w20b10[row]) for row in results_w20b10],
-    [np.std(results_w5b20[row]) for row in results_w5b20],
-    [np.std(results_w10b20[row]) for row in results_w10b20],
-    [np.std(results_w20b20[row]) for row in results_w20b20],
-]
-
-labels2 = ['Random Move with q=100', 'Neighborhood Search with w=5, beta=10','Neighborhood Search with w=10, beta=10',
-           'Neighborhood Search with w=20, beta=10', 'Neighborhood Search with w=5, beta=20',
-           'Neighborhood Search with w=10, beta=20', 'Neighborhood Search with w=20, beta=20',]
-
-plot_averages_with_errorbars(averages2, std_deviations2, labels2, "policies02.png")

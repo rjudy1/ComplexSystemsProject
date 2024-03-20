@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath}
-\usepackage[margin=.8in]{geometry}
+\usepackage[margin=.75in]{geometry}
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{graphicx} % Required for inserting images
@@ -16,6 +16,7 @@
 \usepackage{wrapfig}
 \renewcommand{\familydefault}{\sfdefault}
 \graphicspath{{./images/}}
+
 \titlespacing*{\section}{0pt}{0.2\baselineskip}{0.2\baselineskip}
 \titlespacing*{\subsection}{0pt}{0.25\baselineskip}{0.25\baselineskip}
 \titlespacing*{\subsubsection}{0pt}{0.1\baselineskip}{0.1\baselineskip}
@@ -121,11 +122,15 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\end{figure}
 	\FloatBarrier
 
+
+	test test test
+
+
 	\newpage
 	\section{Section 2: Specialized Policies}
 	\subsection{Rachael}
 	\subsubsection{Policy Description}
-	With the segregation in housing idea, this idea can be expanded to include searching within one's own neighborhood (SN) for a better house in the same area. This policy has two parameters $w$ and $\beta$. The parameter $w$ defines the degree of separation from the neighbor defined as the number of plots away from one's own plot the agent will travel to ask for recommendations and $\beta$ defines the probability that a neighbor who is not the same type as the searcher is asked for available spots. This simulates asking neighbors of the same type in the area with a small chance of consulting neighbors of a different type. If none of the neighbors are aware of a good spot, the random move policy is applied. This policy is implemented as a BFS from the agent along matching agents to the separation limit.
+	The segregation in housing application can be expanded to include searching within one's own neighborhood (SN) for a better house in the same area. The policy parameter $w$ defines the degree of separation from a neighbor, represented as the number of plots away from one's own plot the agent will travel to ask for recommendations and parameter $\beta$ defines the probability that a neighbor who is not the same type as the searcher is asked for available spots. This simulates asking neighbors of the same type in the area with a small chance of consulting neighbors of a different type. If none of the neighbors are aware of a good spot, the random move policy is applied. This policy is implemented as a BFS from the agent along matching agents up to the degree of separation limit.
 	
 	\subsubsection{Results}
 	% for insertion of before/after plots
@@ -161,38 +166,46 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\end{subfigure}
 		\caption{Initial states of neighborhoods for random move and neighborhood search policy}
 	\end{figure}
-	\vspace{-1em} % Adjust the vertical space here
+	\vspace{-2em} % Adjust the vertical space here
 	\begin{figure}[h]
 		\centering
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_random.png}
 			\caption{\centering Random move}
+			\label{sn_finalrandom}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_cluster_w5b10.png}
 			\caption{\centering SN w=5, beta=.1}
+			\label{sn_finalw5b10}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_cluster_w10b10.png}
 			\caption{\centering SN w=10, beta=.1}
+			\label{sn_finalw10b10}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_cluster_w20b10.png}
 			\caption{\centering SN w=20, beta=.1}
+			\label{sn_finalw20b10}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_cluster_w5b20.png}
 			\caption{\centering SN w=5, beta=.2}
+			\label{sn_finalw5b20}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_cluster_w10b20.png}
 			\caption{\centering SN w=10, beta=.2}
+			\label{sn_finalw10b20}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_cluster_w20b20.png}
 			\caption{\centering SN w=20, beta=.2}
+			\label{sn_finalw20b20}
 		\end{subfigure}
 		\caption{Final states for random move and neighborhood search policies}
+		\label{sn_finalstate}
 	\end{figure}
 	\FloatBarrier
 	
@@ -201,7 +214,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\includegraphics[width=.5\textwidth]{policies02.png}
 		\caption{Time series comparison of neighborhood search compared to random move}
 	\end{wrapfigure}
-	This policy resulted in larger fully connected clusters of Green and Red agents. With the wraparound, the Green smaller clusters are nearly all connected to one another. The Red clusters are also interconnected. Additionally, because of the search only of neighboring spaces, when an empty cluster appears, it often remains open because its spaces are never seen by any of the reporting agents, despite factoring in partial happiness for empty neighboring plots. This method of only talking to a certain degree of separation of neighbors results in a slower convergence to optimal happiness but ends up better than the random move search. Interestingly, the neighborhood search of the smallest separation with less of a chance of talking to mismatched neighbors produced the highest overall average happiness of the automata (ie, talking only to nearby neighbors of the same type). This is perhaps because it makes the agent remain in its own small cluster of like agents instead of hopping between small clusters as could occur with a greater $w$. The standard deviations were all wide enough to include the happiness of the other parameter sets however so there was not a largely significant difference.
+	This policy resulted in fully connected clusters across the map of like agents in Fig \ref{sn_finalstate}. The exceptions are clusters of four agents (see Fig \ref{sn_finalw20b20}), which meet the k=3 requirement while being small enough to not connect to the main cluster. Further, due to the search only of neighboring spaces, when a cluster of empty spaces appears, it often remains open because its plots are never reported by neighbors, despite partial happiness for nearby empty plots as well as agents getting stuck until they talk to a mismatched neighbor. This method results in a slower convergence to optimal happiness but ends up better than the random move search as happy neighborhoods form. The neighborhood search with smaller separation with lower probability of talking to mismatched neighbors produced the highest overall average happiness of the automata (ie, talking primarily to neighbors of the same type). This is perhaps because it makes the agent remain in its own cluster of like agents instead of hopping between  clusters as could occur with a greater $w$. The standard deviations were all wide enough to include the happiness of the other parameter configurations so  conclusions have a margin for error.
 	
 	\newpage
 	
