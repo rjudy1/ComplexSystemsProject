@@ -1,0 +1,21 @@
+easier to say the properties we do not want
+fulltimeemployees
+companyofficers
+pricehint
+bid
+ask
+bidsize
+asksize
+currency
+exchange
+quotetype
+symbol - for risk, we may need this for something else 
+ynderlying symbol
+shotname
+longname
+timezone
+timezone
+messageboardid
+uuid
+gmtoffsetmilliseconds
+financialcurrency
