@@ -304,7 +304,7 @@ std_deviations2 = [[np.std(results_base[row]) for row in results_base]]
 labels2 = ['Random move with q=100']
 for beta in [.1, .2]:
     for w in [5, 10, 20]:
-        result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[w, beta, 100], display_flag=True)
+        result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[w, beta, 100], display_flag=False)
         averages2.append([np.average(result[row]) for row in result])
         std_deviations2.append([np.std(result[row]) for row in result])
         labels2.append(f'Search neighborhood with w={w}, beta={beta}')
