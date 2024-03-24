@@ -3,7 +3,7 @@ import time
 import random
 
 
-def display_2D_automata(automata_time_series):
+def display_2D_automata(automata_time_series, file_prefix=''):
     """
     This function displays the time series of the 2D automata, expecting data in a format of a list of rows of columns
     :param automata_time_series: list of snapshots of automata at each time
@@ -17,13 +17,13 @@ def display_2D_automata(automata_time_series):
     def update_plot(time_step):
         ax.clear()
         ax.imshow(automata_time_series[time_step], cmap=custom_cmap, vmin=0, vmax=2)
-        ax.set_title(f'Time Step: {time_step}')
+        ax.set_title(f'Num change: {time_step}')
         plt.pause(0.005)
 
         if time_step == 0:
-            plt.savefig(f'images/initial{int(time.time())}.png')
+            plt.savefig(f'images/{file_prefix}initial{int(time.time())}.png')
         elif time_step == len(automata_time_series) - 1:
-            plt.savefig(f'images/final{int(time.time())}.png')
+            plt.savefig(f'images/{file_prefix}final{int(time.time())}.png')
 
     for t in range(len(automata_time_series)):
         update_plot(t)
