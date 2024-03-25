@@ -219,8 +219,71 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\newpage
 	
 	\subsection{Connor}
+	Housing can also be modeled as desireablity to a hotspot; examples being schools, religous buildings, work, etc. To model this, two different hotspots were placed randomly on the grid and red and green agents were set to want to get as close to one of the hotspots as possible. Agents choose from a generated heatmap where the probability of selecting a position is: $e^{\frac{- minimum\ euclidean\ distance\ from\ a\ hotspot}{radius}}$. This formula creates a probability density higher around the center of the arcs. Agents were set to be happy, and therefor not move if they were in a defined closeness value. However, the green agents were able to replace the red agents with the defined probability multipled by one over k. k was varied from 10 to 0.001 in log scale to determine how quickly the green agents could dominate the hotspots. Red agents were unable to replace green agents from their current position.
 	
+	\subsubsection{Results}
+	% for insertion of before/after plots
+	\begin{figure}[h]
+		\centering
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Initial_10.png}
+			\caption{\centering k = 10}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Initial_1.png}
+			\caption{\centering k = 1}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Initial_01.png}
+			\caption{\centering k = 0.1}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Initial_001.png}
+			\caption{\centering k = 0.01}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Initial_0001.png}
+			\caption{\centering k = 0.001}
+		\end{subfigure}\hfill
+		\caption{Initial states of neighborhoods for two hotspots with radius = 10 and closeness = 10}
+	\end{figure}
+	\vspace{-2em} % Adjust the vertical space here
+	\begin{figure}[h]
+		\centering
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Final_10.png}
+			\caption{\centering k = 10}
+			\label{p3_final_10}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Final_1.png}
+			\caption{\centering k = 1}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Final_01.png}
+			\caption{\centering k = 0.1}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Final_001.png}
+			\caption{\centering k = 0.01}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.2\textwidth}
+			\includegraphics[width=\linewidth]{policy3_Final_0001.png}
+			\caption{\centering k = 0.001}
+			\label{p3_final_0001}
+		\end{subfigure}
+		\caption{Final states of neighborhoods for two hotspots with radius = 10 and closeness = 10}
+	\end{figure}
+	\FloatBarrier
 	
+	\begin{wrapfigure}{l}{.5\textwidth}
+		\centering
+		\includegraphics[width=.5\textwidth]{policies03.png}
+		\caption{Time series comparing hotspot search with varying k where the full line represents the red agents and the dashed represents the red agents}
+		\label{p3_ts}
+	\end{wrapfigure}
+	\FloatBarrier
+	Initially, Fig \ref{p3_final_10} both the red and green agents were able to coexist near the hotspots. However, as shown in Fig \ref{p3_final_0001}, the green agents eventually dominate and take up most of the area's around the hotspots. This is also clear in Fig \ref{p3_ts} where for k = 10 to 0.01, both the agent groups on average were happier after they were allowed to move. However, as k decreased to 0.001, a large transition happened were the red agents become significantly unhappier than in their starting states. This model can help demonstate the adventages of giving a group the power to evict another group and the eventual domination of a resource of that group. It is interesting that it did require a significant drive, on the scale of 1000 times their inital probability, for the green agents to entirely dominate. Different variations could be performed such as agumenting the probability equaiton so that the most desireable locations are those that are closest to both of the hotspots, varying the radius of the hotspot, or varying the agents happiness with their closeness. 
 	
 	
 	\newpage
