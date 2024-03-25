@@ -91,6 +91,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_social_n5p3.png}
 			\caption{\centering SNR with n=5, p=3}
+			\label{n5p3}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_social_n5p5.png}
@@ -119,11 +120,13 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\centering
 		\includegraphics[width=\textwidth]{policies01.png}
 		\caption{Time series comparing a random move policy with the social network recommendation policy}
+		\label{p2_ts}
 	\end{figure}
 	\FloatBarrier
-
-
-	test test test
+	All the experiments show that given a set number of epochs agents do tend to group up together. However, the size of the grouping seems to vary based on the number of friend recommendations and the area of those recommendations. As the number of friends making recommendations increased, the neighborhoods became smaller and more connected. Those with only five friends had more islands form as well. It was also shown that as the space of which the friends could recommend, or the value of \textit{p}, increased the connectiveness of the neighborhoods also increased. With both a high number of friends and a large area of recommendation search, the neighborhoods were well connected and spanned across the wrapped around board. The smaller values of \textit{n} and \textit{p}, resulted in smaller disconnected neighborhoods, usually in grouping of four. Four makes sense here as there was the minimum \textit{k} value in which an agent was set to be happy. It would be expected that smaller islands would form if \textit{k} was smaller as agents would opt out of moving. \par
+	Fig \ref{p2_ts} describes that on average the setting that produced the happiest agents were those with a smaller group of friends to ask, who had a minimum knowledge of the area around them, see Fig \ref{n5p3}. However, the worst performing agents were those who had the same number of friends but those who had more knowledge of viable tiles, which is illustrated in Fig \ref{n5p5}. From there the happiness decreased with more friends and those friends knowing more spaces. If parallels could be drawn to real life from this simulation; it might suggest that having a few close friends may be more beneficial than many branching ones. \par
+	However, even with the addition of a recommendation network, happiness appeared to converge around the same time, that is at around three epochs as shown on Fig \ref{p2_ts}. Also, the all the agents were significantly happier than in their starting states. This describes the mutually beneficial concept of taking turns in moving with all the agents able to decide if they would like to move with equal probability. If certain groups of agents were at a higher likelihood of choosing if they would like to move, this overall happiness might decrease. 
+	
 
 
 	\newpage
