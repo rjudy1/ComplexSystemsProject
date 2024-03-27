@@ -34,7 +34,7 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-from utils import get_x_from_px, display_2D_automata
+from utils import get_x_from_px, display_2D_automata, save_2D_automata
 
 
 def random_move(layer, agent: int, agent_positions: dict, k: int, q: int) -> tuple:
@@ -147,9 +147,47 @@ def rachael_move(layer, agent: int, agent_positions: dict, k: int, w: int, beta:
     return random_move(layer, agent, agent_positions, k, q)
 
 
-def connor_move():
-    pass
+def connor_move(layer, agent: int, agent_positions: dict, k: int, q: int, R: int, hotspots: list):
+    """
+    Recommends a position based on hotspots in the area. Agents have increased probability to go to a site near multiple hotspots
+    :param layer: current state of the system
+    :param agent: id of agent to move
+    :param agent_positions: id to position map
+    :param k: number of neighbors required for complete happiness
+    :param q: parameter for random move as backup
+    :param R: parameter of radius outward to check, where the center is 1, 2 is one tile away, etc
+    :param centers: positions of centers
+    :return: tuple (i, j) of recommended spot to move
+    """
+    L = len(layer)
+    available_positions = []
+    probablity_distrubution = []
+    
+    for site in hotspots:
+        for r in range(1, R):
+            xy = []
+            for i in range(site[0] - r, site[0] + r + 1):
+                xy.append(((i + L) % L, (site[1] - r + L) % L))
+                xy.append(((i + L) % L, (site[1] + r + L) % L))
 
+            for j in range(site[1] - r + 1, site[1] + r):
+                xy.append(((site[0] - r + L) % L, (j + L) % L))
+                xy.append(((site[0] + r + L) % L, (j + L) % L))
+            
+            for x,y in xy:
+                if layer[x][y] == 0 and get_happiness(layer, (x,y), layer[site[0]][site[1]], k) == 1:
+                    available_positions.append((x,y))
+                    probablity_distrubution.append(1/r)
+            
+    if not available_positions:
+        return random_move(layer, agent, agent_positions, k, q)
+    else:
+        # Choose a new place based on the radius as a probility
+        probablity_distrubution = np.array(probablity_distrubution)
+        probablity_distrubution = probablity_distrubution / np.sum(probablity_distrubution)
+        index = np.random.choice(len(available_positions), 1, replace=False, p=probablity_distrubution)[0]
+        return available_positions[index]
+    
 def josh_move():
     pass
 
@@ -186,7 +224,7 @@ def rate_performance(layer: list[list], k):
 
 
 def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: int = 20,
-                      relocation_policy: int = 0, policy_parameters: list = [], display_flag: bool = False):
+                      relocation_policy: int = 0, policy_parameters: list = [], display_flag: bool = False, save_flag: bool = False):
     """
     :param L: length of side of square environment
     :param alpha: percent of environment occupied
@@ -214,7 +252,10 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
         # TODO: Add necessary initialization for each method
         if relocation_policy == 1:
             friend_map = {a: random.sample(agents, policy_parameters[0]) for a in agents}
-
+        if relocation_policy == 3:
+            hotspots = [np.random.choice(L, policy_parameters[2], replace=False), np.random.choice(L, policy_parameters[2], replace=False)]
+            hotspots = list(zip(hotspots[0], hotspots[1]))
+            
         for epoch in range(epochs):
             random.shuffle(agents)
             for agent in agents:
@@ -238,7 +279,8 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
                         new_i, new_j = policies[2](layer=time_series[-1], agent=agent, agent_positions=agent_positions,
                                                    k=k, w=policy_parameters[0], beta=policy_parameters[1], q=policy_parameters[2])
                     elif relocation_policy == 3:
-                        policies[3]()
+                        new_i, new_j = policies[3](layer=time_series[-1], agent=agent, agent_positions=agent_positions,
+                                                   k=k, q=policy_parameters[0], R=policy_parameters[1], hotspots = hotspots)
                     elif relocation_policy == 4:
                         policies[4]()
 
@@ -254,6 +296,8 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
 
         if display_flag and trial == 0:
             display_2D_automata(time_series, f'policy{relocation_policy}_')
+        elif save_flag and trial == 0:
+            save_2D_automata(time_series, f'policy{relocation_policy}')
     return epoch_to_scores
 
 
@@ -299,15 +343,26 @@ results_base = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relo
 
 
 # test rachael policy
-averages2 = [[np.average(results_base[row]) for row in results_base]]
-std_deviations2 = [[np.std(results_base[row]) for row in results_base]]
-labels2 = ['Random move with q=100']
-for beta in [.1, .2]:
-    for w in [5, 10, 20]:
-        result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[w, beta, 100], display_flag=False)
-        averages2.append([np.average(result[row]) for row in result])
-        std_deviations2.append([np.std(result[row]) for row in result])
-        labels2.append(f'Search neighborhood with w={w}, beta={beta}')
-plot_averages_with_errorbars(averages2, std_deviations2, labels2, "policies02.png", "Random move policy compared to search neighborhood policy")
+# averages2 = [[np.average(results_base[row]) for row in results_base]]
+# std_deviations2 = [[np.std(results_base[row]) for row in results_base]]
+# labels2 = ['Random move with q=100']
+# for beta in [.1, .2]:
+#     for w in [5, 10, 20]:
+#         result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=2, policy_parameters=[w, beta, 100], display_flag=False)
+#         averages2.append([np.average(result[row]) for row in result])
+#         std_deviations2.append([np.std(result[row]) for row in result])
+#         labels2.append(f'Search neighborhood with w={w}, beta={beta}')
+# plot_averages_with_errorbars(averages2, std_deviations2, labels2, "policies02.png", "Random move policy compared to search neighborhood policy")
 
+# test connor's policy
+averages3 = [[np.average(results_base[row]) for row in results_base]]
+std_deviations3 = [[np.std(results_base[row]) for row in results_base]]
+labels2 = ['Random move with q=100']
+for sites in [2,3]:
+    for radius in [5,10,15]:
+        result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=3, policy_parameters=[100, radius, sites], display_flag=False, save_flag=True)
+        averages3.append([np.average(result[row]) for row in result])
+        std_deviations3.append([np.std(result[row]) for row in result])
+        labels2.append(f'Search around {sites} site(s) with radius = {radius}')
+plot_averages_with_errorbars(averages3, std_deviations3, labels2, "policies03.png", "Random move policy compared to Site Search Policy")
 

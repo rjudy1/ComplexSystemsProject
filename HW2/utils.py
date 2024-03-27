@@ -30,7 +30,26 @@ def display_2D_automata(automata_time_series, file_prefix=''):
 
     plt.show()
 
+def save_2D_automata(automata_time_series, file_prefix=''):
+    """
+    Lightweight display_2D_automata that just saves the start and end
+    :param automata_time_series: list of snapshots of automata at each time
+    :return: two tk.Image objects for the start of the series and end of the series
+    """
+    custom_cmap = plt.cm.colors.ListedColormap(['white', 'red', 'green'])
 
+    # Adjust the figsize parameter to set the size of the figure
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    def save_plot(time_step, name):
+        ax.clear()
+        ax.imshow(automata_time_series[time_step], cmap=custom_cmap, vmin=0, vmax=2)
+        ax.set_title(f'Num change: {time_step}')
+        plt.savefig(f'images/{file_prefix}_{name}{int(time.time())}.png')
+    
+    save_plot(0, 'initial')
+    save_plot(len(automata_time_series) - 1, 'final')
+    
 def get_x_from_px(x_alphabet, probabilities):
     """
     Get a realization of x from the given alphabet and probabilities for each value
