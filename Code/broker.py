@@ -78,11 +78,8 @@ class Broker:
         # update public status
         if self.adjust_influence:
             for neighbor in graph.in_edges(self.id):
-                if id_to_broker_map[neighbor].get_status(available_stocks) > self.neighbor_history[neighbor]:
-                    graph.weights[neighbor][self.id] += .005  # TODO: Parameterize this
-                if id_to_broker_map[neighbor].get_status(available_stocks) < self.neighbor_history[neighbor]:
-                    graph.weights[neighbor][self.id] += .005  # TODO: Parameterize this
-
+                graph.weights[neighbor][self.id] += .005 * ( # TODO: Parameterize this
+                            id_to_broker_map[neighbor].get_status(available_stocks) - self.neighbor_history[neighbor])
                 self.neighbor_history[neighbor] = id_to_broker_map[neighbor].get_status(available_stocks)
 
     def get_status(self, stock_map):
