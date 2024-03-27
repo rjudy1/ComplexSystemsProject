@@ -145,19 +145,19 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{initial_cluster_w5b10.png}
-			\caption{\centering SN w=5, beta=.1}
+			\caption{\centering SN w=2, beta=.05}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{initial_cluster_w10b10.png}
-			\caption{\centering SN w=10, beta=.1}
+			\caption{\centering SN w=10, beta=.05}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{initial_cluster_w20b10.png}
-			\caption{\centering SN w=20, beta=.1}
+			\caption{\centering SN w=25, beta=.05}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{initial_cluster_w5b20.png}
-			\caption{\centering SN w=5, beta=.2}
+			\caption{\centering SN w=2, beta=.2}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{initial_cluster_w10b20.png}
@@ -165,7 +165,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{initial_cluster_w20b20.png}
-			\caption{\centering SN w=20, beta=.2}
+			\caption{\centering SN w=25, beta=.2}
 		\end{subfigure}
 		\caption{Initial states of neighborhoods for random move and neighborhood search policy}
 	\end{figure}
@@ -178,33 +178,33 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 			\label{sn_finalrandom}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
-			\includegraphics[width=\linewidth]{final_cluster_w5b10.png}
-			\caption{\centering SN w=5, beta=.1}
+			\includegraphics[width=\linewidth]{final_rachael_w2b5.png}
+			\caption{\centering SN w=2, beta=.05}
 			\label{sn_finalw5b10}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
-			\includegraphics[width=\linewidth]{final_cluster_w10b10.png}
-			\caption{\centering SN w=10, beta=.1}
+			\includegraphics[width=\linewidth]{final_rachael_w10b5.png}
+			\caption{\centering SN w=10, beta=.05}
 			\label{sn_finalw10b10}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
-			\includegraphics[width=\linewidth]{final_cluster_w20b10.png}
-			\caption{\centering SN w=20, beta=.1}
+			\includegraphics[width=\linewidth]{final_rachael_w25b5.png}
+			\caption{\centering SN w=25, beta=.1}
 			\label{sn_finalw20b10}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
-			\includegraphics[width=\linewidth]{final_cluster_w5b20.png}
-			\caption{\centering SN w=5, beta=.2}
+			\includegraphics[width=\linewidth]{final_rachael_w2b20.png}
+			\caption{\centering SN w=2, beta=.2}
 			\label{sn_finalw5b20}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
-			\includegraphics[width=\linewidth]{final_cluster_w10b20.png}
+			\includegraphics[width=\linewidth]{final_rachael_w10b20.png}
 			\caption{\centering SN w=10, beta=.2}
 			\label{sn_finalw10b20}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
-			\includegraphics[width=\linewidth]{final_cluster_w20b20.png}
-			\caption{\centering SN w=20, beta=.2}
+			\includegraphics[width=\linewidth]{final_rachael_w25b20.png}
+			\caption{\centering SN w=25, beta=.2}
 			\label{sn_finalw20b20}
 		\end{subfigure}
 		\caption{Final states for random move and neighborhood search policies}
@@ -217,7 +217,8 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\includegraphics[width=.5\textwidth]{policies02.png}
 		\caption{Time series comparison of neighborhood search compared to random move}
 	\end{wrapfigure}
-	This policy resulted in fully connected clusters across the map of like agents in Fig \ref{sn_finalstate}. The exceptions are small clusters of agents (see Fig \ref{sn_finalw20b20}), which are fully happy while being small enough to not connect to the main cluster. Due to the search only of neighboring spaces, when a cluster of empty spaces appears, it often remains open because its plots are never reported by neighbors; agents also could get stuck until they talk to a mismatched neighbor. This method results in a slower convergence to optimal happiness as the entire automata is not searched but ends up better than the random search as happy neighborhoods form. The neighborhood search with greatest chance of talking to mismatched neighbors in the largest radius was the most successful as it found the most positions. Smaller radii with more matching neighbors asked performed consistently nearly as well though as perhaps makes the agent remain in its own cluster of like agents instead of hopping between  clusters as could occur with a greater $w$. However, the standard deviations are wide enough that an instance of one parameter configuration with lesser average could perform better than another.
+		\vspace{-.5em} % Adjust the vertical space here
+	This policy resulted in fully connected clusters across the map of like agents as in Fig \ref{sn_finalstate}. The exceptions are small clusters of agents (see Fig \ref{sn_finalw10b20}), which are fully happy while being small enough to not connect to the main cluster. Due to the search only of neighboring spaces, when a cluster of empty spaces appears, it often remains open because its plots are never reported by neighbors; agents also could get stuck until they talk to a mismatched neighbor. This method results in a slower convergence to optimal happiness than random search but ends up happier than the random search as happy neighborhoods form. The neighborhood search with greatest chance of talking to mismatched neighbors in the largest radius was the most successful as it found the most positions. Smaller radii with more matching neighbors asked performed consistently nearly as well, as well as converging faster, perhaps as the agent remain in its own cluster of like agents instead of hopping between  clusters as could occur with a greater $w$. However, the standard deviations are wide enough that an instance of one parameter configuration with lesser average could perform better than another.
 	
 	\newpage
 	
