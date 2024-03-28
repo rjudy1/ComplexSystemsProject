@@ -124,7 +124,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\end{figure}
 	\FloatBarrier
 	All the experiments show that given a set number of epochs agents do tend to group up together. However, the size of the grouping seems to vary based on the number of friend recommendations and the area of those recommendations. As the number of friends making recommendations increased, the neighborhoods became smaller and more connected. Those with only five friends had more islands form as well. It was also shown that as the space of which the friends could recommend, or the value of \textit{p}, increased the connectiveness of the neighborhoods also increased. With both a high number of friends and a large area of recommendation search, the neighborhoods were well connected and spanned across the wrapped around board. The smaller values of \textit{n} and \textit{p}, resulted in smaller disconnected neighborhoods, usually in grouping of four. Four makes sense here as there was the minimum \textit{k} value in which an agent was set to be happy. It would be expected that smaller islands would form if \textit{k} was smaller as agents would opt out of moving. \par
-	Fig \ref{p2_ts} describes that on average the setting that produced the happiest agents were those with a smaller group of friends to ask, who had a minimum knowledge of the area around them, see Fig \ref{n5p3}. However, the worst performing agents were those who had the same number of friends but those who had more knowledge of viable tiles, which is illustrated in Fig \ref{n5p5}. From there the happiness decreased with more friends and those friends knowing more spaces. If parallels could be drawn to real life from this simulation; it might suggest that having a few close friends may be more beneficial than many branching ones. \par
+	Fig \ref{p2_ts} describes that on average the setting that produced the happiest agents were those with a smaller group of friends to ask, who had a minimum knowledge of the area around them, see Fig \ref{n5p3}. However, the worst performing agents were those who had the same number of friends but those who had more knowledge of viable tiles, which is illustrated in Fig. From there the happiness decreased with more friends and those friends knowing more spaces. If parallels could be drawn to real life from this simulation; it might suggest that having a few close friends may be more beneficial than many branching ones. \par
 	However, even with the addition of a recommendation network, happiness appeared to converge around the same time, that is at around three epochs as shown on Fig \ref{p2_ts}. Also, the all the agents were significantly happier than in their starting states. This describes the mutually beneficial concept of taking turns in moving with all the agents able to decide if they would like to move with equal probability. If certain groups of agents were at a higher likelihood of choosing if they would like to move, this overall happiness might decrease. 
 	
 
@@ -223,8 +223,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\newpage
 	
 	\subsection{Connor}
-	Housing can also be modeled as desireablity to a hotspot; examples being schools, religous buildings, work, etc. To model this, two different hotspots were placed randomly on the grid and red and green agents were set to want to get as close to one of the hotspots as possible. Agents choose from a generated heatmap where the probability of selecting a position is: $e^{\frac{- minimum\ euclidean\ distance\ from\ a\ hotspot}{radius}}$. This formula creates a probability density higher around the center of the arcs. Agents were set to be happy, and therefor not move if they were in a defined closeness value. However, the green agents were able to replace the red agents with the defined probability multipled by one over k. k was varied from 10 to 0.001 in log scale to determine how quickly the green agents could dominate the hotspots. Red agents were unable to replace green agents from their current position.
-	
+	Neighborhoods can also be modeled as people’s desires to be around certain areas of interest, here called hotspots or sites. These hotspots can be schools, religious buildings, employment opportunities, etc. This concept coupled with the agent’s happiness being around like neighbors could lead to highly developed neighborhoods near hotspots and less far from it. As in similar policies, agents were selected at random but were all allowed to move if they had less then 3 neighbors. Agents then sought out locations near \textit{h} number of hotspots. The proximity of the hotspot was also relevant. The proximity the agent was allowed to look at was \textit{R} coordinates away, radiating outward. Agents want to both be closer to a hotspot and be closer to multiple hotspots. To accomplish this, when a valid move spot is detected, the probability an agent will select that spot is $\frac{1}{r}$ where \textit{r} is the radius away from the hotspot. This is iterated over all the hotspots so if a position is found multiple times, that probability is added.
 	\subsubsection{Results}
 	% for insertion of before/after plots
 	\begin{figure}[h]
@@ -261,6 +260,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy3_Final_h2r5.png}
 			\caption{\centering Two Sites with R=5}
+			\label{p3_h2r5}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy3_final_h2r10.png}
@@ -273,6 +273,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy3_final_h3r5.png}
 			\caption{\centering Three Sites with R=5}
+			\label{p3_h3r5}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy3_final_h3r10.png}
@@ -281,6 +282,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy3_final_h3r15.png}
 			\caption{\centering Three Sites with R=15}
+			\label{p3_h3r15}
 		\end{subfigure}
 		\caption{Final States of Neighborhoods for Site Relocation Policy}
 	\end{figure}
@@ -293,8 +295,9 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\label{p3_ts}
 	\end{wrapfigure}
 	\FloatBarrier
-	Initially, Fig both the red and green agents were able to coexist near the hotspots. However, as shown in Fig \ref{p3_final_0001}, the green agents eventually dominate and take up most of the area's around the hotspots. This is also clear in Fig \ref{p3_ts} where for k = 10 to 0.01, both the agent groups on average were happier after they were allowed to move. However, as k decreased to 0.001, a large transition happened were the red agents become significantly unhappier than in their starting states. This model can help demonstate the adventages of giving a group the power to evict another group and the eventual domination of a resource of that group. It is interesting that it did require a significant drive, on the scale of 1000 times their inital probability, for the green agents to entirely dominate. Different variations could be performed such as agumenting the probability equaiton so that the most desireable locations are those that are closest to both of the hotspots, varying the radius of the hotspot, or varying the agents happiness with their closeness. 
-	
+	Observations can be made from comparing the final states of the agents with the varying parameters. It appeared that as you increase the radius of the hotspots, the size of the neighborhoods increased. An example is Fig \ref{p3_h3r15} where there exist very wide pockets of red and green agents, a phenomenon that does not appear as common in those with smaller radii. It also appears that as the number of sites increased, the connectiveness between agents also increased. When compared to other policies there exist more smaller neighborhoods for all variations of radius and site amount. Finally, increasing both the number of sites and their radii increased the density around the sites. Fig \ref{p3_h3r15} has high density around the sites with a large empty gap where the sites don’t reach, while \ref{p3_h2r5} does not experience this quality.\par
+	Fig \ref{p3_ts} shows that this policy performed worse than the random move. In fact, on average as the policy increased the change of a random move (smaller radius and decreasing hotspots) the overall happiness increased. Fig \ref{p3_ts} also shows that it took more epochs to reach the limit as both the radius and number of sites increased. 
+
 	
 	\newpage
 	
