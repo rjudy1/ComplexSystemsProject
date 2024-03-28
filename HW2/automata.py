@@ -18,14 +18,16 @@ The available policies are currently as follows:
 random_move (0): searches q empty spots at random and goes to one with greatest happiness
 social_network_recommendation (1): based on a randomly selected network of n friends, take the best options from a pxp
     sized neighborhood around the friend and move there
-rachael_move (2):
-connor_move (3):
+rachael_move (2): Recommends a position based on connected matching agents within p squares + small percent beta
+    of differing neighbors, simulating asking neighbors of the same type for recommendations around them
+connor_move (3): Recommends a position based on hotspots in the area. Agents have increased probability to go to a site
+    near multiple hotspots
 josh_move (4):
 
 To add more functions, simply add to the policies dictionary and extend the code calling the policies. Each new function
 should return a tuple representing the new position (i, j)
 
-idea: trade positions if both will be happier (will require change of position swap to actual value instead of zero)
+idea: trade positions if both will be happier or if one is happier and the other is equally happy (will require change of position swap to actual value instead of zero)
 
 """
 
