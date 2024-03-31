@@ -22,7 +22,8 @@ rachael_move (2): Recommends a position based on connected matching agents withi
     of differing neighbors, simulating asking neighbors of the same type for recommendations around them
 connor_move (3): Recommends a position based on hotspots in the area. Agents have increased probability to go to a site
     near multiple hotspots
-josh_move (4):
+josh_move (4): Recommends a position based on a maximum distance and a given minimum happiness score. 
+If an empty position fulfills the criteria, the "dream move" happens, otherwise a random move takes place
 
 To add more functions, simply add to the policies dictionary and extend the code calling the policies. Each new function
 should return a tuple representing the new position (i, j)
@@ -190,8 +191,39 @@ def connor_move(layer, agent: int, agent_positions: dict, k: int, q: int, R: int
         index = np.random.choice(len(available_positions), 1, replace=False, p=probablity_distrubution)[0]
         return available_positions[index]
     
-def josh_move():
-    pass
+def josh_move(layer, agent: int, agent_positions: dict, k: int, q: int, min_happiness: float) -> tuple:
+    """
+    Recommends a position based on maximizing happiness level while prioritizing distant locations.
+    :param layer: current state of the cellular automata
+    :param agent: id of agent to move
+    :param agent_positions: dictionary of all agents to their current position
+    :param k: threshold of neighbors occupied by agents of its own type for happiness
+    :param q: parameter for random move as backup
+    :param min_happiness: minimum required happiness level for considering a move to the farthest position
+    :return: tuple (i, j) of recommended spot to move
+    """
+    current_position = agent_positions[agent]
+    farthest_happy_position = None
+    max_distance = -1
+    
+    # Iterate over all empty positions and calculate happiness level and distance
+    for i in range(len(layer)):
+        for j in range(len(layer[0])):
+            if layer[i][j] == 0:
+                happiness = get_happiness(layer, (i, j), layer[current_position[0]][current_position[1]], k)
+                distance = euclidean_distance(current_position, (i, j))
+                
+                # Update farthest happy position if the current position increases happiness, meets minimum happiness level, and is farther away
+                if happiness >= min_happiness and distance > max_distance:
+                    max_distance = distance
+                    farthest_happy_position = (i, j)
+    
+    # If a farthest happy position meeting the criteria is found, return it; otherwise, perform a random move
+    if farthest_happy_position:
+        return farthest_happy_position
+    else:
+        return random_move(layer, agent, agent_positions, k, q)
+
 
 
 def get_happiness(layer: list[list], position: tuple, desired_value: int, k: int):
@@ -357,14 +389,25 @@ results_base = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relo
 # plot_averages_with_errorbars(averages2, std_deviations2, labels2, "policies02.png", "Random move policy compared to search neighborhood policy")
 
 # test connor's policy
-averages3 = [[np.average(results_base[row]) for row in results_base]]
-std_deviations3 = [[np.std(results_base[row]) for row in results_base]]
-labels2 = ['Random move with q=100']
-for sites in [2,3]:
-    for radius in [5,10,15]:
-        result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=3, policy_parameters=[100, radius, sites], display_flag=False, save_flag=True)
-        averages3.append([np.average(result[row]) for row in result])
-        std_deviations3.append([np.std(result[row]) for row in result])
-        labels2.append(f'Search around {sites} site(s) with radius = {radius}')
-plot_averages_with_errorbars(averages3, std_deviations3, labels2, "policies03.png", "Random move policy compared to Site Search Policy")
+# averages3 = [[np.average(results_base[row]) for row in results_base]]
+# std_deviations3 = [[np.std(results_base[row]) for row in results_base]]
+# labels2 = ['Random move with q=100']
+# for sites in [2,3]:
+#    for radius in [5,10,15]:
+#        result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=3, policy_parameters=[100, radius, sites], display_flag=False, save_flag=True)
+#        averages3.append([np.average(result[row]) for row in result])
+#        std_deviations3.append([np.std(result[row]) for row in result])
+#        labels2.append(f'Search around {sites} site(s) with radius = {radius}')
+# plot_averages_with_errorbars(averages3, std_deviations3, labels2, "policies03.png", "Random move policy compared to Site Search Policy")
+
+# Test josh_move
+averages_josh = [[np.average(results_base[row]) for row in results_base]]
+std_deviations_josh = [[np.std(results_base[row]) for row in results_base]]
+labels_josh = ['Random move with q=100']
+for min_happiness in [0.5, 0.6]:  # Adjust min_happiness values as needed
+    result_josh = simulate_automata(L=40, alpha=0.9, k=3, epochs=20, trials=20, relocation_policy=4, policy_parameters=[100, min_happiness], display_flag=False)
+    averages_josh.append([np.average(result_josh[row]) for row in result_josh])
+    std_deviations_josh.append([np.std(result_josh[row]) for row in result_josh])
+    labels_josh.append(f'Josh move with min_happiness={min_happiness}')
+plot_averages_with_errorbars(averages_josh, std_deviations_josh, labels_josh, "policies_josh.png", "Random move policy compared to Josh move policy")
 
