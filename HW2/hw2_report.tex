@@ -224,6 +224,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\newpage
 	
 	\subsection{Connor}
+        \subsubsection{Policy Description}
 	Neighborhoods can also be modeled as people’s desires to be around certain areas of interest, here called hotspots or sites. These hotspots can be schools, religious buildings, employment opportunities, etc. This concept coupled with the agent’s happiness being around like neighbors could lead to highly developed neighborhoods near hotspots and less far from it. As in similar policies, agents were selected at random but were all allowed to move if they had less then 3 neighbors. Agents then sought out locations near \textit{h} number of hotspots. The proximity of the hotspot was also relevant. The proximity the agent was allowed to look at was \textit{R} coordinates away, radiating outward. Agents want to both be closer to a hotspot and be closer to multiple hotspots. To accomplish this, when a valid move spot is detected, the probability an agent will select that spot is $\frac{1}{r}$ where \textit{r} is the radius away from the hotspot. This is iterated over all the hotspots so if a position is found multiple times, that probability is added.
 	\subsubsection{Results}
 	% for insertion of before/after plots
@@ -312,22 +313,22 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{initial_random.png}
 			\caption{\centering Random move}
-			\label{distance_finalrandom}
+			\label{distance_initialrandom}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy4_initial_min6.png}
-			\caption{\centering min_happiness=0.6}
-			\label{distance_finalmin6}
+			\caption{\centering Minimum happiness=0.6}
+			\label{distance_initialmin6}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy4_initial_min8.png}
-			\caption{\centering min_happiness=0.8}
-			\label{distance_finalmin8}
+			\caption{\centering Minimum happiness=0.8}
+			\label{distance_initialmin8}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy4_initial_min1.png}
-			\caption{\centering min_happiness=1}
-			\label{distance_finalmin1}
+			\caption{\centering Minimum happiness=1}
+			\label{distance_initialmin1}
 		\end{subfigure}\hfill
 		\caption{Initial states for random move and distance search policies}
 		\label{distance_initialstate}
@@ -342,17 +343,17 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy4_final_min6.png}
-			\caption{\centering min_happiness=0.6}
+			\caption{\centering Minimum happiness=0.6}
 			\label{distance_finalmin6}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy4_final_min8.png}
-			\caption{\centering min_happiness=0.8}
+			\caption{\centering Minimum happiness=0.8}
 			\label{distance_finalmin8}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{policy4_final_min1.png}
-			\caption{\centering min_happiness=1}
+			\caption{\centering Minimum happiness=1}
 			\label{distance_finalmin1}
 		\end{subfigure}\hfill
 		\caption{Final states for random move and distance search policies}
@@ -366,7 +367,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\caption{Time series comparing Random Move to Distance Move Policy by varying minimum happiness of move}
 		\label{p4_ts}
 	\end{wrapfigure}
-	\vspace{-2em} % Adjust the vertical space here
+	\vspace{2em} % Adjust the vertical space here
 	The behavior of Policy \ref{p4_ts} closely resembled that of random movement, albeit with nuanced differences in performance. When the minimum happiness value was set to 0.6, Policy \ref{p4_ts} exhibited a slight improvement over random movement, whereas with a minimum happiness of 0.8, it demonstrated a slight decline in performance. Notably, in the trial where the minimum happiness was expected to be perfect, a substantial number of moves likely defaulted to random choices, particularly as the center lacked clear vacancies unlike the other scenarios.
-	Compared to alternative policies, Policy \ref{p4_ts} exhibited robust interconnectedness with minimal disturbances, contributing to a well-connected system. In the final image depicting a minimum happiness of 0.6, the green regions appeared almost as a cohesive colony spanning across the entire layer.
+	Compared to alternative policies, Policy \ref{p4_ts} exhibited robust interconnections with minimal disturbances, contributing to a well-connected system. In the final image depicting a minimum happiness of 0.6, the green regions appeared almost as a cohesive colony spanning across the entire layer.
 \end{document}
