@@ -45,7 +45,7 @@ The performance metric was selected to simply be the sum of the happiness of eve
 \subsection{Policies}\label{subsec:policies}
 The agent will consider moving only if it is unhappy. The policies modeled as described in the homework description are a random move policy and a social network recommendation policy. The random move policy has a single parameter $q$ which limits how many random empty cells to visit looking for a cell where the agent will be happier than it is currently. 
 
-The social network recommendation (SNR) will take a randomly selected set of n friends for each agent who will look in a pxp square around themselves and report suitable squares found. The agent than randomly selects one of the suitable squares and moves there. If none is available, it defaults to the random move policy. This policy is considered over parameter values of p=[3,5] and n=[5, 10, 20].
+The social network recommendation (SNR) will take a randomly selected set of n friends for each agent who will look in a $p x p$ square around themselves and report suitable squares found. The agent than randomly selects one of the suitable squares and moves there. If none is available, it defaults to the random move policy. This policy is considered over parameter values of p=[3,5] and n=[5, 10, 20].
 
 \subsection{Results}
 % for insertion of before/after plots
@@ -100,10 +100,12 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_social_n10p3.png}
 			\caption{\centering SNR with n=10, p=3}
+			\label{fs_n10p3}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_social_n10p5.png}
 			\caption{\centering SNR with n=10, p=5}
+			\label{fs_n10p5}
 		\end{subfigure}\hfill
 		\begin{subfigure}{0.14\textwidth}
 			\includegraphics[width=\linewidth]{final_social_n20p3.png}
@@ -118,13 +120,13 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\vspace{-1em} % Adjust the vertical space here
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=\textwidth]{policies01.png}
+		\includegraphics[width=.8\textwidth]{policies01.png}
 		\caption{Time series comparing a random move policy with the social network recommendation policy}
 		\label{p2_ts}
 	\end{figure}
 	\FloatBarrier
-	All the experiments show that given a set number of epochs agents do tend to group together, segregating neighborhoods. However, the size of the grouping seems to vary based on the number of friend recommendations and the area of those recommendations. As the number of friends making recommendations increased, the neighborhoods became smaller and more connected. Those with only five friends had more islands form as well. It was also shown that as the space of which the friends could recommend, or the value of \textit{p}, increased the connectiveness of the neighborhoods also increased. With both a high number of friends and a large area of recommendation search, the neighborhoods were well connected and spanned across the wrapped around board. The smaller values of \textit{n} and \textit{p}, resulted in smaller disconnected neighborhoods, usually in grouping of four. Four makes sense here as there was the minimum \textit{k} value in which every agent can have the desired number of matching neighbors. It would be expected that smaller islands would form if \textit{k} was smaller as agents would opt out of moving. \par
-	Fig \ref{p2_ts} shows that on average the setting that produced the happiest agents were those with a smaller group of friends to ask, who had a minimum knowledge of the area around them, see Fig \ref{n5p3}. However, the worst performing agents were those who had the same number of friends but those who had more knowledge of viable tiles, which is illustrated in Fig. From there the happiness decreased with more friends and those friends knowing more spaces. If parallels could be drawn to real life from this simulation; it might suggest that having a few close friends may be more beneficial than many branching ones. \par
+	All the experiments show that over a set number of epochs, agents do tend to group together, segregating neighborhoods. However, the size of the grouping seems to vary based on the number of friend recommendations and the area of those recommendations. As the number of friends making recommendations increased, the neighborhoods became smaller and more connected. Those with only five friends had more islands form as well. It was also shown that as the space of which the friends could recommend, or the value of \textit{p}, increased the connectiveness of the neighborhoods also increased. With both a high number of friends and a large area of recommendation search, the neighborhoods were well connected and spanned across the wrapped around board. The smaller values of \textit{n} and \textit{p}, resulted in smaller disconnected neighborhoods, usually in grouping of four. Four makes sense here as there was the minimum \textit{k} value in which every agent can have the desired number of matching neighbors. It would be expected that smaller islands would form if \textit{k} was smaller as agents would opt out of moving. \par
+	Fig \ref{p2_ts} shows that on average the setting that produced the happiest agents were those with a smaller group of friends to ask, who had a minimum knowledge of the area around them, for example Fig \ref{n5p3}. However, the agents who had the same number of friends but more knowledge of viable tiles performed less well, which is illustrated in Fig \ref{fs_n10p5} From there the happiness decreased with more friends and those friends knowing more spaces. If parallels could be drawn to real life from this simulation; it might suggest that having a few close friends may be more beneficial than many branching ones. \par
 	However, even with the addition of a recommendation network, happiness appeared to converge around the same time, that is at around three epochs as shown on Fig \ref{p2_ts}. Also, the all the agents were significantly happier than in their starting states. This describes the mutually beneficial concept of taking turns in moving with all the agents able to decide if they would like to move with equal probability. If certain groups of agents were at a higher likelihood of choosing if they would like to move, this overall happiness might decrease. 
 	
 
@@ -219,7 +221,7 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\label{ns_ts}
 	\end{wrapfigure}
 		\vspace{-.5em} % Adjust the vertical space here
-	This policy mostly resulted in fully connected clusters across the map of like agents as in Fig \ref{sn_finalstate}. Due to the search only of neighboring spaces, when a cluster of empty spaces appears, it often remains open because its plots are never reported by neighbors; agents also could get stuck until they talk to a mismatched neighbor. This method results in a slower convergence to optimal happiness than random search (see Fig \ref{ns_ts}) but ends up happier than the random search as happy neighborhoods form. The neighborhood search with greatest chance of talking to mismatched neighbors in the largest radius was the most successful as it found the most positions. Smaller radii with more matching neighbors asked performed consistently nearly as well, as well as converging faster, perhaps as the agent remains in its own cluster of like agents instead of hopping between  clusters as could occur with a greater $w$. Additionally, while the greater search radius led to larger regular-shaped neighborhoods instead of a dispersed cluster (Fig \ref{sn_finalw20b10}, \ref{sn_finalw20b20}) the overall automata was not significantly happier as all happiness configurations were within a a standard deviations of one another.
+	This policy mostly resulted in fully connected clusters across the map of like agents as in Fig \ref{sn_finalstate}. Due to the search only of neighboring spaces, when a cluster of empty spaces appears, it often remains open because its plots are never reported by neighbors; agents also could get stuck until they talk to a mismatched neighbor. This method results in a slower convergence to optimal happiness than random search (see Fig \ref{ns_ts}) but ends up happier on average than the random search as happy neighborhoods form. The neighborhood search with greatest chance of talking to mismatched neighbors in the largest radius was the most successful as it found the most positions. Smaller radii with more matching neighbors asked performed consistently nearly as well, as well as converging faster, perhaps as the agent remains in its own cluster of like agents instead of hopping between  clusters as could occur with a greater $w$. Additionally, while the greater search radius led to larger regular-shaped neighborhoods instead of a dispersed cluster (Fig \ref{sn_finalw20b10}, \ref{sn_finalw20b20}), the overall automata was not significantly happier as all happiness configurations were within a a standard deviations of one another.
 	
 	\newpage
 	
@@ -296,9 +298,8 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 		\caption{Time series comparing Random Move to Site Relocation Policy by Varying both Amount and Radii of Hotspots}
 		\label{p3_ts}
 	\end{wrapfigure}
-	\FloatBarrier
-	Observations can be made from comparing the final states of the agents with the varying parameters. It appeared that as you increase the radius of the hotspots, the size of the neighborhoods increased. An example is Fig \ref{p3_h3r15} where there exist very wide pockets of red and green agents, a phenomenon that does not appear as common in those with smaller radii. It also appears that as the number of sites increased, the connectiveness between agents also increased. When compared to other policies there exist more smaller neighborhoods for all variations of radius and site amount. Finally, increasing both the number of sites and their radii increased the density around the sites. Fig \ref{p3_h3r15} has high density around the sites with a large empty gap where the sites don’t reach, while \ref{p3_h2r5} does not experience this quality.\par
-	Fig \ref{p3_ts} shows that this policy performed worse than the random move. In fact, on average as the policy increased the change of a random move (smaller radius and decreasing hotspots) the overall happiness increased. Fig \ref{p3_ts} also shows that it took more epochs to reach the limit as both the radius and number of sites increased. 
+	Observations can be made from the final states of the agents with the varying parameters. As the radius of the hotspots increased, the size of the neighborhoods increased. An example is Fig \ref{p3_h3r15} where there exist very wide pockets of red and green agents, a phenomenon that does not appear as common in those with smaller radii. As the number of sites increased, the connectiveness between agents also increased. When compared to other policies there exist more smaller neighborhoods for all variations of radius and site amount. Increasing both the number of sites and their radii increased the density around the sites. Fig \ref{p3_h3r15} has high density around the sites with a large empty gap where the sites don’t reach, while \ref{p3_h2r5} does not experience this quality.\par
+	Fig \ref{p3_ts} shows that this policy performed worse than the random move. In fact, on average as the policy increased, the change of a random move (smaller radius and decreasing hotspots) the overall happiness increased. Fig \ref{p3_ts} also shows that it took more epochs to reach the limit as both the radius and number of sites increased. 
 
 	
 	\newpage
@@ -310,48 +311,48 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\subsubsection{Results}
 	\begin{figure}[h]
 		\centering
-		\begin{subfigure}{0.14\textwidth}
+		\begin{subfigure}{0.2\textwidth}
 			\includegraphics[width=\linewidth]{initial_random.png}
 			\caption{\centering Random move}
 			\label{distance_initialrandom}
 		\end{subfigure}\hfill
-		\begin{subfigure}{0.14\textwidth}
+		\begin{subfigure}{0.2\textwidth}
 			\includegraphics[width=\linewidth]{policy4_initial_min6.png}
 			\caption{\centering Minimum happiness=0.6}
 			\label{distance_initialmin6}
 		\end{subfigure}\hfill
-		\begin{subfigure}{0.14\textwidth}
+		\begin{subfigure}{0.2\textwidth}
 			\includegraphics[width=\linewidth]{policy4_initial_min8.png}
 			\caption{\centering Minimum happiness=0.8}
 			\label{distance_initialmin8}
 		\end{subfigure}\hfill
-		\begin{subfigure}{0.14\textwidth}
+		\begin{subfigure}{0.2\textwidth}
 			\includegraphics[width=\linewidth]{policy4_initial_min1.png}
 			\caption{\centering Minimum happiness=1}
 			\label{distance_initialmin1}
 		\end{subfigure}\hfill
 		\caption{Initial states for random move and distance search policies}
 		\label{distance_initialstate}
-	\end{figure}
+	\end{figure}	
 	\vspace{-2em} % Adjust the vertical space here
 	\begin{figure}[h]
 		\centering
-		\begin{subfigure}{0.14\textwidth}
+		\begin{subfigure}{0.2\textwidth}
 			\includegraphics[width=\linewidth]{final_random.png}
 			\caption{\centering Random move}
 			\label{distance_finalrandom}
 		\end{subfigure}\hfill
-		\begin{subfigure}{0.14\textwidth}
+		\begin{subfigure}{0.2\textwidth}
 			\includegraphics[width=\linewidth]{policy4_final_min6.png}
 			\caption{\centering Minimum happiness=0.6}
 			\label{distance_finalmin6}
 		\end{subfigure}\hfill
-		\begin{subfigure}{0.14\textwidth}
+		\begin{subfigure}{0.2\textwidth}
 			\includegraphics[width=\linewidth]{policy4_final_min8.png}
 			\caption{\centering Minimum happiness=0.8}
 			\label{distance_finalmin8}
 		\end{subfigure}\hfill
-		\begin{subfigure}{0.14\textwidth}
+		\begin{subfigure}{0.2\textwidth}
 			\includegraphics[width=\linewidth]{policy4_final_min1.png}
 			\caption{\centering Minimum happiness=1}
 			\label{distance_finalmin1}
@@ -361,13 +362,13 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\end{figure}
 	\vspace{-2em} % Adjust the vertical space here
 	\FloatBarrier
-	\begin{wrapfigure}{l}{.5\textwidth}
+	\begin{wrapfigure}{l}{.6\textwidth}
 		\centering
 		\includegraphics[width=.5\textwidth]{policies04.png}
 		\caption{Time series comparing Random Move to Distance Move Policy by varying minimum happiness of move}
 		\label{p4_ts}
 	\end{wrapfigure}
 	\vspace{2em} % Adjust the vertical space here
-	The behavior of Policy \ref{p4_ts} closely resembled that of random movement, albeit with nuanced differences in performance. When the minimum happiness value was set to 0.6, Policy \ref{p4_ts} exhibited a slight improvement over random movement, whereas with a minimum happiness of 0.8, it demonstrated a slight decline in performance. Notably, in the trial where the minimum happiness was expected to be perfect, a substantial number of moves likely defaulted to random choices, particularly as the center lacked clear vacancies unlike the other scenarios.
+	The behavior of this policy, as seen in Fig \ref{p4_ts}, closely resembled that of random movement, albeit with nuanced differences in performance. When the minimum happiness value was set to 0.6, Policy \ref{p4_ts} exhibited a slight improvement over random movement, whereas with a minimum happiness of 0.8, it demonstrated a slight decline in performance. Notably, in the trial where the minimum happiness was expected to be perfect, a substantial number of moves likely defaulted to random choices, particularly as the center lacked clear vacancies unlike the other scenarios.
 	Compared to alternative policies, Policy \ref{p4_ts} exhibited robust interconnections with minimal disturbances, contributing to a well-connected system. In the final image depicting a minimum happiness of 0.6, the green regions appeared almost as a cohesive colony spanning across the entire layer.
 \end{document}

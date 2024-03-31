@@ -23,12 +23,12 @@ rachael_move (2): Recommends a position based on connected matching agents withi
 connor_move (3): Recommends a position based on hotspots in the area. Agents have increased probability to go to a site
     near multiple hotspots
 josh_move (4): Recommends a position based on a maximum distance and a given minimum happiness score. 
-If an empty position fulfills the criteria, the "dream move" happens, otherwise a random move takes place
+    If an empty position fulfills the criteria, the "dream move" happens, otherwise a random move takes place
+bonus_random_move (5): Recommends a position based on the option of two agents swapping positions. The agents considered
+    are randomly selected up to a limit q to be talked to
 
 To add more functions, simply add to the policies dictionary and extend the code calling the policies. Each new function
 should return a tuple representing the new position (i, j)
-
-idea: trade positions if both will be happier or if one is happier and the other is equally happy (will require change of position swap to actual value instead of zero)
 
 """
 
@@ -112,9 +112,6 @@ def social_network_recommendation(layer, agent: int, agent_positions: dict, k: i
     if best_spot != agent_positions[agent]:
         return best_spot
 
-    # # if friends had ideas, sample from this; otherwise, move randomly
-    # if recommendations:
-    #     return random.sample(list(recommendations), 1)[0]
     return random_move(layer, agent, agent_positions, k, q)
 
 
@@ -233,6 +230,39 @@ def euclidean_distance(position1, position2):
     x2, y2 = position2
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
+
+def bonus_random_move(layer, agent: int, agent_positions: dict, k: int, q: int) -> tuple:
+    """
+    Talks to up to q mismatched agents and considers whether swapping positions could make them happier; if
+        none do, random move
+    :param layer: current state of the system
+    :param agent: id of agent to move
+    :param agent_positions: id to position map
+    :param k: number of neighbors required for complete happiness
+    :param n: number of friends
+    :param p: side length of grid around friend to explore
+    :param q: parameter for random move as backup
+    :param friend_map: preinitialized map of agent id to n friends
+    :return: tuple (i, j) of recommended spot to move
+    """
+    curri, currj = agent_positions[agent]
+    current_happiness = get_happiness(layer, (curri, currj), layer[curri][currj], k)
+    possible_positions = {agent_positions[agent]}
+    for i in range(len(layer)):
+        for j in range(len(layer[0])):
+            if layer[i][j] != 0 and layer[i][j] != layer[agent_positions[agent][0]][agent_positions[agent][1]]:
+                possible_positions.add((i, j))
+
+    # go through collected possible spots and pick one where both agents will be happier if they swap
+    for _ in range(min(q, len(possible_positions))):
+        potential = random.sample(list(possible_positions), 1)[0]
+        if get_happiness(layer, potential, layer[curri][currj], k) >= current_happiness and \
+           get_happiness(layer, (curri, currj), layer[potential[0]][potential[1]], k) <= get_happiness(layer, potential, layer[potential[0]][potential[1]], k):
+            return potential
+
+    return random_move(layer, agent, agent_positions, k, q)
+
+
 def get_happiness(layer: list[list], position: tuple, desired_value: int, k: int):
     """
     Returns number from 0 to 1 representing the happiness of a value placed at a given position
@@ -264,8 +294,8 @@ def rate_performance(layer: list[list], k):
                    for j in range(len(layer[0]))) for i in range(len(layer)))
 
 
-def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: int = 20,
-                      relocation_policy: int = 0, policy_parameters: list = [], display_flag: bool = False, save_flag: bool = False):
+def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: int = 20, relocation_policy: int = 0,
+                      policy_parameters: list = [], display_flag: bool = False, save_flag: bool = False):
     """
     :param L: length of side of square environment
     :param alpha: percent of environment occupied
@@ -275,6 +305,7 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
     :param relocation_policy: integer selection of policy; 0 corresponds to random
     :param policy_parameters: list of parameter policies in order as specified by policy function
     :param display_flag: boolean indicating whether to display the visual of the time series for each trial
+    :param save_flag: indicates whether to save the time series plot
     :return: two collections, one of the average happiness at each epoch, one of the standard deviations at each epoch
     """
 
@@ -290,13 +321,12 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
         agents = list(filter(lambda val: time_series[0][val // L][val % L] != 0, [i for i in range(L*L)]))
         agent_positions = {agent: (agent // L, agent % L) for agent in agents}
 
-        # TODO: Add necessary initialization for each method
         if relocation_policy == 1:
             friend_map = {a: random.sample(agents, policy_parameters[0]) for a in agents}
-        if relocation_policy == 3:
+        elif relocation_policy == 3:
             hotspots = [np.random.choice(L, policy_parameters[2], replace=False), np.random.choice(L, policy_parameters[2], replace=False)]
             hotspots = list(zip(hotspots[0], hotspots[1]))
-            
+
         for epoch in range(epochs):
             random.shuffle(agents)
             for agent in agents:
@@ -305,7 +335,7 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
                 if time_series[-1][i][j] == 0:
                     continue
 
-                # TODO: UPDATE THESE ACCORDING TO USAGE: if stabilized format for functions, can just make a single call
+                # TODO: UPDATE THESE ACCORDING TO USAGE
                 # move agent if not happy
                 if get_happiness(time_series[-1], (i,j), time_series[-1][i][j], k) != 1:
                     # move function returns the new location
@@ -325,12 +355,15 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
                     elif relocation_policy == 4:
                         new_i, new_j = policies[4](layer=time_series[-1], agent=agent, agent_positions=agent_positions,
                                k=k, q=policy_parameters[0], min_happiness=policy_parameters[1])
+                    elif relocation_policy == 5:
+                        new_i, new_j = policies[5](layer=time_series[-1], agent=agent, agent_positions=agent_positions,
+                                                   k=k, q=policy_parameters[0])
 
 
                     # move to new position and adjust visual as well
                     environment_copy = deepcopy(time_series[-1])
                     if (new_i, new_j) != agent_positions[agent]:
-                        environment_copy[new_i][new_j], environment_copy[i][j] = environment_copy[i][j], 0
+                        environment_copy[new_i][new_j], environment_copy[i][j] = environment_copy[i][j], environment_copy[new_i][new_j]
                     time_series.append(environment_copy)
                     agent_positions[agent] = (new_i, new_j)
 
@@ -367,22 +400,22 @@ def plot_averages_with_errorbars(averages, std_deviations, labels, filename,
     plt.show()
 
 
-policies = {0: random_move, 1: social_network_recommendation, 2: rachael_move, 3: connor_move, 4: josh_move}
+policies = {0: random_move, 1: social_network_recommendation, 2: rachael_move, 3: connor_move, 4: josh_move, 5: bonus_random_move}
 
 # test random - control case
 results_base = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relocation_policy=0, policy_parameters=[100], display_flag=False)
 
-# # test social
-# averages1 = [[np.average(results_base[row]) for row in results_base]]
-# std_deviations1 = [[np.std(results_base[row]) for row in results_base]]
-# labels1 = ['Random Move with q=100']
-# for n in [5, 10, 20]:
-#     for p in [3, 5]:
-#         result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=30, relocation_policy=1, policy_parameters=[n, p, 100], display_flag=False)
-#         averages1.append([np.average(result[row]) for row in result])
-#         std_deviations1.append([np.std(result[row]) for row in result])
-#         labels1.append(f'Friend Recommendation with n={n}, p={p}')
-# plot_averages_with_errorbars(averages1, std_deviations1, labels1, "policies01.png", "Random move policy compared to friend recommendation policy")
+# test social
+averages1 = [[np.average(results_base[row]) for row in results_base]]
+std_deviations1 = [[np.std(results_base[row]) for row in results_base]]
+labels1 = ['Random Move with q=100']
+for n in [5, 10, 20]:
+    for p in [3, 5]:
+        result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=30, relocation_policy=1, policy_parameters=[n, p, 100], display_flag=False)
+        averages1.append([np.average(result[row]) for row in result])
+        std_deviations1.append([np.std(result[row]) for row in result])
+        labels1.append(f'Friend Recommendation with n={n}, p={p}')
+plot_averages_with_errorbars(averages1, std_deviations1, labels1, "policies01.png", "Random move policy compared to friend recommendation policy")
 
 
 # test rachael policy
@@ -414,9 +447,19 @@ averages_josh = [[np.average(results_base[row]) for row in results_base]]
 std_deviations_josh = [[np.std(results_base[row]) for row in results_base]]
 labels_josh = ['Random move with q=100']
 for min_happiness in [0.6, 0.8, 1]:  # Adjust min_happiness values as needed
-    result = simulate_automata(L=40, alpha=0.9, k=3, epochs=20, trials=20, relocation_policy=4, policy_parameters=[100, min_happiness], display_flag=False, save_flag=True)
+    result = simulate_automata(L=40, alpha=0.9, k=3, epochs=20, trials=20, relocation_policy=4, policy_parameters=[100, min_happiness], display_flag=True, save_flag=True)
     averages_josh.append([np.average(result[row]) for row in result])
     std_deviations_josh.append([np.std(result[row]) for row in result])
     labels_josh.append(f'Josh move with min_happiness={min_happiness}')
 plot_averages_with_errorbars(averages_josh, std_deviations_josh, labels_josh, "policies04.png", "Random move policy compared to Josh move policy")
 
+# # test the backup policy
+# averages5 = [[np.average(results_base[row]) for row in results_base]]
+# std_deviations5 = [[np.std(results_base[row]) for row in results_base]]
+# labels5 = ['Random Move with q=100']
+# for q in [10, 50, 100, 200]:
+#     result = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=30, relocation_policy=5, policy_parameters=[100], display_flag=False)
+#     averages5.append([np.average(result[row]) for row in result])
+#     std_deviations5.append([np.std(result[row]) for row in result])
+#     labels5.append(f'Random swap with q={q}')
+# plot_averages_with_errorbars(averages5, std_deviations5, labels5, "policies05.png", "Random move policy compared to friend recommendation policy")

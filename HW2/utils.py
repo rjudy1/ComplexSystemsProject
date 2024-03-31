@@ -1,3 +1,7 @@
+"""
+This is just a helper file to support the main simulation.
+"""
+
 import matplotlib.pyplot as plt
 import time
 import random
