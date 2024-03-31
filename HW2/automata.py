@@ -37,6 +37,7 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import math
 from utils import get_x_from_px, display_2D_automata, save_2D_automata
 
 
@@ -224,7 +225,13 @@ def josh_move(layer, agent: int, agent_positions: dict, k: int, q: int, min_happ
     else:
         return random_move(layer, agent, agent_positions, k, q)
 
-
+def euclidean_distance(position1, position2):
+    """
+    Calculate the Euclidean distance between two positions.
+    """
+    x1, y1 = position1
+    x2, y2 = position2
+    return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 def get_happiness(layer: list[list], position: tuple, desired_value: int, k: int):
     """
@@ -316,7 +323,9 @@ def simulate_automata(L: int, alpha: float, k: int, epochs: int = 20, trials: in
                         new_i, new_j = policies[3](layer=time_series[-1], agent=agent, agent_positions=agent_positions,
                                                    k=k, q=policy_parameters[0], R=policy_parameters[1], hotspots = hotspots)
                     elif relocation_policy == 4:
-                        policies[4]()
+                        new_i, new_j = policies[4](layer=time_series[-1], agent=agent, agent_positions=agent_positions,
+                               k=k, q=policy_parameters[0], min_happiness=policy_parameters[1])
+
 
                     # move to new position and adjust visual as well
                     environment_copy = deepcopy(time_series[-1])
