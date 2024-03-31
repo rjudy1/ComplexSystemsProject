@@ -303,9 +303,70 @@ The social network recommendation (SNR) will take a randomly selected set of n f
 	\newpage
 	
 	\subsection{Josh}
-	
-	
-
-
-	
+	\subsubsection{Policy Description}
+	Human migration due to natural disasters or other external factors is a well-documented phenomenon in history. This policy aims to simulate such migration behavior by directing agents to move away from an original danger zone to a new area with an acceptable minimum happiness level. The severity of the original disaster is reflected in the minimum happiness threshold deemed acceptable in the new location.
+	Employing Euclidean distance as the measure, each agent seeks to relocate to the farthest available free space while maintaining the minimum happiness requirement. If no suitable location meeting the happiness criterion is found, the agent resorts to making a random move instead.
+	\subsubsection{Results}
+	\begin{figure}[h]
+		\centering
+		\begin{subfigure}{0.14\textwidth}
+			\includegraphics[width=\linewidth]{initial_random.png}
+			\caption{\centering Random move}
+			\label{distance_finalrandom}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.14\textwidth}
+			\includegraphics[width=\linewidth]{policy4_initial_min6.png}
+			\caption{\centering min_happiness=0.6}
+			\label{distance_finalmin6}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.14\textwidth}
+			\includegraphics[width=\linewidth]{policy4_initial_min8.png}
+			\caption{\centering min_happiness=0.8}
+			\label{distance_finalmin8}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.14\textwidth}
+			\includegraphics[width=\linewidth]{policy4_initial_min1.png}
+			\caption{\centering min_happiness=1}
+			\label{distance_finalmin1}
+		\end{subfigure}\hfill
+		\caption{Initial states for random move and distance search policies}
+		\label{distance_initialstate}
+	\end{figure}
+	\vspace{-2em} % Adjust the vertical space here
+	\begin{figure}[h]
+		\centering
+		\begin{subfigure}{0.14\textwidth}
+			\includegraphics[width=\linewidth]{final_random.png}
+			\caption{\centering Random move}
+			\label{distance_finalrandom}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.14\textwidth}
+			\includegraphics[width=\linewidth]{policy4_final_min6.png}
+			\caption{\centering min_happiness=0.6}
+			\label{distance_finalmin6}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.14\textwidth}
+			\includegraphics[width=\linewidth]{policy4_final_min8.png}
+			\caption{\centering min_happiness=0.8}
+			\label{distance_finalmin8}
+		\end{subfigure}\hfill
+		\begin{subfigure}{0.14\textwidth}
+			\includegraphics[width=\linewidth]{policy4_final_min1.png}
+			\caption{\centering min_happiness=1}
+			\label{distance_finalmin1}
+		\end{subfigure}\hfill
+		\caption{Final states for random move and distance search policies}
+		\label{distance_finalstate}
+	\end{figure}
+	\vspace{-2em} % Adjust the vertical space here
+	\FloatBarrier
+	\begin{wrapfigure}{l}{.5\textwidth}
+		\centering
+		\includegraphics[width=.5\textwidth]{policies04.png}
+		\caption{Time series comparing Random Move to Distance Move Policy by varying minimum happiness of move}
+		\label{p4_ts}
+	\end{wrapfigure}
+	\vspace{-2em} % Adjust the vertical space here
+	The behavior of Policy \ref{p4_ts} closely resembled that of random movement, albeit with nuanced differences in performance. When the minimum happiness value was set to 0.6, Policy \ref{p4_ts} exhibited a slight improvement over random movement, whereas with a minimum happiness of 0.8, it demonstrated a slight decline in performance. Notably, in the trial where the minimum happiness was expected to be perfect, a substantial number of moves likely defaulted to random choices, particularly as the center lacked clear vacancies unlike the other scenarios.
+	Compared to alternative policies, Policy \ref{p4_ts} exhibited robust interconnectedness with minimal disturbances, contributing to a well-connected system. In the final image depicting a minimum happiness of 0.6, the green regions appeared almost as a cohesive colony spanning across the entire layer.
 \end{document}
