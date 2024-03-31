@@ -413,10 +413,10 @@ results_base = simulate_automata(L=40, alpha=.9, k=3, epochs=20, trials=20, relo
 averages_josh = [[np.average(results_base[row]) for row in results_base]]
 std_deviations_josh = [[np.std(results_base[row]) for row in results_base]]
 labels_josh = ['Random move with q=100']
-for min_happiness in [0.5, 0.6]:  # Adjust min_happiness values as needed
-    result_josh = simulate_automata(L=40, alpha=0.9, k=3, epochs=20, trials=20, relocation_policy=4, policy_parameters=[100, min_happiness], display_flag=False)
-    averages_josh.append([np.average(result_josh[row]) for row in result_josh])
-    std_deviations_josh.append([np.std(result_josh[row]) for row in result_josh])
+for min_happiness in [0.6, 0.8, 1]:  # Adjust min_happiness values as needed
+    result = simulate_automata(L=40, alpha=0.9, k=3, epochs=20, trials=20, relocation_policy=4, policy_parameters=[100, min_happiness], display_flag=False, save_flag=True)
+    averages_josh.append([np.average(result[row]) for row in result])
+    std_deviations_josh.append([np.std(result[row]) for row in result])
     labels_josh.append(f'Josh move with min_happiness={min_happiness}')
-plot_averages_with_errorbars(averages_josh, std_deviations_josh, labels_josh, "policies_josh.png", "Random move policy compared to Josh move policy")
+plot_averages_with_errorbars(averages_josh, std_deviations_josh, labels_josh, "policies04.png", "Random move policy compared to Josh move policy")
 
