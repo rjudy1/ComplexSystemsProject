@@ -7,7 +7,7 @@ def assess_risk(portfolio_allocation, forward_eps, earnings_growth, high, low, d
     Assess the risk using a fat-tailed distribution formula.
 
     Args:
-        portfolio_allocation (float): Portfolio allocation for stocks.
+        portfolio_allocation (float): Portfolio allocation for stocks. Measured as % Equity. Example if two shares owned: Microsoft 309/share and Amd 80/share AMD is 0.2057 for this value
         forward_eps (float): Forward EPS values for stocks.
         earnings_growth (float): Earnings quarterly growth for stocks.
         high (float): 52-week high.
@@ -20,9 +20,10 @@ def assess_risk(portfolio_allocation, forward_eps, earnings_growth, high, low, d
 
     """
     k = 3  # Constant for fat-tailed distribution
-    x = math.exp(abs(high - low - dividend_ratio * fifty_day_average))  # Equation to express volatility 
+    x = (abs(high - low - dividend_ratio * fifty_day_average))  # Equation to express volatility 
+    print(x)
     a = portfolio_allocation * forward_eps * (1 - earnings_growth)  # Equation to express likelihood (a weighted sum of significant metrics)
-    
+    print(a)
     return a * (x ** -k)
 
 # Example usage:
