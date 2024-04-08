@@ -24,7 +24,7 @@ class Broker:
 
         # TODO: set up preferred risk minimum to a percentage to consider of the available stocks (considers x% highest risk stocks)
         # TODO: establish a range of minimum risk preferences and map that minimum risk percentage to a value from 0 to 99 for x (see above)
-        self.risk_percentile = math.exp(.08*self.preferred_risk_minimum) - 1
+        self.risk_percentile = math.exp(.15*self.preferred_risk_minimum) - 1
         if self.risk_percentile >= 1.0:
             self.risk_percentile = .99
         print(f'riskmin {risk_minimum}, percentile {self.risk_percentile}')
@@ -192,7 +192,9 @@ class Broker:
             a = portfolio_allocation[i] * forward_eps_list[i] * (
                     1 - earnings_growth_list[i])  # likelihood
             individual_risk = a * x
-            total_risk += individual_risk * volumes[i]**2
+            # if individual_risk < 0:
+            #     print('individual risk negative: ', individual_risk, x, a, earnings_growth_list[i], forward_eps_list[i], portfolio_allocation[i])
+            total_risk += abs(individual_risk * volumes[i]) # scale up just for easier intuitive sense for paremeters
 
         self.current_risk = total_risk
         return total_risk
