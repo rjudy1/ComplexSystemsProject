@@ -1,5 +1,6 @@
 import ast
 import collections
+from datetime import datetime, timedelta
 import math
 import random
 
@@ -10,6 +11,8 @@ import random
 class Broker:
     def __init__(self, id: int, initial_money: float, risk_minimum: float = 0, risk_maximum: float = math.inf,
                  purchase_rate_limit: int = 0, neighbor_weight: float = 0, shift_influence: bool = False):
+        # let's say minimum risk is the minimum index out of 100 stocks to consider buying/selling when trying to raise or lower risk
+        # one problem is that we're essentially defining low risk as diversification of portfolio
         self.id = id
         self.money = initial_money
         self._portfolio = collections.defaultdict(lambda: 0)  # stock to quantity dictionary
@@ -18,6 +21,13 @@ class Broker:
 
         self.preferred_risk_minimum = risk_minimum
         self.preferred_risk_maximum = risk_maximum
+
+        # TODO: set up preferred risk minimum to a percentage to consider of the available stocks (considers x% highest risk stocks)
+        # TODO: establish a range of minimum risk preferences and map that minimum risk percentage to a value from 0 to 99 for x (see above)
+        self.risk_percentile = math.exp(.08*self.preferred_risk_minimum) - 1
+        if self.risk_percentile >= 1.0:
+            self.risk_percentile = .99
+
         self.current_risk = 0
 
         self.adjust_influence = shift_influence
@@ -31,46 +41,42 @@ class Broker:
         # include transaction, update status
         self.assess_portfolio_risk(stocks, date)
 
-        # assess risk of buying/selling each stock
-        risk_dict = dict()
-        for stock in available_stocks:
-            risk_dict[stock] = (self.assess_risk(stock, stocks, date) + self.neighbor_weight *
-                                self.get_neighbor_factor(graph, available_stocks, id_to_broker_map, stocks, date)[stock])
-        print("finished individiual assessments")
-        while self.current_risk < self.preferred_risk_minimum or self.current_risk > self.preferred_risk_maximum or random.random() < .05:
+        while (self.current_risk < self.preferred_risk_minimum or self.current_risk > self.preferred_risk_maximum or random.random() < .05) and self.money > 0:
             # is there a better way to choose then randomly selecting higher or lower risk
-            print(self.current_risk)
             # if large gap, pull from back, if small from front half?
             if self.preferred_risk_minimum > self.current_risk:
+                # assess risk of every stock available and sort from lowest to highest risk
                 risk_dict = dict()
                 for stock in available_stocks:
                     risk_dict[stock] = self.assess_risk(stock, stocks, date) \
                                        + self.get_neighbor_factor(graph, available_stocks, id_to_broker_map, stocks, date)[stock]
                 sorted_list = sorted(risk_dict.keys(), key=risk_dict.get)
-                if self.preferred_risk_minimum - self.current_risk > .5 * self.preferred_risk_minimum:  # tiny bit arbitrary
-                    # purchase random sample from upper half
-                    plan = random.sample(list(sorted_list[len(sorted_list) // 2:]), 1)[0]
-                else:
-                    plan = random.sample(list(sorted_list[:len(sorted_list) // 2]), 1)[0]
+
+                # select from stocks whose stock assessment put them in the risk min / 100 top percent of stocks
+                lower_limit = math.floor(len(sorted_list) * self.risk_percentile)
+                plan = random.sample(list(sorted_list[lower_limit:]), 1)[0]
+
+                # buy stock and increment quantity in portfolio
                 self.money -= stocks[plan].date_to_price[date]
                 self._portfolio[plan] += 1
 
-            elif self.preferred_risk_maximum < self.current_risk:
+            elif self.preferred_risk_maximum < self.current_risk or self.money < 1000 or random.random() < .05:  # if above preferred risk or running out of money or noise, sell
                 risk_dict = dict()
                 for stock in self._portfolio:
                     risk_dict[stock] = (self.assess_risk(stock, stocks, date)
                                         + self.get_neighbor_factor(graph, available_stocks, id_to_broker_map, stocks, date)[stock])
 
+                if len(risk_dict) == 0:
+                    break  # nothing can be done to lower the risk if they don't own any stocks
                 sorted_list = sorted(risk_dict.keys(), key=risk_dict.get)
-                if self.preferred_risk_minimum - self.current_risk > .5 * self.preferred_risk_minimum:  # tiny bit arbitrary
-                    # purchase random sample from upper half
-                    plan = random.sample(list(sorted_list[len(sorted_list) // 2:]), 1)[0]
-                else:
-                    plan = random.sample(list(sorted_list[:len(sorted_list) // 2]), 1)[0]
+                lower_limit = math.floor(len(sorted_list) * self.risk_percentile)
+                plan = random.sample(list(sorted_list[lower_limit:]), 1)[0]
+
                 self.money += stocks[plan].date_to_price[date]
                 self._portfolio[plan] -= 1
 
-            self.assess_portfolio_risk(stocks, date)
+            self.assess_portfolio_risk(stocks, date), self.id
+            # print(self.current_risk)
 
         # update public status
         if self.adjust_influence:
@@ -100,8 +106,8 @@ class Broker:
         stock_dict = collections.defaultdict(lambda: 0)
         # iterate through graph getting neighbors and values - simple weighting?
         for stock in available_stocks:
-            for n in neighbors:
-                stock_dict[stock] += graph.weights[n][self.id] * id_to_broker_map[n].assess_risk(stock, stocks, date)
+            for (n, s) in neighbors:
+                stock_dict[stock] += graph.get_edge_data(n,self.id)['weight'] * id_to_broker_map[n].assess_risk(stock, stocks, date)
         return stock_dict  # dictionary of neighbor risk assessment of each stock in the available stocks
 
     def get_stats_for_risk(self, ticker, stocks, date):
@@ -114,24 +120,21 @@ class Broker:
         """
 
         # compute total equity for a given stock
-        index = stocks[ticker].dates.index(date)
-
         current_amount = self._portfolio[ticker] * stocks[ticker].date_to_price[date]
         portfolio_allocation = (current_amount + stocks[ticker].date_to_price[date]) / (
                     self.get_status(stocks, date)
                     - self.money + stocks[ticker].date_to_price[date])
 
-        start = index - 52*7+1 if index >= 52*7-1 else 0
+        start = datetime.strptime(date, "%m/%d/%Y")
         high = 0
         low = math.inf
-        for d in range(start, index+1):
-            high = max(high, stocks[ticker].date_to_price[stocks[ticker].dates[d]])
-            low = min(low, stocks[ticker].date_to_price[stocks[ticker].dates[d]])
+        for d in range(52*7):
+            high = max(high, stocks[ticker].date_to_price[(start + timedelta(days=d)).strftime("%m/%d/%Y")])
+            low = min(low, stocks[ticker].date_to_price[(start + timedelta(days=d)).strftime("%m/%d/%Y")])
 
-        start = index - 49 if index >= 49 else 0
         average = 0
-        for d in range(start, index+1):
-            average += stocks[ticker].date_to_price[stocks[ticker].dates[d]]
+        for d in range(52):
+            average += stocks[ticker].date_to_price[(start + timedelta(days=d)).strftime("%m/%d/%Y")]
         average /= 52
 
         return portfolio_allocation, high, low, average
