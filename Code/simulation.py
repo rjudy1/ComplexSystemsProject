@@ -79,7 +79,7 @@ for trial in range(trials):
 
     # brokers will need to set these values based on if we're doing a influence shift or a risk variety
 
-    brokers = [Broker(i, 1_000_000, 2, 100, 0, 0.05, False)
+    brokers = [Broker(i, 10_000_000, 7.5, 10, 0, 0.05, False)
                for i in range(N)]
 
     # Generate the number of friends and populate those friend relationships with a normal distribution
@@ -116,7 +116,7 @@ for trial in range(trials):
         random.shuffle(brokers)
         available_stocks = set()
 
-        # iterate through all stocks in dataframe and add ones that exist at this time to the avialble set
+        # iterate through all stocks in dataframe and add ones that exist at this time to the available set
         for ticker in stocks:
             stock = stocks[ticker]
             try:

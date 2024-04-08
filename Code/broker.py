@@ -27,6 +27,7 @@ class Broker:
         self.risk_percentile = math.exp(.08*self.preferred_risk_minimum) - 1
         if self.risk_percentile >= 1.0:
             self.risk_percentile = .99
+        print(f'riskmin {risk_minimum}, percentile {self.risk_percentile}')
 
         self.current_risk = 0
 
@@ -76,7 +77,7 @@ class Broker:
                 self._portfolio[plan] -= 1
 
             self.assess_portfolio_risk(stocks, date), self.id
-            # print(self.current_risk)
+            print(self.id, self.current_risk)
 
         # update public status
         if self.adjust_influence:
@@ -124,6 +125,7 @@ class Broker:
         portfolio_allocation = (current_amount + stocks[ticker].date_to_price[date]) / (
                     self.get_status(stocks, date)
                     - self.money + stocks[ticker].date_to_price[date])
+        portfolio_volume = self._portfolio[ticker]
 
         start = datetime.strptime(date, "%m/%d/%Y")
         high = 0
@@ -137,7 +139,7 @@ class Broker:
             average += stocks[ticker].date_to_price[(start + timedelta(days=d)).strftime("%m/%d/%Y")]
         average /= 52
 
-        return portfolio_allocation, high, low, average
+        return portfolio_allocation, portfolio_volume, high, low, average
 
     def assess_risk(self, ticker, stocks, date):
         """
@@ -149,7 +151,7 @@ class Broker:
         Returns:
             float: Risk assessment for a single stock.
         """
-        portfolio_allocation, high, low, fifty_day_average = self.get_stats_for_risk(ticker, stocks, date)
+        portfolio_allocation, _, high, low, fifty_day_average = self.get_stats_for_risk(ticker, stocks, date)
 
         k = 3  # Constant for fat-tailed distribution
 
@@ -170,11 +172,12 @@ class Broker:
             float: Risk assessment for the entire portfolio.
 
         """
-        portfolio_allocation, forward_eps_list, earnings_growth_list, high_list, low_list, dividend_ratio_list, fifty_day_average_list = list(), list(), list(), list(), list(), list(), list()
+        portfolio_allocation, volumes, forward_eps_list, earnings_growth_list, high_list, low_list, dividend_ratio_list, fifty_day_average_list = list(), list(), list(), list(), list(), list(), list(), list()
 
         for ticker in self._portfolio:
-            pa, h, l, fda = self.get_stats_for_risk(ticker, stocks, date)
+            pa, volume, h, l, fda = self.get_stats_for_risk(ticker, stocks, date)
             portfolio_allocation.append(pa)
+            volumes.append(volume)
             forward_eps_list.append(stocks[ticker].forward_eps)
             earnings_growth_list.append(stocks[ticker].earnings_growth)
             high_list.append(h)
@@ -189,7 +192,7 @@ class Broker:
             a = portfolio_allocation[i] * forward_eps_list[i] * (
                     1 - earnings_growth_list[i])  # likelihood
             individual_risk = a * x
-            total_risk += individual_risk
+            total_risk += individual_risk * volumes[i]**2
 
         self.current_risk = total_risk
         return total_risk
