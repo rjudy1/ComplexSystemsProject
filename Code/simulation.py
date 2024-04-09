@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import powerlaw
 import random
+from time import time
 
 from broker import Broker
 from stock import Stock
@@ -79,7 +80,7 @@ for trial in range(trials):
 
     # brokers will need to set these values based on if we're doing a influence shift or a risk variety
 
-    brokers = [Broker(i, 10_000_000, 7.5, 10, 0, 0.05, False)
+    brokers = [Broker(i, 1_000_000, i/N*5, 10, 0, 0.05, False)
                for i in range(N)]
 
     # Generate the number of friends and populate those friend relationships with a normal distribution
@@ -98,8 +99,9 @@ for trial in range(trials):
     broker_network.add_nodes_from([node.id for node in brokers])
     for i in range(N):
         for j in range(int(friend_count_dist[i])):
-            neighbor = math.ceil(np.random.normal(N/2, .34*N))
+            neighbor = abs(math.ceil(np.random.normal(N/2, .34*N))) % 100
             broker_network.add_edge(i, neighbor, weight=standard_influence/friend_count_dist[i])
+            brokers[neighbor].in_neighbors[i] = standard_influence / friend_count_dist[i]  # not a clean way to do this but it'll work hopefully
 
     # display the network created
     # nx.draw(broker_network, with_labels=True, font_color='white', node_shape='s')
@@ -109,8 +111,10 @@ for trial in range(trials):
     end_date = datetime.strptime(end, "%m/%d/%Y")
     date = start_date
     delta = timedelta(days=1)
+    curr_time = time()
     while date < end_date:
-        print(date.strftime("%m/%d/%Y"))
+        print(date.strftime("%m/%d/%Y"),f'----{time()-curr_time}-------------------------------------')
+        curr_time = time()
         dates.append(date.strftime('%m/%d/%Y'))
 
         random.shuffle(brokers)
@@ -127,14 +131,23 @@ for trial in range(trials):
                 pass
 
         if len(available_stocks):
-            for broker in brokers:
+            prev = time()
+            for i, broker in enumerate(brokers):
+                broker.money += 1_000
                 broker.update(broker_network, available_stocks, brokers, stocks, date.strftime("%m/%d/%Y"))
+                print(time()-prev, f'time {i}')
+                prev = time()
 
         for broker in brokers:
             broker_statuses[broker.id].append(broker.get_status(stocks, date.strftime("%m/%d/%Y")))
             # print(broker.id, broker.get_status(stocks, date.strftime("%m/%d/%Y")))
 
         date += delta
+
+        # fix all the broker network edges
+        for b in brokers:
+            for n in b.in_neighbors:
+                broker_network.edges[n, b.id]['weight'] = b.in_neighbors[n]
 
 
     # add plotting code from whatever we decide to plot

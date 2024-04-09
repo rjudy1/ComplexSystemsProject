@@ -16,6 +16,7 @@ class Broker:
         self.id = id
         self.money = initial_money
         self._portfolio = collections.defaultdict(lambda: 0)  # stock to quantity dictionary
+        self.in_neighbors = dict()
 
         self.neighbor_weight = neighbor_weight
 
@@ -27,9 +28,9 @@ class Broker:
         self.risk_percentile = math.exp(.15*self.preferred_risk_minimum) - 1
         if self.risk_percentile >= 1.0:
             self.risk_percentile = .99
-        print(f'riskmin {risk_minimum}, percentile {self.risk_percentile}')
 
         self.current_risk = 0
+        self.current_status = 0
 
         self.adjust_influence = shift_influence
         self.neighbor_history = dict()  # how do we want to use this?
@@ -41,16 +42,18 @@ class Broker:
     def update(self, graph, available_stocks, id_to_broker_map, stocks, date):
         # include transaction, update status
         self.assess_portfolio_risk(stocks, date)
-
-        while (self.current_risk < self.preferred_risk_minimum or self.current_risk > self.preferred_risk_maximum or random.random() < .05) and self.money > 0:
+        # neighbor_factor1 = self.get_neighbor_factor(graph, available_stocks, id_to_broker_map, stocks, date)
+        # neighbor_factor2 = self.get_neighbor_factor(graph, available_stocks, id_to_broker_map, stocks, date)
+        #
+        while (self.current_risk < self.preferred_risk_minimum or self.current_risk > self.preferred_risk_maximum or random.random() < .05) and self.money > 200:
             # is there a better way to choose then randomly selecting higher or lower risk
             # if large gap, pull from back, if small from front half?
             if self.preferred_risk_minimum > self.current_risk:
                 # assess risk of every stock available and sort from lowest to highest risk
                 risk_dict = dict()
                 for stock in available_stocks:
-                    risk_dict[stock] = self.assess_risk(stock, stocks, date) \
-                                       + self.get_neighbor_factor(graph, available_stocks, id_to_broker_map, stocks, date)[stock]
+                    risk_dict[stock] = self.assess_risk(stock, stocks, date) #\
+                                        # + neighbor_factor1[stock]
                 sorted_list = sorted(risk_dict.keys(), key=risk_dict.get)
 
                 # select from stocks whose stock assessment put them in the risk min / 100 top percent of stocks
@@ -64,8 +67,9 @@ class Broker:
             elif self.preferred_risk_maximum < self.current_risk or self.money < 1000 or random.random() < .05:  # if above preferred risk or running out of money or noise, sell
                 risk_dict = dict()
                 for stock in self._portfolio:
-                    risk_dict[stock] = (self.assess_risk(stock, stocks, date)
-                                        + self.get_neighbor_factor(graph, available_stocks, id_to_broker_map, stocks, date)[stock])
+
+                    risk_dict[stock] = (self.assess_risk(stock, stocks, date))
+                                        # + neighbor_factor2[stock])
 
                 if len(risk_dict) == 0:
                     break  # nothing can be done to lower the risk if they don't own any stocks
@@ -75,14 +79,13 @@ class Broker:
 
                 self.money += stocks[plan].date_to_price[date]
                 self._portfolio[plan] -= 1
-
             self.assess_portfolio_risk(stocks, date), self.id
-            print(self.id, self.current_risk)
+        print(self.id, self.current_risk)
 
         # update public status
         if self.adjust_influence:
-            for neighbor in graph.in_edges(self.id):
-                graph.weights[neighbor][self.id] += .005 * (  # TODO: Parameterize this
+            for neighbor in self.in_neighbors:
+                self.in_neighbors[neighbor] += .005 * (  # TODO: Parameterize this
                         id_to_broker_map[neighbor].get_status(available_stocks) - self.neighbor_history[neighbor])
                 self.neighbor_history[neighbor] = id_to_broker_map[neighbor].get_status(available_stocks)
 
@@ -103,12 +106,11 @@ class Broker:
         return portfolio_value
 
     def get_neighbor_factor(self, graph, available_stocks, id_to_broker_map, stocks, date):
-        neighbors = graph.in_edges(self.id)
         stock_dict = collections.defaultdict(lambda: 0)
         # iterate through graph getting neighbors and values - simple weighting?
         for stock in available_stocks:
-            for (n, s) in neighbors:
-                stock_dict[stock] += graph.get_edge_data(n,self.id)['weight'] * id_to_broker_map[n].assess_risk(stock, stocks, date)
+            for n in self.in_neighbors:
+                stock_dict[stock] += self.in_neighbors[n] * id_to_broker_map[n].assess_risk(stock, stocks, date)
         return stock_dict  # dictionary of neighbor risk assessment of each stock in the available stocks
 
     def get_stats_for_risk(self, ticker, stocks, date):
