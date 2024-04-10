@@ -25,9 +25,11 @@ class Broker:
         self.preferred_risk_maximum = risk_maximum
 
         # TODO: set up preferred risk minimum to a percentage to consider of the available stocks (considers x% highest risk stocks)
-        self.risk_percentile = math.exp(.05*self.preferred_risk_minimum) - 1
+        self.risk_percentile = math.exp(.035*self.preferred_risk_minimum) - 1
         if self.risk_percentile >= 1.0:
             self.risk_percentile = .99
+        print(self.preferred_risk_minimum, self.preferred_risk_maximum, self.risk_percentile)
+
 
         self.current_risk = 0
         # self.current_status = 0
