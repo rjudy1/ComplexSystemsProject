@@ -67,7 +67,7 @@ standard_influence = .2
 time_steps = 1000
 trials = 1
 start = "01/01/2003"
-end = "12/31/2003"
+end = "12/2/2003"
 
 # test over 1980 to 2000 and then 2003 to 2023
 
@@ -187,18 +187,25 @@ for trial in range(trials):
         plt.savefig(f'figures/{filename}')
         plt.show()
 
-    def plot(x, y, xlabel, ylabel, title, filename):
-        fig = plt.figure(figsize=(10, 6))
-        plt.plot(x, y, 'o')
+    def plot_times(x, ys, serieslabels, xlabel, ylabel, title, filename):
+        plt.figure(figsize=(10, 6))
+        for i in range(len(ys)):
+            plt.plot(x, ys[i], label=f'{serieslabels[i]}')
+
         # Customize the plot
         plt.title(title)
-        # tick_locations = [len(x)//7*i for i in range(8)]
-        # labels = [x[t] for t in tick_locations[:-1]]
-        # labels.append(x[-1])
-        # plt.xticks(tick_locations, labels)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.legend()
+        plt.grid(True)
+        plt.savefig(f'figures/{filename}')
+        plt.show()
+
+
+    def plot(x, y, xlabel, ylabel, title, filename):
+        fig = plt.figure(figsize=(10, 6))
+        plt.plot(x, y, 'o')
+        plt.xlabel(xlabel), plt.ylabel(ylabel), plt.title(title)
         plt.grid(True)
         plt.savefig(f'figures/{filename}')
         plt.show()
@@ -220,17 +227,25 @@ for trial in range(trials):
         num_unique_stocks.append(unique_count)
         cash_at_end.append(b.money)
 
-    plot(broker_ids, num_stocks, 'broker ids', 'num stocks', 'num stocks owned', 'numstocks.png')
-    plot(broker_ids, num_unique_stocks, 'broker ids', 'num stocks', 'num unique stocks owned', 'numuniquestocks.png')
-    plot(broker_ids, cash_at_end, 'broker ids', 'money', 'money at end', 'numstocks.png')
+    # plot statistics of portfolio at end
+    plot(broker_ids, num_stocks, 'Broker ids as ordered by risk level', 'number of stocks owned',
+         'Number of stocks owned to broker id/risk minimum', 'stocksOwnedToBrokerIds.png')
+    plot(broker_ids, num_unique_stocks, 'Broker ids as ordered by risk level', 'number of unique stocks owned',
+         'Number of unique stocks owned to broker id', 'uniqueStocksOwnedToBrokerIds.png')
+    plot(broker_ids, cash_at_end, 'Broker ids as ordered by risk level', 'Liquid currency ($)',
+         f'Liquid currency at end of simulation {end}', f'liquidCurrency.png')
 
 
-    # dates = ['1/1/2003', '5/1/2003', '9/1/2003', '1/1/2004']
-    # plot some time series of brokers net worth
-    for b in random.sample(brokers, 10):
+    # plot some time series of brokers net worth - might overlay these on the same plots actually
+    for b in random.sample(brokers, 5):
         plot_time(dates, broker_statuses[b.id], 'dates', f'portfolio and currency value of broker {b.id}', f'broker wealth time series {b.id}', f'timeseries{b.id}.png')
         plot_time(dates, broker_risks[b.id], 'dates', f'risk of broker {b.id}', f'broker risk time series {b.id}', f'timeseries{b.id}.png')
 
+    random_ids = random.sample(brokers, 5)
+    value_series = [broker_statuses[b.id] for b in random_ids]
+    risk_series = [broker_risks[b.id] for b in random_ids]
+    plot_times(dates, value_series, [f'Broker {i.id}' for i in random_ids], 'Dates', 'Broker wealth', 'Broker wealth time series', f'timeseriesJoint.png')
+    plot_times(dates, risk_series, [f'Broker {i.id}' for i in random_ids], 'Dates', 'Broker wealth', 'Broker wealth time series', f'timeseriesJoint.png')
 
     # plot portfolio risk to portfolio value
     final_portfolio_values = [broker_statuses[b.id][-1] for broker in brokers]
