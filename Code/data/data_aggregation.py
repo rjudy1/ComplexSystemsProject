@@ -6,9 +6,9 @@ import time
 
 tickrs = []
 
-with open('Code\\data\\valid_tickers.csv', 'r') as f:
+with open('data\\valid_tickers.csv', 'r') as f:
     all_tickers = list(csv.reader(f))
-    random_indices = np.random.choice(len(all_tickers), 1000, replace=False)
+    random_indices = np.random.permutation(len(all_tickers))
 
     for i in random_indices:
         tickrs.append(all_tickers[i][0])
@@ -19,14 +19,20 @@ df = pd.DataFrame(columns=catagories)
 
 big_data = []
 tickers_row = []
+i = -1
 
-for tickr_name in tickrs:
-    tickr = yf.Ticker(tickr_name)
+while len(big_data) < 400:
+    if i > len(tickrs) - 1:
+        break
+    
+    i += 1
+    tickr = yf.Ticker(tickrs[i])
     data_to_append = []
+    do_append = True
     for catagory in catagories:
         if catagory == 'dates':
             try:
-                data_large = yf.download(tickr_name, start="1970-01-01", end="2020-01-01")['Adj Close']
+                data_large = yf.download(tickrs[i], start="1970-01-01", end="2022-01-01")['Adj Close']
                 dates = list(data_large.index.strftime('%m/%d/%Y'))
                 values = data_large.values
                 data_to_append.append(dates)
@@ -39,24 +45,32 @@ for tickr_name in tickrs:
             try:
                 data = tickr.info[catagory]
             except:
+                if catagory == 'forwardEps' or catagory == 'dividendRate' or catagory == 'earningsGrowth':
+                    do_append = False
                 data = None
         
         if catagory == 'Ticker':
-            data_to_append.insert(0, tickr_name)
+            data_to_append.insert(0, tickrs[i])
         else:  
             data_to_append.append(data)
             
-    if data_to_append:
+    if data_to_append and do_append:
         big_data.append(data_to_append)
         
     time.sleep(1)
+    
 
 catagories[1], catagories[0] = catagories[0], catagories[1]
 catagories.insert(2, 'time_series')
 df = pd.DataFrame(big_data, columns=catagories)
 
-df = f.set_index('Ticker', inplace=True)
+#df = df.set_index('Ticker', inplace=True)
 
-df.to_csv('Code\\data\\ticker_info.csv')     
-
+try:
+    print(i)
+    print(len(big_data))
+    print(len(tickrs))
+    df.to_csv('data\\ticker_info.csv', index=False)     
+except:
+    print(df)
 
