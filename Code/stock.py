@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 import math
+import numpy as np
 
 @dataclass
 class Stock:
@@ -17,6 +18,10 @@ class Stock:
 
         self.date_to_price = {d: p for d, p in zip(dates, prices)}
 
+        self.date_to_52high = dict()
+        self.date_to_52low = dict()
+        self.date_to_50day_avg = dict()
+        start = datetime.strptime(dates[0], "%m/%d/%Y")
         current_date = datetime.strptime(dates[0], "%m/%d/%Y")
         end_date = datetime.strptime("12/31/2023", "%m/%d/%Y")        # Converting a to string in the desired format (YYYYMMDD) using strftime
 
@@ -25,6 +30,24 @@ class Stock:
                 previous_date = current_date - timedelta(days=1)
                 self.date_to_price[current_date.strftime("%m/%d/%Y")] = self.date_to_price[previous_date.strftime("%m/%d/%Y")]
             current_date += timedelta(days=1)
+
+        # create list of every price and roll over it, assigning based on date window
+        curr = start
+        prices_list = list()
+        while curr < end_date:
+            prices_list.append(self.date_to_price[curr.strftime('%m/%d/%Y')])
+            curr += timedelta(days=1)
+        curr = start
+        idx = 0
+        while curr < end_date:
+            front = max(idx-49, 0)
+            self.date_to_50day_avg[curr.strftime('%m/%d/%Y')] = np.average(prices_list[front:idx+1])
+
+            front52 = max(idx - 52*7 + 1, 0)
+            self.date_to_52high[curr.strftime('%m/%d/%Y')] = max(prices_list[front52:idx+1])
+            self.date_to_52low[curr.strftime('%m/%d/%Y')] = min(prices_list[front52:idx+1])
+            idx += 1
+            curr += timedelta(days=1)
 
 
 '''

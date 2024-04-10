@@ -15,7 +15,7 @@ from stock import Stock
 
 # pull data from csv file of stock data
 filename = 'data/ticker_info_random1000.csv'
-print(f"Reading pandas dataframe of stocks at {filename} and converting to dictionary of Stock")
+print(f"Reading pandas dataframe of stocks at {filename} and converting to dictionary of Stock at {time()}")
 stock_df = pd.read_csv(filename)
 
 # permit indexing of tickers
@@ -50,11 +50,11 @@ for idx, ticker in enumerate(valid_tickers):
 
     stocks[ticker] = Stock(ticker, forward_eps, earnings_growth, dividend_ratio, dates, prices)
     if idx % 100 == 0:
-        print(f"completed ticker {ticker} at index {idx}...")
-    if idx > 100:  # TODO: REMOVE WHEN ACTUALLY RUNNING
+        print(f"completed ticker {ticker} at index {idx} at time {time()}...")
+    if idx > 150:  # TODO: REMOVE WHEN ACTUALLY RUNNING
         break  # cut off sooner to speed up integration testing
 
-print("stocks dictionary created successfully...")
+print(f"stocks dictionary created successfully ({time()})...")
 
 
 # make directed graph for influence
@@ -65,9 +65,9 @@ broker_network = nx.DiGraph()
 N = 100
 standard_influence = .2
 time_steps = 1000
-trials = 100
+trials = 1
 start = "01/01/2003"
-end = "12/31/2023"
+end = "12/31/2010"
 
 # test over 1980 to 2000 and then 2003 to 2023
 
@@ -80,7 +80,7 @@ for trial in range(trials):
 
     # brokers will need to set these values based on if we're doing a influence shift or a risk variety
 
-    brokers = [Broker(i, 1_000_000, i/N*5, 10, 0, 0.05, False)
+    brokers = [Broker(i, 1_000_000, i/N*15, 15, 0, 0.05, True)
                for i in range(N)]
 
     # Generate the number of friends and populate those friend relationships with a normal distribution
@@ -100,8 +100,9 @@ for trial in range(trials):
     for i in range(N):
         for j in range(int(friend_count_dist[i])):
             neighbor = abs(math.ceil(np.random.normal(N/2, .34*N))) % 100
-            broker_network.add_edge(i, neighbor, weight=standard_influence/friend_count_dist[i])
-            brokers[neighbor].in_neighbors[i] = standard_influence / friend_count_dist[i]  # not a clean way to do this but it'll work hopefully
+            if neighbor != i:
+                broker_network.add_edge(i, neighbor, weight=standard_influence/friend_count_dist[i])
+                brokers[neighbor].in_neighbors[i] = standard_influence / friend_count_dist[i]  # not a clean way to do this but it'll work hopefully
 
     # display the network created
     # nx.draw(broker_network, with_labels=True, font_color='white', node_shape='s')
@@ -113,7 +114,7 @@ for trial in range(trials):
     delta = timedelta(days=1)
     curr_time = time()
     while date < end_date:
-        print(date.strftime("%m/%d/%Y"),f'----{time()-curr_time}-------------------------------------')
+        print(date.strftime("%m/%d/%Y"), f'-------{time()-curr_time}-------------------------------------')
         curr_time = time()
         dates.append(date.strftime('%m/%d/%Y'))
 
@@ -124,7 +125,7 @@ for trial in range(trials):
         for ticker in stocks:
             stock = stocks[ticker]
             try:
-                if date.strftime("%m/%d/%Y") in stock.date_to_price:
+                if date.strftime("%m/%d/%Y") in stock.date_to_price and stock.date_to_price[date.strftime("%m/%d/%Y")] > 0.00001:
                     available_stocks.add(ticker)
             except TypeError:
                 # print(ticker)
@@ -133,28 +134,33 @@ for trial in range(trials):
         if len(available_stocks):
             prev = time()
             for i, broker in enumerate(brokers):
-                broker.money += 1_000
+                # broker.money += 1_000
                 broker.update(broker_network, available_stocks, brokers, stocks, date.strftime("%m/%d/%Y"))
-                print(time()-prev, f'time {i}')
+                # print(f'', time()-prev, f'time {i}')
                 prev = time()
 
         for broker in brokers:
             broker_statuses[broker.id].append(broker.get_status(stocks, date.strftime("%m/%d/%Y")))
+            if broker_statuses[broker.id][-1] < 0:
+                print(broker.money, broker.portfolio)
             # print(broker.id, broker.get_status(stocks, date.strftime("%m/%d/%Y")))
 
         date += delta
 
-        # fix all the broker network edges
-        for b in brokers:
-            for n in b.in_neighbors:
-                broker_network.edges[n, b.id]['weight'] = b.in_neighbors[n]
+    # fix all the broker network edges
+    for b in brokers:
+        for n in b.in_neighbors:
+            broker_network.edges[n, b.id]['weight'] = b.in_neighbors[n]
 
 
     # add plotting code from whatever we decide to plot
 
     # draw final state of the influence network
-    # TODO: use some version of this https://stackoverflow.com/questions/25128018/change-edge-thickness-based-on-weight
-    nx.draw(broker_network, with_labels=True, font_color='white', node_shape='s')
+    pos = nx.spring_layout(broker_network, seed=3)
+    nx.draw_networkx(broker_network, pos)
+    print(broker_network.edges(data='weight'))
+    for edge in broker_network.edges(data='weight'):
+        nx.draw_networkx_edges(broker_network, pos, edgelist=[edge], width=edge[2]*2)
     plt.show()
 
     # compute average value of brokers
@@ -164,33 +170,106 @@ for trial in range(trials):
     print(f'beginning wealth: 1_000_000')
     print(f'average ending wealth: {total_wealth/N}')
 
-    def plot(x, y, xlabel, ylabel, title, filename):
-        plt.figure(figsize=(10, 6))
+    def plot_time(x, y, xlabel, ylabel, title, filename):
+        fig = plt.figure(figsize=(10, 6))
         plt.plot(x, y)
         # Customize the plot
         plt.title(title)
+        tick_locations = [len(x)//7*i for i in range(8)]
+        labels = [x[t] for t in tick_locations[:-1]]
+        labels.append(x[-1])
+        plt.xticks(tick_locations, labels)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.legend()
         plt.grid(True)
-        # plt.savefig(f'figures/{filename}')
+        plt.savefig(f'figures/{filename}')
         plt.show()
 
+    def plot(x, y, xlabel, ylabel, title, filename):
+        fig = plt.figure(figsize=(10, 6))
+        plt.plot(x, y, 'o')
+        # Customize the plot
+        plt.title(title)
+        # tick_locations = [len(x)//7*i for i in range(8)]
+        # labels = [x[t] for t in tick_locations[:-1]]
+        # labels.append(x[-1])
+        # plt.xticks(tick_locations, labels)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.legend()
+        plt.grid(True)
+        plt.savefig(f'figures/{filename}')
+        plt.show()
+
+
+    broker_ids = list()
+    num_stocks = list()
+    num_unique_stocks = list()
+    cash_at_end = list()
+    for b in brokers:
+        broker_ids.append(b.id)
+        count = 0
+        unique_count = 0
+        for p in b.portfolio:
+            count += b.portfolio[p]
+            if b.portfolio[p] > 1:
+                unique_count += 1
+        num_stocks.append(count)
+        num_unique_stocks.append(unique_count)
+        cash_at_end.append(b.money)
+
+    plot(broker_ids, num_stocks, 'broker ids', 'num stocks', 'num stocks owned', 'numstocks.png')
+    plot(broker_ids, num_unique_stocks, 'broker ids', 'num stocks', 'num unique stocks owned', 'numuniquestocks.png')
+    plot(broker_ids, cash_at_end, 'broker ids', 'money', 'money at end', 'numstocks.png')
+
+
+    # dates = ['1/1/2003', '5/1/2003', '9/1/2003', '1/1/2004']
     # plot some time series of brokers net worth
-    for b in random.sample(brokers, 5):
-        plot(dates, broker_statuses[b.id], 'dates', f'wealth of broker {b.id}', f'timeseries{b.id}.png')
+    for b in random.sample(brokers, 10):
+        plot_time(dates, broker_statuses[b.id], 'dates', f'wealth of broker {b.id}', f'broker wealth time series {b.id}', f'timeseries{b.id}.png')
 
     # plot portfolio risk to portfolio value
-    final_portfolio_values = [broker_statuses[b.id] for broker in brokers]
+    final_portfolio_values = [broker_statuses[b.id][-1] for broker in brokers]
+
+    # bar plot
+    # Creating indices for each value
+    indices = range(len([math.floor(x) for x in final_portfolio_values]))
+
+    # Plotting the bar graph
+    plt.figure(figsize=(8, 6))
+    plt.bar(indices, [math.floor(x) for x in final_portfolio_values], color='skyblue')
+
+    # Adding labels and title
+    plt.xlabel('Index')
+    plt.ylabel('Value')
+    plt.title('Bar Plot of Values')
+
+    # Display the plot
+    plt.show()
+
+
     portfolio_risk = [broker.current_risk for broker in brokers]
-    plot(portfolio_risk, final_portfolio_values, 'Portfolio risk', 'Final portfolio value', 'risktovalue.png')
+    plot(portfolio_risk, final_portfolio_values, 'Portfolio risk', 'Final portfolio value', 'Final Portofolio values', 'risktovalue.png')
 
     # plot influence in to portfolio value
     influences = [sum(broker_network.get_edge_data(n, me)['weight'] for (n, me) in broker_network.in_edges(broker.id)) for broker in brokers]
-    plot(influences, final_portfolio_values, 'Influence inputs', 'Final portfolio value', 'influenceintovalue.png')
+    plot(influences, final_portfolio_values, 'Influence inputs', 'Final portfolio value', 'influence to value', 'influenceintovalue.png')
 
     # plot number of friends to portfolio value
     num_friends = [len(broker_network.in_edges(broker.id)) for broker in brokers]
-    plot(num_friends, final_portfolio_values, 'Number of friends', 'Final portfolio value', 'influenceintovalue.png')
+    plot(num_friends, final_portfolio_values, 'Number of friends', 'Final portfolio value', 'influence to value', 'influenceintovalue.png')
 
 
+    # plot values pre 2008
+    final_portfolio_values = [broker_statuses[b.id][N//2] for broker in brokers]
+    portfolio_risk = [broker.current_risk for broker in brokers]
+    plot(portfolio_risk, final_portfolio_values, 'Portfolio risk', 'Final portfolio value', 'Final Portofolio values', 'risktovalue.png')
+
+    # plot influence in to portfolio value
+    influences = [sum(broker_network.get_edge_data(n, me)['weight'] for (n, me) in broker_network.in_edges(broker.id)) for broker in brokers]
+    plot(influences, final_portfolio_values, 'Influence inputs', 'Final portfolio value', 'influence to value', 'influenceintovalue.png')
+
+    # plot number of friends to portfolio value
+    num_friends = [len(broker_network.in_edges(broker.id)) for broker in brokers]
+    plot(num_friends, final_portfolio_values, 'Number of friends', 'Final portfolio value', 'influence to value', 'influenceintovalue.png')
