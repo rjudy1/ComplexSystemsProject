@@ -6,14 +6,8 @@ import random
 import numpy as np
 
 
-# idea is to increase threshold for a given stock if neighbor reports a good value
-# also need to define randomized order/buy amount of some kind
-# need to figure out if risk reward balance plays in
 class Broker:
-    def __init__(self, id: int, initial_money: float, risk_minimum: float = 0, risk_maximum: float = math.inf,
-                 purchase_rate_limit: int = 0, neighbor_weight: float = 0, shift_influence: bool = False):
-        # let's say minimum risk is the minimum index out of 100 stocks to consider buying/selling when trying to raise or lower risk
-        # one problem is that we're essentially defining low risk as diversification of portfolio
+    def __init__(self, id: int, initial_money: float, risk_minimum: float = 0, neighbor_weight: float = 0, shift_influence: bool = False):
         self.id = id
         self.money = initial_money
         self.portfolio = collections.defaultdict(lambda: 0)  # stock to quantity dictionary
@@ -22,23 +16,18 @@ class Broker:
         self.neighbor_weight = neighbor_weight
 
         self.preferred_risk_minimum = risk_minimum
-        self.preferred_risk_maximum = risk_maximum
+        self.preferred_risk_maximum = risk_minimum*25/15
 
-        # TODO: set up preferred risk minimum to a percentage to consider of the available stocks (considers x% highest risk stocks)
-        self.risk_percentile = math.exp(.035*self.preferred_risk_minimum) - 1
+        self.risk_percentile = math.exp(.046*self.preferred_risk_minimum) - 1
         if self.risk_percentile >= 1.0:
             self.risk_percentile = .99
         print(self.preferred_risk_minimum, self.preferred_risk_maximum, self.risk_percentile)
-
 
         self.current_risk = 0
         # self.current_status = 0
 
         self.adjust_influence = shift_influence
         self._neighbor_history = collections.defaultdict(lambda: initial_money)  # how do we want to use this?
-
-        # possible configuration values for later
-        self._purchase_rate = purchase_rate_limit
 
     # buy and sell functionality based on allowed purchase rate, outside influence,
     def update(self, graph, available_stocks, id_to_broker_map, stocks, date):
@@ -56,17 +45,13 @@ class Broker:
                 # assess risk of every stock available and sort from lowest to highest risk
                 risk_dict = dict()
                 for stock in available_stocks:
-                    risk_dict[stock] = self.assess_risk(stock, stocks, date) + neighbor_factor1[stock]
+                    risk_dict[stock] = self.assess_risk(stock, stocks, date) #* (1-self.neighbor_weight) + neighbor_factor1[stock] * self.neighbor_weight
                 sorted_list = sorted(risk_dict.keys(), key=risk_dict.get)
 
                 # select from stocks whose stock assessment put them in the risk min / 100 top percent of stocks
                 sorted_list = list(filter(lambda a: stocks[a].date_to_price[date] < self.money, sorted_list))
                 lower_limit = min(math.floor(len(sorted_list) * self.risk_percentile), len(sorted_list)-1)
                 plan = random.sample(list(sorted_list[lower_limit:]), 1)[0]
-
-                if len(sorted_list) < 2:
-                    print(sorted_list)
-
 
                 # buy stock and increment quantity in portfolio
                 self.money -= stocks[plan].date_to_price[date]
@@ -76,7 +61,7 @@ class Broker:
                 risk_dict = dict()
                 for stock in self.portfolio:
                     if self.portfolio[stock] > 0:
-                        risk_dict[stock] = self.assess_risk(stock, stocks, date) + neighbor_factor2[stock]
+                        risk_dict[stock] = self.assess_risk(stock, stocks, date) * (1-self.neighbor_weight) + neighbor_factor2[stock] * self.neighbor_weight
 
                 if len(risk_dict) == 0:
                     break  # nothing can be done to lower the risk if they don't own any stocks
@@ -86,27 +71,6 @@ class Broker:
 
                 self.money += stocks[plan].date_to_price[date]
                 self.portfolio[plan] -= 1
-
-            elif self.money > 100:  # buy more stocks
-                # assess risk of every stock available and sort from lowest to highest risk
-                risk_dict = dict()
-                for stock in available_stocks:
-                    risk_dict[stock] = self.assess_risk(stock, stocks, date) + neighbor_factor1[stock]
-                sorted_list = sorted(risk_dict.keys(), key=risk_dict.get)
-
-                # select from stocks whose stock assessment put them in the risk min / 100 top percent of stocks
-                sorted_list = list(filter(lambda a: stocks[a].date_to_price[date] < self.money, sorted_list))
-                lower_limit = min(math.floor(len(sorted_list) * self.risk_percentile), len(sorted_list)-1)
-                plan = random.sample(list(sorted_list[lower_limit:]), 1)[0]
-
-                if len(sorted_list) < 2:
-                    print(sorted_list)
-
-
-                # buy stock and increment quantity in portfolio
-                self.money -= stocks[plan].date_to_price[date]
-                self.portfolio[plan] += 1
-
 
             self.assess_portfolio_risk(stocks, date)
         # print(self.id, self.current_risk)
@@ -204,5 +168,5 @@ class Broker:
             individual_risk = a * x
             total_risk += abs(individual_risk * volumes[i]) # scale up just for easier intuitive sense for parameters
 
-        self.current_risk = total_risk
-        return total_risk
+        self.current_risk = total_risk #- self.money / 1000
+        return self.current_risk
