@@ -65,7 +65,7 @@ stock_df.set_index('Ticker', inplace=True)
 
 # convert to dictionary of ticker to Stock class objects
 stocks = dict()
-random.shuffle(valid_tickers)
+# random.shuffle(valid_tickers)
 for idx, ticker in enumerate(valid_tickers):
     try:
         dates = ast.literal_eval(stock_df.at[ticker, 'dates'])

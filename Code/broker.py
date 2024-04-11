@@ -72,6 +72,23 @@ class Broker:
                 self.money += stocks[plan].date_to_price[date]
                 self.portfolio[plan] -= 1
 
+            elif self.money > 100:
+                # assess risk of every stock available and sort from lowest to highest risk
+                risk_dict = dict()
+                for stock in available_stocks:
+                    risk_dict[stock] = self.assess_risk(stock, stocks, date) #* (1-self.neighbor_weight) + neighbor_factor1[stock] * self.neighbor_weight
+                sorted_list = sorted(risk_dict.keys(), key=risk_dict.get)
+
+                # select from stocks whose stock assessment put them in the risk min / 100 top percent of stocks
+                sorted_list = list(filter(lambda a: stocks[a].date_to_price[date] < self.money, sorted_list))
+                lower_limit = min(math.floor(len(sorted_list) * self.risk_percentile), len(sorted_list)-1)
+                plan = random.sample(list(sorted_list[lower_limit:]), 1)[0]
+
+                # buy stock and increment quantity in portfolio
+                self.money -= stocks[plan].date_to_price[date]
+                self.portfolio[plan] += 1
+
+
             self.assess_portfolio_risk(stocks, date)
         # print(self.id, self.current_risk)
 
