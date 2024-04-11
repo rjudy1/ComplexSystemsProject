@@ -18,12 +18,12 @@ from stock import Stock
 # Parameters for simulation
 
 N = 100  # number of brokers
-neighbor_influence = 0  # percent of risk assessment determined by neighbors
+neighbor_influence = 0.05  # percent of risk assessment determined by neighbors
 adjust_influence = False
 seed_money = 1_000_000
 trials = 1  # not really using this since just doing a single run currently since its such a long runtime
 start = "01/01/2003"  # date to start simulation
-end = "01/10/2003"  # date to stop simulation
+end = "01/31/2003"  # date to stop simulation
 input_data_filename = 'data/ticker_info_400_all_catagories.csv'
 figure_file_directory = 'figures'
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -65,7 +65,7 @@ stock_df.set_index('Ticker', inplace=True)
 
 # convert to dictionary of ticker to Stock class objects
 stocks = dict()
-# random.shuffle(valid_tickers)
+random.shuffle(valid_tickers)
 for idx, ticker in enumerate(valid_tickers):
     try:
         dates = ast.literal_eval(stock_df.at[ticker, 'dates'])
@@ -80,7 +80,7 @@ for idx, ticker in enumerate(valid_tickers):
     stocks[ticker] = Stock(ticker, forward_eps, earnings_growth, dividend_ratio, dates, prices)
     if idx % 100 == 0:
         print(f"completed ticker {ticker} at index {idx} at time {time()}...")
-    if idx > 175:  # TODO: REMOVE WHEN ACTUALLY RUNNING
+    if idx > 175:  # TODO: Check if this restriction affects portfolio size
         break  # cut off sooner to speed up integration testing
 
 print(f"stocks dictionary created successfully ({time()})...")
@@ -109,12 +109,15 @@ for trial in range(trials):
                 broker_network.add_edge(i, neighbor, weight=1/friend_count_dist[i])
                 brokers[neighbor].in_neighbors[i] = 1 / friend_count_dist[i]  # not a clean way to do this but it'll work hopefully
 
+    for b in brokers:
+        for neighbor in b.in_neighbors:
+            b.in_neighbors[neighbor] = 1 / len(b.in_neighbors)
+
     # display the network created
     # nx.draw(broker_network, with_labels=True, font_color='white', node_shape='s')
     # plt.show()
 
     start_date, end_date = datetime.strptime(start, "%m/%d/%Y"),  datetime.strptime(end, "%m/%d/%Y")
-    end_date = datetime.strptime(end, "%m/%d/%Y")
     date = start_date
     curr_time = time()
     while date < end_date:
@@ -141,6 +144,8 @@ for trial in range(trials):
                 # broker.money += 1_000
                 broker.update(broker_network, available_stocks, brokers, stocks, date.strftime("%m/%d/%Y"))
                 prev = time()
+
+        # TODO: add dividend
 
         for broker in brokers:
             broker_statuses[broker.id].append(broker.get_status(stocks, date.strftime("%m/%d/%Y")))
@@ -195,7 +200,7 @@ for trial in range(trials):
     #     plot_times(dates, [broker_statuses[b.id]], [f'broker {b.id}'], 'dates', f'portfolio and currency value of broker {b.id}', f'broker wealth time series {b.id}', f'timeseries{b.id}.png')
     #     plot_times(dates, [broker_risks[b.id]], [f'broker {b.id}'], 'dates', f'risk of broker {b.id}', f'broker risk time series {b.id}', f'riskseries{b.id}.png')
 
-    random_ids = random.sample(brokers, 10)
+    random_ids = sorted(random.sample(brokers, 10))
     plot_times(dates, [broker_statuses[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
                'Dates', 'Broker wealth', 'Broker wealth time series', f'timeSeriesJoint.png')
     plot_times(dates, [broker_risks[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
