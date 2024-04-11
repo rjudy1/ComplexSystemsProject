@@ -14,7 +14,7 @@ from broker import Broker
 from stock import Stock
 
 # pull data from csv file of stock data
-filename = 'data/ticker_info_random1000.csv'
+filename = 'data/ticker_info_400_all_catagories.csv'
 print(f"Reading pandas dataframe of stocks at {filename} and converting to dictionary of Stock at {time()}")
 stock_df = pd.read_csv(filename)
 
@@ -40,13 +40,7 @@ for idx, ticker in enumerate(valid_tickers):
         forward_eps = forward_eps.iloc[0]
         earnings_growth = earnings_growth.iloc[0]
         dividend_ratio = dividend_ratio.iloc[0]
-
-    if math.isnan(dividend_ratio):
-        dividend_ratio = 0
-    if math.isnan(earnings_growth):
-        earnings_growth = .05
-    if math.isnan(forward_eps):
-        forward_eps = 2
+        print("HERE")
 
     stocks[ticker] = Stock(ticker, forward_eps, earnings_growth, dividend_ratio, dates, prices)
     if idx % 100 == 0:
@@ -67,7 +61,7 @@ standard_influence = .2
 time_steps = 1000
 trials = 1
 start = "01/01/2003"
-end = "12/2/2003"
+end = "12/31/2003"
 
 # test over 1980 to 2000 and then 2003 to 2023
 
@@ -81,7 +75,7 @@ for trial in range(trials):
 
     # brokers will need to set these values based on if we're doing a influence shift or a risk variety
 
-    brokers = [Broker(i, 1_000_000, (i+1)/N*15, (i+1)/N*25, 0, 0.05, False)
+    brokers = [Broker(i, 1_000_000, (i+1)/N*15, (i+1)/N*25, 0, 0.05, True)
                for i in range(N)]
 
     # Generate the number of friends and populate those friend relationships with a normal distribution
@@ -192,10 +186,13 @@ for trial in range(trials):
         for i in range(len(ys)):
             plt.plot(x, ys[i], label=f'{serieslabels[i]}')
 
+        tick_locations = [len(x)//7*i for i in range(8)]
+        labels = [x[t] for t in tick_locations[:-1]]
+        labels.append(x[-1])
+        plt.xticks(tick_locations, labels)
+
         # Customize the plot
-        plt.title(title)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
+        plt.title(title), plt.xlabel(xlabel), plt.ylabel(ylabel)
         plt.legend()
         plt.grid(True)
         plt.savefig(f'figures/{filename}')
@@ -237,51 +234,57 @@ for trial in range(trials):
 
 
     # plot some time series of brokers net worth - might overlay these on the same plots actually
-    for b in random.sample(brokers, 5):
+    for b in random.sample(brokers, 1):
         plot_time(dates, broker_statuses[b.id], 'dates', f'portfolio and currency value of broker {b.id}', f'broker wealth time series {b.id}', f'timeseries{b.id}.png')
-        plot_time(dates, broker_risks[b.id], 'dates', f'risk of broker {b.id}', f'broker risk time series {b.id}', f'timeseries{b.id}.png')
+        plot_time(dates, broker_risks[b.id], 'dates', f'risk of broker {b.id}', f'broker risk time series {b.id}', f'riskseries{b.id}.png')
 
     random_ids = random.sample(brokers, 5)
     value_series = [broker_statuses[b.id] for b in random_ids]
     risk_series = [broker_risks[b.id] for b in random_ids]
-    plot_times(dates, value_series, [f'Broker {i.id}' for i in random_ids], 'Dates', 'Broker wealth', 'Broker wealth time series', f'timeseriesJoint.png')
-    plot_times(dates, risk_series, [f'Broker {i.id}' for i in random_ids], 'Dates', 'Broker wealth', 'Broker wealth time series', f'timeseriesJoint.png')
+    plot_times(dates, value_series, [f'Broker {i.id}' for i in random_ids], 'Dates', 'Broker wealth',
+               'Broker wealth time series', f'timeseriesJoint.png')
+    plot_times(dates, risk_series, [f'Broker {i.id}' for i in random_ids], 'Dates', 'Broker wealth',
+               'Broker risk time series', f'riskseriesJoint.png')
 
     # plot portfolio risk to portfolio value
-    final_portfolio_values = [broker_statuses[b.id][-1] for broker in brokers]
+    final_portfolio_values = [broker_statuses[b.id][-1] for b in brokers]
 
     # Plotting the histogram
     plt.figure(figsize=(8, 6))
     plt.hist([math.floor(x) for x in final_portfolio_values], bins=50, color='skyblue', alpha=.5, density=True)
-    # Adding labels and title
     plt.xlabel('Index')
     plt.ylabel('Value')
-    plt.title('Bar Plot of Values')
-    # Display the plot
+    plt.title('Final Portfolio Values')
+    plt.savefig(f'figures/finalValueHistogram')
     plt.show()
 
-
     portfolio_risk = [broker.current_risk for broker in brokers]
-    plot(portfolio_risk, final_portfolio_values, 'Portfolio risk', 'Final portfolio value', 'Final Portfolio values', 'risktovalue.png')
+    plot(portfolio_risk, final_portfolio_values, 'Portfolio risk', 'Final portfolio value',
+         'Final portfolio values to risk', 'riskToValue.png')
 
     # plot influence in to portfolio value
     influences = [sum(broker_network.get_edge_data(n, me)['weight'] for (n, me) in broker_network.in_edges(broker.id)) for broker in brokers]
-    plot(influences, final_portfolio_values, 'Influence inputs', 'Final portfolio value', 'influence to value', 'influenceintovalue.png')
+    plot(influences, final_portfolio_values, 'Influence summed inputs', 'Final portfolio value',
+         'Portfolio value to influence', 'valueToInfluence.png')
 
     # plot number of friends to portfolio value
     num_friends = [len(broker_network.in_edges(broker.id)) for broker in brokers]
-    plot(num_friends, final_portfolio_values, 'Number of friends', 'Final portfolio value', 'influence to value', 'influenceintovalue.png')
+    plot(num_friends, final_portfolio_values, 'Number of friends', 'Final portfolio value',
+         'Final portfolio value to number of friends', 'valueToFriendCount.png')
 
 
-    # plot values pre 2008
-    final_portfolio_values = [broker_statuses[b.id][N//2] for broker in brokers]
+    # plot values mid interval
+    interim_portfolio_values = [broker_statuses[b.id][N//2] for b in brokers]
     portfolio_risk = [broker.current_risk for broker in brokers]
-    plot(portfolio_risk, final_portfolio_values, 'Portfolio risk', 'Final portfolio value', 'Final Portofolio values', 'risktovalue.png')
+    plot(portfolio_risk, interim_portfolio_values, 'Portfolio risk', 'Final portfolio value',
+         'Interim portfolio values to risk', 'interimRiskToValue.png')
 
     # plot influence in to portfolio value
     influences = [sum(broker_network.get_edge_data(n, me)['weight'] for (n, me) in broker_network.in_edges(broker.id)) for broker in brokers]
-    plot(influences, final_portfolio_values, 'Influence inputs', 'Final portfolio value', 'influence to value', 'influenceintovalue.png')
+    plot(influences, interim_portfolio_values, 'Influence summed inputs', 'Final portfolio value',
+         'Interim portfolio value to influence', 'interimValueToInfluence.png')
 
     # plot number of friends to portfolio value
     num_friends = [len(broker_network.in_edges(broker.id)) for broker in brokers]
-    plot(num_friends, final_portfolio_values, 'Number of friends', 'Final portfolio value', 'influence to value', 'influenceintovalue.png')
+    plot(num_friends, interim_portfolio_values, 'Number of friends', 'Final portfolio value',
+         'Interim portfolio value to number of friends', 'interimValueToFriendCount.png')
