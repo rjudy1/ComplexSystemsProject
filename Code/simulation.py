@@ -98,6 +98,7 @@ for trial in range(trials):
     # list of brokers with increasing preferred levels of risk
     brokers = [Broker(i, seed_money, (i+1)/N*9999, neighbor_influence, adjust_influence) for i in range(N)]
 
+    # @INFLUENCE THIS BLOCK ADDRESSES THE NEIGHBOR WEIGHTING AND SETUP
     # Generate the number of friends per person with power distribution and populate those friend relationships
     # with a normal distribution of the available brokers in both the Broker class and the network visualization
     friend_count_dist = np.floor(np.array(powerlaw.Power_Law(xmin=1, parameters=[3.0]).generate_random(N)) + 2)

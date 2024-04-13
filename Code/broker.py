@@ -170,6 +170,7 @@ class Broker:
         # print(transaction_count)
 
         # update public status
+        # @INFLUENCE
         if self.adjust_influence:
             for neighbor in self.in_neighbors:
                 self.in_neighbors[neighbor] += .002 * np.sign(id_to_broker_map[neighbor].get_status(stocks, date) - self._neighbor_history[neighbor])
@@ -194,6 +195,7 @@ class Broker:
 
         return portfolio_value
 
+    # @INFLUENCE
     def get_neighbor_factor(self, graph, available_stocks, id_to_broker_map, stocks, date):
         stock_dict = collections.defaultdict(lambda: 0)
         # iterate through graph getting neighbors and values - simple weighting?
