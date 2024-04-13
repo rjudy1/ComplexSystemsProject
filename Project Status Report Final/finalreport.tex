@@ -54,12 +54,15 @@
 	
 	\section{Background}\label{sec:background}
 	% Background: Summary of important concepts and related previous work (with citations).
+	This topic has been explored from a variety of perspectives. Most work has been divided into exploring financial markets in terms of complex networks, looking at individuals' perspective on risk, and running case studies with different clustering and strategies in the market. The work in complex networks creates networks with either brokers or stocks at nodes \cite{kulmann_marketscomplexsystems,dimaggio_relevancebrokernetworks}. To create the edges, they have explored the diffusion of information \cite{dimaggio_relevancebrokernetworks}, spread of first and rebound shocks \cite{gai_contagion}, and correlation and mutual information of different stocks \cite{li_correlation, fiedor_networksmutualinformationrate}. This study models the market with brokers at the nodes with influence connecting the brokers. 
+	
+	Further, several models for risk were presented. This involved quantifying the risk with the Chen, Roll, and Ross factors \cite{cooper_realinvestmentandrisk} to predict economic activity, assessing the importance of the distribution of risk aversion in the volatility of returns \cite{lansing_riskaversion}, and highlighted the importance of dividends in quantifying the risk level of stocks. These models provide a basis for developing a model of portfolio risk.
 	
 	
 	
 	\section{Methods}\label{sec:methods}
 	% Methods: Detailed description of the methods used, including equations, algorithms, rules, etc. and a justification for the approach.
-	The exploration of the market was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and preferred risk levels. This included creating 100 brokers each with a preferred risk level and a number of friends sampled from a power law distribution. The friends also provided their assessment of risk for a given stock which was considered by the broker in their personal assessment. Data for every day in the interval was fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. For interpretation of results, the brokers' indices correspond to the level of preferred risk. 	
+	The exploration of the market was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and preferred risk levels. This included creating 100 brokers each with a preferred risk level and a number of friends sampled from a power law distribution. The friends also provided their assessment of risk for a given stock which was considered by the broker in their personal assessment. Data for every day in the interval was fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. For interpretation of results, the brokers' indices correspond to the level of preferred risk. 
 	
 	\subsection{Data Collection and Filtering}\label{subsec:data}
 	% TODO: @Connor briefly discuss the data collection and filtering methods + what data was lost by the filtering process
@@ -72,7 +75,7 @@
 	% TODO:  @Josh insert mathematical model description
 	
 	\subsection{Metrics}\label{subsec:metrics}	
-
+	% TODO: discuss portfolio evaluation 
 
 
 	\section{Results}\label{sec:results}
