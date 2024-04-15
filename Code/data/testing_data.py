@@ -12,7 +12,7 @@ catagories = ['Ticker',
 """
 
 # Pandas Dataframe, might need to change where this is located to open
-df = pd.read_csv('Code\\data\\ticker_info_random1000.csv')
+df = pd.read_csv('ticker_info_random1000.csv')
 
 # All possible tickers
 valid_tickers = df['Ticker']
@@ -32,4 +32,4 @@ plt.plot(date_as_datetimeObj, stock_values)
 plt.show()
 
 # To get ticker information
-compinsation_risk = df.at[valid_tickers[3], 'compensationRisk']
+compensation_risk = df.at[valid_tickers[3], 'compensationRisk']

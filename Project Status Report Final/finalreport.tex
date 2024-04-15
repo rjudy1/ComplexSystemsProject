@@ -1,0 +1,164 @@
+\documentclass[letterpaper, 10 pt, proceedings]{ieeetran}
+\usepackage{amsmath}
+\usepackage[margin=.75in]{geometry}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{helvet}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{mathptmx}
+\usepackage{nameref}
+\usepackage{pgfplots}
+\usepackage{placeins}
+\usepackage{subcaption}
+\usepackage{titlesec}
+\usepackage{wrapfig}
+\renewcommand{\familydefault}{\sfdefault}
+\graphicspath{{./figures/}}
+
+%\titlespacing*{\section}{0pt}{0.5\baselineskip}{0.25\baselineskip}
+%\titlespacing*{\subsection}{0pt}{0.5\baselineskip}{0.25\baselineskip}
+%\titlespacing*{\subsubsection}{0pt}{0.5\baselineskip}{0.25\baselineskip}
+
+
+% Abstract
+% Introduction: The goals of the project, the motivation, and the approach used.
+% Background: Summary of important concepts and related previous work (with citations).
+% Methods: Detailed description of the methods used, including equations, algorithms, rules, etc. and a justification for the approach.
+% Results: Description and discussion of results, with figures, tables, etc.
+% Conclusion: Summary of accomplishments, challenges and open issues.
+% Bibliography: Full list of all papers cited in the report in paper, consistent format
+
+
+
+
+\title{Exploring Stock Market Strategies with Risk and Influence with Complex Networks}
+\author{Rachael Judy, Connor Klein, Josh Smith}
+\date{21 April 2024}
+
+\begin{document}
+	\pgfplotsset{compat=1.18}
+	\setlist[itemize]{noitemsep}
+	\setlist[enumerate]{noitemsep}
+	
+	\maketitle
+
+	\begin{abstract}
+		content...
+	\end{abstract}
+
+	\section{Introduction}\label{sec:intro}
+	% Introduction: The goals of the project, the motivation, and the approach used.
+	This project was designed with the objective of exploring the impact of risk as defined by a power law distribution and networked brokers in the context of neighbor influence on the brokers' portfolio values over different trading intervals. Economic markets are volatile and have been shown to contain many fat-tailed and power law distributions, such as in growth rates and stock returns \ref{gabix_powerlaws}. Many different models of the market have been created to explore these behaviors, and data is readily available to examine the impacts of different strategies and inter-dependencies on the market. Scholars have examined risk and risk aversion, explored modeling the market as a network of stocks or brokers, attempted to classify and group the networks, and attempted to design models of crashes that resemble the real world. This project combines the study of risk in psychology with the fat tailed distribution of network connections and the volatility of black swan \cite{taleb_antifragile} events to evaluate market broker strategies to maximize portfolio value over typical events and through drastic changes in the market.
+	
+	\section{Background}\label{sec:background}
+	% Background: Summary of important concepts and related previous work (with citations).
+	This topic has been explored from a variety of perspectives. Most work has been divided into exploring financial markets in terms of complex networks, looking at individuals' perspective on risk, and running case studies with different clustering and strategies in the market. The work in complex networks creates networks with either brokers or stocks at nodes \cite{kulmann_marketscomplexsystems,dimaggio_relevancebrokernetworks}. To create the edges, they have explored the diffusion of information \cite{dimaggio_relevancebrokernetworks}, spread of first and rebound shocks \cite{gai_contagion}, and correlation and mutual information of different stocks \cite{li_correlation, fiedor_networksmutualinformationrate}. This study models the market with brokers at the nodes with influence connecting the brokers. 
+	
+	Further, several models for risk were presented. This involved quantifying the risk with the Chen, Roll, and Ross factors \cite{cooper_realinvestmentandrisk} to predict economic activity, assessing the importance of the distribution of risk aversion in the volatility of returns \cite{lansing_riskaversion}, and highlighted the importance of dividends in quantifying the risk level of stocks. These models provide a basis for developing a model of portfolio risk.
+	
+	
+	
+	\section{Methods}\label{sec:methods}
+	% Methods: Detailed description of the methods used, including equations, algorithms, rules, etc. and a justification for the approach.
+	The exploration of the market was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and preferred risk levels. This included creating 100 brokers each with a preferred risk level and a number of friends sampled from a power law distribution. The friends also provided their assessment of risk for a given stock which was considered by the broker in their personal assessment. Data for every day in the interval was fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. For interpretation of results, the brokers' indices correspond to the level of preferred risk. 
+	
+	\subsection{Data Collection and Filtering}\label{subsec:data}
+	% TODO: @Connor briefly discuss the data collection and filtering methods + what data was lost by the filtering process
+	
+	\subsection{Influence and Friend Selection}\label{subsec:friends}
+	The number of friends 
+	% TODO: @Rachael insert the powerlaw equation used to generate the distribution of the number of friends
+
+	\subsection{Risk Calculation}\label{subsec:risk}
+	% TODO:  @Josh insert mathematical model description
+	
+	\subsection{Metrics}\label{subsec:metrics}	
+	% TODO: discuss portfolio evaluation 
+
+
+	\section{Results}\label{sec:results}
+	% Results: Description and discussion of results, with figures, tables, etc.
+	
+	
+	
+	
+	\section{Conclusion}\label{sec:conclusion}
+	% Conclusion: Summary of accomplishments, challenges and open issues
+	
+	
+	\subsection{Future Work}\label{subsec:futurework}
+	
+
+
+
+	\bibliographystyle{ieeetran}
+	\begin{thebibliography}{99}	
+		\bibitem{gabix_powerlaws}
+		X. Gabaix, “Power laws in economics: an introduction,” \textit{Journal of Economic Perspectives}, vol. 30, no. 1, pp. 185–206, Feb. 2016.
+		
+		\bibitem{taleb_antifragile}
+		N. N. Taleb, Antifragile: Things that gain from disorder. Harlow, England: Penguin Books, 2013.
+		
+		\bibitem{easley_networkscrowdsmmarkets}
+		D. Easley and J. Kleinberg, Networks, crowds, and markets: Reasoning about a highly connected world. Cambridge, England: Cambridge University Press, 2012.
+		%- https://www.cs.cornell.edu/home/kleinber/networks-book/, particularly chapters 9-12, 17, 22
+		
+		\bibitem{thakkar_neuralnets}
+		A. Thakkar and K. Chaudhari, “A comprehensive survey on deep neural networks for stock market: The need, challenges, and future directions,” Expert Systems with Applications, vol. 177, p. 114800, Sep. 2021, doi: 10.1016/j.eswa.2021.114800.
+		%- https://www.sciencedirect.com/science/article/pii/S0957417421002414
+		
+		\bibitem{hommes_complexmacroeconomics}
+		C. Hommes, “Behavioral and Experimental Macroeconomics and Policy Analysis: A Complex Systems Approach,” Journal of Economic Literature, vol. 59, no. 1, pp. 149–219, Mar. 2021, doi: 10.1257/jel.20191434.
+		%- https://pubs.aeaweb.org/doi/pdfplus/10.1257/jel.20191434
+		
+		\bibitem{tse_networkstocks}
+		C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” Journal of Empirical Finance, vol. 17, no. 4, pp. 659–667, Sep. 2010, doi: 10.1016/j.jempfin.2010.04.008.
+		%- https://www.sciencedirect.com/science/article/pii/S0927539810000368
+		
+		\bibitem{wikipedia_marketcrashes}
+		“List of stock market crashes and bear markets,” Wikipedia. Jan. 24, 2024. Accessed: Feb. 13, 2024. [Online].
+		
+		\bibitem{kulmann_marketscomplexsystems}
+		M. Kuhlmann, "Explaining financial markets in terms of complex systems," \textit{Philosphy of Science}, vol. 81, no. 5, pp. 1117-1130, Dec. 2014. %doi: 10.1086/677699.
+		
+		\bibitem{dimaggio_relevancebrokernetworks}
+		M. Di Maggio, F. Franzoni, A. Kermani, and C. Sommavilla, "The relevance of broker networks for information diffusion in the stock market," \textit{Journal of Financial Economics}, vol. 134, no. 2, pp. 419-446, Nov. 2019. %doi: 10.1016/j.jfineco.2019.04.002. 
+		
+		
+		\bibitem{gai_contagion}
+		P. Gai and S. Kapadia, "Contagion in financial networks," \textit{Proceedings of the Royal Society}, vol. 466, no. 2120, pp. 2401–2423, Aug. 2010.
+		
+		\bibitem{liu_networkperspective}
+		C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” \textit{Journal of Empirical Finance}, vol. 17, no. 4, pp. 659–667, Sep. 2010. % doi: 10.1016/j.jempfin.2010.04.008.
+		
+		\bibitem{li_correlation}
+		G. Li, A. Zhang, Q. Zhang, D. Wu, and C. Zhan, “Pearson correlation coefficient-based performance enhancement of broad learning system for stock price prediction,” \textit{IEEE Transactions on Circuits and Systems II: Express Briefs}, vol. 69, no. 5, pp. 2413–2417, May 2022. %, doi: 10.1109/TCSII.2022.3160266.
+		
+		\bibitem{fiedor_networksmutualinformationrate}
+		P. Fiedor, “Networks in financial markets based on the mutual information rate,” \textit{Physical Review E}, vol. 89, no. 5, May 2014. % doi: 10.1103/PhysRevE.89.052801.
+		
+		\bibitem{cooper_realinvestmentandrisk}
+		I. Cooper and R. Priestley. "Real investment and risk dynamics," \textit{Journal of Financial Economics}, vol. 101, no. 1, pp. 182-205, July 2011.
+		
+		\bibitem{lansing_riskaversion}
+		K. J. Lansing and S. F. LeRoy, “Risk aversion, investor information and stock market volatility,” \textit{European Economic Review}, vol. 70, pp. 88-107, July 2014. 
+		
+		\bibitem{risktolerance}
+		J. E. Corter and Y. J. Chen, “Do investment risk tolerance attitudes predict portfolio risk?,” \textit{Journal of Business and Psychology}, vol. 20, no. 3, pp. 369-381, 2006.
+		
+		\bibitem{harmon_economicinterdependence}
+		D. Harmon, B. Stacey, Y. Bar-Yam, and Y. Bar-Yam, "Networks of economic market interdependence and systemic risk," New England Complex Systems Institute, Cambridge, MA, Tech. Report 1011.3707, Mar. 2009.
+		
+		\bibitem{park_complex}
+		J. Park, C. H. Cho, and J. W. Lee, "A perspective on complex networks in the stock market," \textit{Frontiers in Physics}, vol. 10, Dec. 2022. %[Online serial] %, doi: 10.3389/fphy.2022.1097489.
+		
+		\bibitem{baydelli_hierarchicalmarket}
+		Y. Y. Baydilli, S. Bayir, and I. Tuker, “A hierarchical view of a national stock market as a complex network,” \textit{Economic Computation \& Economic Cybernetics Studies \& Research}, vol. 51, no. 1, pp. 205–222, Jan. 2017.
+		
+		
+		
+	\end{thebibliography}
+
+\end{document}
