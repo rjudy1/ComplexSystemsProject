@@ -15,17 +15,17 @@ from stock import Stock
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
-# Parameters for simulation
+# Parameters for simulation - using 10000 as the normalizing value for risk percentile
 
 N = 100  # number of brokers
-neighbor_influence = 0.2  # percent of risk assessment determined by neighbors
+neighbor_influence = 0.03  # initial percent of risk assessment provided by each neighbor
 adjust_influence = True
 seed_money = 1_000_000
 trials = 1  # not really using this since just doing a single run currently since its such a long runtime
 start = "01/01/2003"  # date to start simulation
 end = "12/31/2012"  # date to stop simulation
 input_data_filename = 'data/ticker_info_400_all_catagories.csv'
-figure_file_directory = 'figures'
+figure_file_directory = 'figures2003-2012_updated'
 # -------------------------------------------------------------------------------------------------------------------- #
 
 
@@ -96,7 +96,9 @@ for trial in range(trials):
     money_series = defaultdict(lambda: list())
 
     # list of brokers with increasing preferred levels of risk
-    brokers = [Broker(i, seed_money, (i+1)/N*9999, neighbor_influence, adjust_influence) for i in range(N)]
+    brokers = [Broker(i, seed_money, (i+1)/N*9999, neighbor_influence, adjust_influence, stop_at_stable=False) for i in range(N)]
+    # version with limited risk types to focus on influence
+    # brokers = [Broker(i, seed_money, random.sample([3333,6666,9999],1)[0], neighbor_influence, adjust_influence, stop_at_stable=False) for i in range(N)]
 
     # @INFLUENCE THIS BLOCK ADDRESSES THE NEIGHBOR WEIGHTING AND SETUP
     # Generate the number of friends per person with power distribution and populate those friend relationships
@@ -112,8 +114,9 @@ for trial in range(trials):
                 brokers[neighbor].in_neighbors[i] = 1 / friend_count_dist[i]  # not a clean way to do this but it'll work hopefully
 
     for b in brokers:
+        b.neighbor_weight = neighbor_influence * len(b.in_neighbors)
         for neighbor in b.in_neighbors:
-            b.in_neighbors[neighbor] = 1 / len(b.in_neighbors)
+            b.in_neighbors[neighbor] = neighbor_influence
 
     # display the network created
     # nx.draw(broker_network, with_labels=True, font_color='white', node_shape='s')
@@ -167,7 +170,7 @@ for trial in range(trials):
                 prev = time()
 
         # add dividend
-        if date.day == 1 and (date.month == 3 or date.month == 6 or date.month == 9 or date.month == 12):
+        if date.day == 1 and (date.month == 12):
             for broker in brokers:
                 for ticker in stocks:
                     broker.money += stocks[ticker].dividend_ratio
@@ -214,7 +217,7 @@ for trial in range(trials):
             unique_count += 1 if b.portfolio[p] > 0 else 0
         # print(b.portfolio)
         num_stocks.append(count)
-        dollar_per_stock.append(portfolio_quant/unique_count)
+        dollar_per_stock.append(portfolio_quant/count)
         num_unique_stocks.append(unique_count)
         cash_at_end.append(b.money)
 
@@ -235,19 +238,19 @@ for trial in range(trials):
 
     random_ids = sorted(random.sample(brokers, 10), key=lambda b: b.id)
     plot_times(dates, [broker_statuses[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker wealth', 'Broker wealth time series', f'timeSeriesJoint.png')
+               'Dates', 'Broker wealth', 'Broker wealth (including portfolio and cash) time series', f'timeSeriesJoint.png')
     plot_times(dates, [broker_risks[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
                'Dates', 'Broker risk', 'Broker risk time series', f'riskSeriesJoint.png')
     plot_times(dates, [money_series[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker money', 'Broker money time series', f'moneySeriesJoint.png')
+               'Dates', 'Broker liquid money', 'Broker liquid money time series', f'moneySeriesJoint.png')
 
     random_ids = sorted(random.sample(brokers, 10), key=lambda b: b.id)
     plot_times(dates, [broker_statuses[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker wealth', 'Broker wealth time series', f'timeSeriesJoint2.png')
+               'Dates', 'Broker wealth', 'Broker wealth (including portfolio and cash) time series', f'timeSeriesJoint2.png')
     plot_times(dates, [broker_risks[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
                'Dates', 'Broker risk', 'Broker risk time series', f'riskSeriesJoint2.png')
     plot_times(dates, [money_series[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker money', 'Broker money time series', f'moneySeriesJoint2.png')
+               'Dates', 'Broker liquid money', 'Broker liquid money time series', f'moneySeriesJoint2.png')
 
 
     # plot portfolio risk to portfolio value
@@ -275,17 +278,17 @@ for trial in range(trials):
     plot(num_friends, final_portfolio_values, 'Number of friends', 'Final portfolio value',
          'Final portfolio value to number of friends', 'valueToFriendCount.png')
 
-    # # plot values mid interval
-    # interim_portfolio_values = [broker_statuses[b.id][len(dates)//2] for b in brokers]
-    #
+    # plot values mid interval
+    interim_portfolio_values = [broker_statuses[b.id][len(dates)//2] for b in brokers]
+
     # portfolio_risk = [broker.current_risk for broker in brokers]
-    # plot(portfolio_risk, interim_portfolio_values, 'Portfolio risk', 'Final portfolio value',
-    #      'Interim portfolio values to risk', 'interimRiskToValue.png')
-    #
+    plot(portfolio_risk, interim_portfolio_values, 'Portfolio risk', 'Final portfolio value',
+         'Interim portfolio values to risk', 'interimRiskToValue.png')
+
     # influences = [sum(broker_network.get_edge_data(n, me)['weight'] for (n, me) in broker_network.in_edges(broker.id)) for broker in brokers]
-    # plot(influences, interim_portfolio_values, 'Influence summed inputs', 'Final portfolio value',
-    #      'Interim portfolio value to influence', 'interimValueToInfluence.png')
-    #
+    plot(influences, interim_portfolio_values, 'Influence summed inputs', 'Final portfolio value',
+         'Interim portfolio value to influence', 'interimValueToInfluence.png')
+
     # num_friends = [len(broker_network.in_edges(broker.id)) for broker in brokers]
-    # plot(num_friends, interim_portfolio_values, 'Number of friends', 'Final portfolio value',
-    #      'Interim portfolio value to number of friends', 'interimValueToFriendCount.png')
+    plot(num_friends, interim_portfolio_values, 'Number of friends', 'Final portfolio value',
+         'Interim portfolio value to number of friends', 'interimValueToFriendCount.png')
