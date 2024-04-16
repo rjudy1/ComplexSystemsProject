@@ -185,7 +185,7 @@ class Broker:
             for neighbor in self.in_neighbors:
                 n_change = id_to_broker_map[neighbor].get_status(stocks, date) - self._neighbor_history[neighbor]
 
-                self.in_neighbors[neighbor] += .0005 * np.sign(self_change - n_change)
+                self.in_neighbors[neighbor] += .0008 * np.sign(self_change - n_change)
                 self._neighbor_history[neighbor] = id_to_broker_map[neighbor].get_status(stocks, date)
 
             self.neighbor_weight = sum(self.in_neighbors[n] for n in self.in_neighbors)
