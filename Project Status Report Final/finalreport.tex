@@ -45,12 +45,12 @@
 	\maketitle
 
 	\begin{abstract}
-		content...
+		This project explores the impact of risk strategies in a complex network of brokers, simulating the stock market over different intervals. It shows how some risk strategies can perform well over typical behavior of the market while others benefit from sudden volatile events. It also explores how influence of broker's friends on the risk assessment can affect the portfolio value over time. 
 	\end{abstract}
 
 	\section{Introduction}\label{sec:intro}
 	% Introduction: The goals of the project, the motivation, and the approach used.
-	This project was designed with the objective of exploring the impact of risk as defined by a power law distribution and networked brokers in the context of neighbor influence on the brokers' portfolio values over different trading intervals. Economic markets are volatile and have been shown to contain many fat-tailed and power law distributions, such as in growth rates and stock returns \ref{gabix_powerlaws}. Many different models of the market have been created to explore these behaviors, and data is readily available to examine the impacts of different strategies and inter-dependencies on the market. Scholars have examined risk and risk aversion, explored modeling the market as a network of stocks or brokers, attempted to classify and group the networks, and attempted to design models of crashes that resemble the real world. This project combines the study of risk in psychology with the fat tailed distribution of network connections and the volatility of black swan \cite{taleb_antifragile} events to evaluate market broker strategies to maximize portfolio value over typical events and through drastic changes in the market.
+	This project was designed with the objective of exploring the impact of risk as defined by a power law distribution and networked brokers in the context of neighbor influence on the brokers' portfolio values over different trading intervals. Economic markets are volatile and have been shown to contain many fat-tailed and power law distributions, such as in growth rates and stock returns \cite{gabix_powerlaws}. Many different models of the market have been created to explore these behaviors, and data is readily available to examine the impacts of different strategies and inter-dependencies on the market. Scholars have examined risk and risk aversion, explored modeling the market as a network of stocks or brokers, attempted to classify and group the networks, and attempted to design models of crashes that resemble the real world. This project combines the study of risk in psychology with the fat tailed distribution of network connections and the volatility of black swan \cite{taleb_antifragile} events to evaluate market broker strategies to maximize portfolio value over typical events and through drastic changes in the market.
 	
 	\section{Background}\label{sec:background}
 	% Background: Summary of important concepts and related previous work (with citations).
@@ -58,6 +58,7 @@
 	
 	Further, several models for risk were presented. This involved quantifying the risk with the Chen, Roll, and Ross factors \cite{cooper_realinvestmentandrisk} to predict economic activity, assessing the importance of the distribution of risk aversion in the volatility of returns \cite{lansing_riskaversion}, and highlighted the importance of dividends in quantifying the risk level of stocks. These models provide a basis for developing a model of portfolio risk.
 	
+	Based on the ideas presented in Taleb's book \cite{taleb_antifragile}, it has been suggested that some strategies which perform best over typical market moves may not be optimal during sudden volatile events, which characterize the stock market. The idea that these strategies based on risk with the input on risk assessment from neighbors could be what differentiates the quality of the strategies.
 	
 	
 	\section{Methods}\label{sec:methods}
@@ -68,14 +69,15 @@
 	% TODO: @Connor briefly discuss the data collection and filtering methods + what data was lost by the filtering process
 	
 	\subsection{Influence and Friend Selection}\label{subsec:friends}
-	The number of friends 
+	The number of friends for each broker was selected with a power law distribution with $\alpha = 3$ and a minimum value of $2$ friends. The set of friends F were selected randomly from a uniform distribution over all the brokers. Each friend started with a set percent $w_i$ of the broker i's risk assessment. Thus, the risk for a stock $s$ was represented with the formula 
+	$$R(\text{s}) = (1-\sum\limits_{f\in F} w_f) R_{broker}(\text{s}) + \sum\limits_{f\in \text{F}} w_f R_f(\text{s})$$
 	% TODO: @Rachael insert the powerlaw equation used to generate the distribution of the number of friends
 
 	\subsection{Risk Calculation}\label{subsec:risk}
-	% TODO:  @Josh insert mathematical model description
+	% TODO:  @Josh insert mathematical model description, equation, and description of individual and portfolio risk calculation
 	
 	\subsection{Metrics}\label{subsec:metrics}	
-	% TODO: discuss portfolio evaluation 
+	The portfolio value at any point in time was represented as the sum of the liquid money the broker had and the current value of every stock owned by the broker at the given time. Its risk is evaluated as the risk for every stock in the portfolio multiplied by its volume. The portfolio risk was used to quantify the level of risk each broker attempted to maintain while the portfolio value at different times in the interval was used to evaluate the strategy's overall performance.
 
 
 	\section{Results}\label{sec:results}
@@ -84,12 +86,16 @@
 	
 	
 	
+	% Seems like influence as is feeds into risk incorrectly
+	
+	
+	
 	\section{Conclusion}\label{sec:conclusion}
 	% Conclusion: Summary of accomplishments, challenges and open issues
-	
+	This project explored the value of different risk strategies in a simulated market of networked brokers with power law assumptions for risk. It showed ...
 	
 	\subsection{Future Work}\label{subsec:futurework}
-	
+	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area in which limited advances were made was exploring the impact of the influence of neighbors' assessment of risk on the success of a strategy. Because all neighbors used the same information and formula, except for the accounting of their personal status, the impact of influence could be expanded. Further, the risk assessment would be modified to vary more between brokers based on partial information to better represent the real world and better account for the interconnections between stocks. 
 
 
 
