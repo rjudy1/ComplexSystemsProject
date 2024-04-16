@@ -15,12 +15,14 @@ from stock import Stock
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
-# Parameters for simulation
+# Parameters for simulation - using 10000 as the normalizing value for risk percentile
 
 N = 100  # number of brokers
-neighbor_influence = 0.2  # percent of risk assessment determined by neighbors
+neighbor_influence = 0.03  # initial percent of risk assessment provided by each neighbor
 adjust_influence = True
+use_influence_only = True
 seed_money = 1_000_000
+stop_at_stable = False
 trials = 1  # not really using this since just doing a single run currently since its such a long runtime
 start = "01/01/2003"  # date to start simulation
 end = "12/31/2012"  # date to stop simulation
@@ -96,7 +98,10 @@ for trial in range(trials):
     money_series = defaultdict(lambda: list())
 
     # list of brokers with increasing preferred levels of risk
-    brokers = [Broker(i, seed_money, (i+1)/N*9999, neighbor_influence, adjust_influence) for i in range(N)]
+    brokers = [Broker(i, seed_money, (i+1)/N*9999, neighbor_influence, adjust_influence, stop_at_stable=stop_at_stable) for i in range(N)]
+    # version with limited risk types to focus on influence
+    if use_influence_only:
+        brokers = [Broker(i, seed_money, random.sample([500,5000,9999],1)[0], neighbor_influence, adjust_influence, stop_at_stable=stop_at_stable) for i in range(N)]
 
     # @INFLUENCE THIS BLOCK ADDRESSES THE NEIGHBOR WEIGHTING AND SETUP
     # Generate the number of friends per person with power distribution and populate those friend relationships
@@ -112,8 +117,9 @@ for trial in range(trials):
                 brokers[neighbor].in_neighbors[i] = 1 / friend_count_dist[i]  # not a clean way to do this but it'll work hopefully
 
     for b in brokers:
+        b.neighbor_weight = neighbor_influence * len(b.in_neighbors)
         for neighbor in b.in_neighbors:
-            b.in_neighbors[neighbor] = 1 / len(b.in_neighbors)
+            b.in_neighbors[neighbor] = neighbor_influence
 
     # display the network created
     # nx.draw(broker_network, with_labels=True, font_color='white', node_shape='s')
@@ -167,7 +173,7 @@ for trial in range(trials):
                 prev = time()
 
         # add dividend
-        if date.day == 1 and (date.month == 3 or date.month == 6 or date.month == 9 or date.month == 12):
+        if date.day == 1 and (date.month == 12):
             for broker in brokers:
                 for ticker in stocks:
                     broker.money += stocks[ticker].dividend_ratio
@@ -195,6 +201,7 @@ for trial in range(trials):
     nx.draw_networkx(broker_network, pos)
     for edge in broker_network.edges(data='weight'):
         nx.draw_networkx_edges(broker_network, pos, edgelist=[edge], width=edge[2]*2)
+    plt.savefig(f'{figure_file_directory}/finalNeighborWeightsGraph.png')
     plt.show()
 
     # compute average value of brokers
@@ -214,7 +221,7 @@ for trial in range(trials):
             unique_count += 1 if b.portfolio[p] > 0 else 0
         # print(b.portfolio)
         num_stocks.append(count)
-        dollar_per_stock.append(portfolio_quant/unique_count)
+        dollar_per_stock.append(portfolio_quant/count)
         num_unique_stocks.append(unique_count)
         cash_at_end.append(b.money)
 
@@ -228,27 +235,78 @@ for trial in range(trials):
     plot(broker_ids, cash_at_end, 'Broker ids as ordered by risk level', 'Liquid currency ($)',
          f'Liquid currency at end of simulation {end}', f'liquidCurrency.png')
 
-    # # plot some time series of brokers
+    # # plot some time series of brokers wealth, risk, and liquid money, randomly select 10 per go
     # for b in random.sample(brokers, 1):
     #     plot_times(dates, [broker_statuses[b.id]], [f'broker {b.id}'], 'dates', f'portfolio and currency value of broker {b.id}', f'broker wealth time series {b.id}', f'timeseries{b.id}.png')
     #     plot_times(dates, [broker_risks[b.id]], [f'broker {b.id}'], 'dates', f'risk of broker {b.id}', f'broker risk time series {b.id}', f'riskseries{b.id}.png')
 
-    random_ids = sorted(random.sample(brokers, 10), key=lambda b: b.id)
-    plot_times(dates, [broker_statuses[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker wealth', 'Broker wealth time series', f'timeSeriesJoint.png')
-    plot_times(dates, [broker_risks[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker risk', 'Broker risk time series', f'riskSeriesJoint.png')
-    plot_times(dates, [money_series[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker money', 'Broker money time series', f'moneySeriesJoint.png')
+    if not use_influence_only:
+        random_ids = sorted(random.sample(brokers, 10), key=lambda b: b.id)
+        plot_times(dates, [broker_statuses[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
+                   'Dates', 'Broker wealth', 'Broker wealth (including portfolio and cash) time series', f'timeSeriesJoint.png')
+        plot_times(dates, [broker_risks[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
+                   'Dates', 'Broker risk', 'Broker risk time series', f'riskSeriesJoint.png')
+        plot_times(dates, [money_series[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
+                   'Dates', 'Broker liquid money', 'Broker liquid money time series', f'moneySeriesJoint.png')
 
-    random_ids = sorted(random.sample(brokers, 10), key=lambda b: b.id)
-    plot_times(dates, [broker_statuses[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker wealth', 'Broker wealth time series', f'timeSeriesJoint2.png')
-    plot_times(dates, [broker_risks[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker risk', 'Broker risk time series', f'riskSeriesJoint2.png')
-    plot_times(dates, [money_series[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
-               'Dates', 'Broker money', 'Broker money time series', f'moneySeriesJoint2.png')
+        random_ids = sorted(random.sample(brokers, 10), key=lambda b: b.id)
+        plot_times(dates, [broker_statuses[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
+                   'Dates', 'Broker wealth', 'Broker wealth (including portfolio and cash) time series', f'timeSeriesJoint2.png')
+        plot_times(dates, [broker_risks[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
+                   'Dates', 'Broker risk', 'Broker risk time series', f'riskSeriesJoint2.png')
+        plot_times(dates, [money_series[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
+                   'Dates', 'Broker liquid money', 'Broker liquid money time series', f'moneySeriesJoint2.png')
 
+        random_ids = sorted(random.sample(brokers, 10), key=lambda b: b.id)
+        plot_times(dates, [broker_statuses[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
+                   'Dates', 'Broker wealth', 'Broker wealth (including portfolio and cash) time series', f'timeSeriesJoint3.png')
+        plot_times(dates, [broker_risks[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
+                   'Dates', 'Broker risk', 'Broker risk time series', f'riskSeriesJoint3.png')
+        plot_times(dates, [money_series[b.id] for b in random_ids], [f'Broker {i.id}' for i in random_ids],
+                   'Dates', 'Broker liquid money', 'Broker liquid money time series', f'moneySeriesJoint3.png')
+
+    else:
+        random_ids = list()
+        while len(random_ids) < 10:
+            sampled_broker = random.sample(brokers, 1)[0]
+            if sampled_broker.preferred_risk_minimum == 500:
+                random_ids.append(sampled_broker.id)
+        random_ids = sorted(random_ids)
+        plot_times(dates, [broker_statuses[b] for b in random_ids], [f'Broker {i}' for i in random_ids],
+                   'Dates', 'Broker wealth', 'Broker wealth (including portfolio and cash) time series with low risk',
+                   f'timeSeriesJoint2_setRiskLow.png')
+        plot_times(dates, [broker_risks[b] for b in random_ids], [f'Broker {i}' for i in random_ids],
+                   'Dates', 'Broker risk', 'Broker risk time series with low risk', f'riskSeriesJoint2_setRiskLow.png')
+        plot_times(dates, [money_series[b] for b in random_ids], [f'Broker {i}' for i in random_ids],
+                   'Dates', 'Broker liquid money', 'Broker liquid money time series with low risk', f'moneySeriesJoint2_setRiskLow.png')
+
+        random_ids = list()
+        while len(random_ids) < 10:
+            sampled_broker = random.sample(brokers, 1)[0]
+            if sampled_broker.preferred_risk_minimum == 5000:
+                random_ids.append(sampled_broker.id)
+        random_ids = sorted(random_ids)
+        plot_times(dates, [broker_statuses[b] for b in random_ids], [f'Broker {i}' for i in random_ids],
+                   'Dates', 'Broker wealth', 'Broker wealth (including portfolio and cash) time series with medium risk',
+                   f'timeSeriesJoint2_setRiskMed.png')
+        plot_times(dates, [broker_risks[b] for b in random_ids], [f'Broker {i}' for i in random_ids],
+                   'Dates', 'Broker risk', 'Broker risk time series with medium risk', f'riskSeriesJoint2_setRiskMed.png')
+        plot_times(dates, [money_series[b] for b in random_ids], [f'Broker {i}' for i in random_ids],
+                   'Dates', 'Broker liquid money', 'Broker liquid money time series with medium risk', f'moneySeriesJoint2_setRiskMed.png')
+
+        random_ids = list()
+        while len(random_ids) < 10:
+            sampled_broker = random.sample(brokers, 1)[0]
+            if sampled_broker.preferred_risk_minimum == 9999:
+                random_ids.append(sampled_broker.id)
+        random_ids = sorted(random_ids)
+        plot_times(dates, [broker_statuses[b] for b in random_ids], [f'Broker {i}' for i in random_ids],
+                   'Dates', 'Broker wealth', 'Broker wealth (including portfolio and cash) time series with high risk',
+                   f'timeSeriesJoint2_setRiskHigh.png')
+        plot_times(dates, [broker_risks[b] for b in random_ids], [f'Broker {i}' for i in random_ids],
+                   'Dates', 'Broker risk', 'Broker risk time series with high risk', f'riskSeriesJoint2_setRiskHigh.png')
+        plot_times(dates, [money_series[b] for b in random_ids], [f'Broker {i}' for i in random_ids],
+                   'Dates', 'Broker liquid money', 'Broker liquid money time series with high risk', f'moneySeriesJoint2_setRiskHigh.png')
 
     # plot portfolio risk to portfolio value
     final_portfolio_values = [broker_statuses[b.id][-1] for b in brokers]
@@ -267,25 +325,28 @@ for trial in range(trials):
     plot(portfolio_risk, final_portfolio_values, 'Portfolio risk', 'Final portfolio value',
          'Final portfolio values to risk', 'valueToRisk.png')
 
-    influences = [sum(broker_network.get_edge_data(n, me)['weight'] for (n, me) in broker_network.in_edges(broker.id)) for broker in brokers]
+    influences = [broker.neighbor_weight for broker in brokers]
     plot(influences, final_portfolio_values, 'Influence summed inputs', 'Final portfolio value',
          'Portfolio value to influence', 'valueToInfluence.png')
 
-    num_friends = [len(broker_network.in_edges(broker.id)) for broker in brokers]
+    num_friends = [len(broker.in_neighbors) for broker in brokers]
+    for b in random.sample(brokers, 10):
+        print(b.id, b.in_neighbors, b.neighbor_weight)
+
     plot(num_friends, final_portfolio_values, 'Number of friends', 'Final portfolio value',
          'Final portfolio value to number of friends', 'valueToFriendCount.png')
 
-    # # plot values mid interval
-    # interim_portfolio_values = [broker_statuses[b.id][len(dates)//2] for b in brokers]
-    #
+    # plot values mid interval
+    interim_portfolio_values = [broker_statuses[b.id][len(dates)//2] for b in brokers]
+
     # portfolio_risk = [broker.current_risk for broker in brokers]
-    # plot(portfolio_risk, interim_portfolio_values, 'Portfolio risk', 'Final portfolio value',
-    #      'Interim portfolio values to risk', 'interimRiskToValue.png')
-    #
+    plot(portfolio_risk, interim_portfolio_values, 'Portfolio risk', 'Final portfolio value',
+         'Interim portfolio values to risk', 'interimRiskToValue.png')
+
     # influences = [sum(broker_network.get_edge_data(n, me)['weight'] for (n, me) in broker_network.in_edges(broker.id)) for broker in brokers]
-    # plot(influences, interim_portfolio_values, 'Influence summed inputs', 'Final portfolio value',
-    #      'Interim portfolio value to influence', 'interimValueToInfluence.png')
-    #
+    plot(influences, interim_portfolio_values, 'Influence summed inputs', 'Final portfolio value',
+         'Interim portfolio value to influence', 'interimValueToInfluence.png')
+
     # num_friends = [len(broker_network.in_edges(broker.id)) for broker in brokers]
-    # plot(num_friends, interim_portfolio_values, 'Number of friends', 'Final portfolio value',
-    #      'Interim portfolio value to number of friends', 'interimValueToFriendCount.png')
+    plot(num_friends, interim_portfolio_values, 'Number of friends', 'Final portfolio value',
+         'Interim portfolio value to number of friends', 'interimValueToFriendCount.png')

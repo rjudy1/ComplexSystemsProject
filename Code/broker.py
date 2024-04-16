@@ -7,13 +7,15 @@ import numpy as np
 
 
 class Broker:
-    def __init__(self, id: int, initial_money: float, risk_minimum: float = 0, neighbor_weight: float = 0, shift_influence: bool = False):
+    def __init__(self, id: int, initial_money: float, risk_minimum: float = 0, neighbor_weight: float = 0, shift_influence: bool = False, stop_at_stable=False):
         self.id = id
         self.money = initial_money
         self.portfolio = collections.defaultdict(lambda: 0)  # stock to quantity dictionary
 
         self.in_neighbors = dict()
-        self.neighbor_weight = neighbor_weight
+        self.neighbor_weight = 0  # percent of weight given to the neighbors decision in total
+        # self.standard_neighbor_weight = neighbor_weight
+        self.previous_status = self.money
 
         self.preferred_risk_minimum = risk_minimum
         self.preferred_risk_maximum = risk_minimum*1.15
@@ -29,6 +31,9 @@ class Broker:
         self.adjust_influence = shift_influence
         self._neighbor_history = collections.defaultdict(lambda: initial_money)  # how do we want to use this?
 
+        self.stop_at_stable = stop_at_stable
+        self.done = False
+
     # buy and sell functionality based on allowed purchase rate, outside influence,
     def update(self, graph, available_stocks, id_to_broker_map, stocks, date):
         # include transaction, update status
@@ -38,7 +43,7 @@ class Broker:
 
         transaction_count = 0
         # while (self.money > 500 or self.preferred_risk_maximum < self.current_risk or random.random() < .2) and transaction_count < 100:
-        while (self.current_risk < self.preferred_risk_minimum or self.current_risk > self.preferred_risk_maximum or random.random() < .45) and transaction_count < 50:
+        while (self.current_risk < self.preferred_risk_minimum or self.current_risk > self.preferred_risk_maximum or random.random() < .45) and transaction_count < 50 and not self.done:
             # is there a better way to choose then randomly selecting higher or lower risk
             # if large gap, pull from back, if small from front half?
             transaction_count += 1
@@ -141,12 +146,12 @@ class Broker:
             # random buys
             else:  # self.money > 100:
                 # print("rand om buys 123")
-                percentage_consider = .0002  # percent of the money to spend
+                percentage_consider = .02  # percent of the money to spend
 
                 risk_dict = dict()
                 quant_dict = dict()
                 for stock in available_stocks:
-                    quantity = int(max(max(self.money*percentage_consider, 200) / stocks[stock].date_to_price[date], 1))
+                    quantity = int(max(max(self.money*percentage_consider, 300) / stocks[stock].date_to_price[date], 1))
                     quant_dict[stock] = quantity
                     risk_dict[stock] = self.assess_risk(stock, quantity, stocks, date) * (1-self.neighbor_weight) + neighbor_factor1[stock] * self.neighbor_weight
                 sorted_list = sorted(risk_dict.keys(), key=risk_dict.get)
@@ -165,6 +170,10 @@ class Broker:
 
             self.assess_portfolio_risk(stocks, date)
 
+        if self.stop_at_stable and self.preferred_risk_minimum <= self.current_risk <= self.preferred_risk_maximum and not self.done:
+            self.done = True
+            print(f'DONE WITH {self.id}')
+
         # if self.id % 19 == 0:
         #     print(self.id, self.current_risk, self.money)
         # print(transaction_count)
@@ -172,13 +181,21 @@ class Broker:
         # update public status
         # @INFLUENCE
         if self.adjust_influence:
+            self_change = self.get_status(stocks, date) - self.previous_status
             for neighbor in self.in_neighbors:
-                self.in_neighbors[neighbor] += .002 * np.sign(id_to_broker_map[neighbor].get_status(stocks, date) - self._neighbor_history[neighbor])
-                if sum(self.in_neighbors[n] for n in self.in_neighbors) > 1.1:
-                    self.neighbor_weight += .005
-                elif sum(self.in_neighbors[n] for n in self.in_neighbors) < .9:
-                    self.neighbor_weight -= .005
+                n_change = id_to_broker_map[neighbor].get_status(stocks, date) - self._neighbor_history[neighbor]
+
+                self.in_neighbors[neighbor] += .0008 * np.sign(self_change - n_change)
                 self._neighbor_history[neighbor] = id_to_broker_map[neighbor].get_status(stocks, date)
+
+            self.neighbor_weight = sum(self.in_neighbors[n] for n in self.in_neighbors)
+            if self.neighbor_weight > 1.0:
+                print("OVERRAN LIMIT")
+                # normalize
+                for n in self.in_neighbors:
+                    self.in_neighbors[n] /= self.neighbor_weight
+                    self.neighbor_weight = 1.0
+        self.previous_status = self.get_status(stocks, date)
 
     def get_status(self, stocks, date):
         """
