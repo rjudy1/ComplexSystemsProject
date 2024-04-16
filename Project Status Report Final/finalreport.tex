@@ -48,6 +48,8 @@
 		This project explores the impact of risk strategies in a complex network of brokers, simulating the stock market over different intervals. It shows how some risk strategies can perform well over typical behavior of the market while others benefit from sudden volatile events. It also explores how influence of broker's friends on the risk assessment can affect the portfolio value over time. 
 	\end{abstract}
 
+%	\thanks{This work was contributed by }
+
 	\section{Introduction}\label{sec:intro}
 	% Introduction: The goals of the project, the motivation, and the approach used.
 	This project was designed with the objective of exploring the impact of risk as defined by a power law distribution and networked brokers in the context of neighbor influence on the brokers' portfolio values over different trading intervals. Economic markets are volatile and have been shown to contain many fat-tailed and power law distributions, such as in growth rates and stock returns \cite{gabix_powerlaws}. Many different models of the market have been created to explore these behaviors, and data is readily available to examine the impacts of different strategies and inter-dependencies on the market. Scholars have examined risk and risk aversion, explored modeling the market as a network of stocks or brokers, attempted to classify and group the networks, and attempted to design models of crashes that resemble the real world. This project combines the study of risk in psychology with the fat tailed distribution of network connections and the volatility of black swan \cite{taleb_antifragile} events to evaluate market broker strategies to maximize portfolio value over typical events and through drastic changes in the market.
@@ -67,11 +69,12 @@
 	
 	\subsection{Data Collection and Filtering}\label{subsec:data}
 	% TODO: @Connor briefly discuss the data collection and filtering methods + what data was lost by the filtering process
+	The available tickers were collected from Yahoo Finance's API. The tickers were filtered to those with the information needed for the risk calculation in section \ref{subsec:risk} and 150 stocks were randomly selected from those options to be fed into the simulation. For these stocks, if the price data was missing on a specific day, its price was set to be the most recent value from the time series. Further certain values such as dividend rate and estimated earnings per share were available only as single values instead of time series.
+	
 	
 	\subsection{Influence and Friend Selection}\label{subsec:friends}
 	The number of friends for each broker was selected with a power law distribution with $\alpha = 3$ and a minimum value of $2$ friends. The set of friends F were selected randomly from a uniform distribution over all the brokers. Each friend started with a set percent $w_i$ of the broker i's risk assessment. Thus, the risk for a stock $s$ was represented with the formula 
 	$$R(\text{s}) = (1-\sum\limits_{f\in F} w_f) R_{broker}(\text{s}) + \sum\limits_{f\in \text{F}} w_f R_f(\text{s})$$
-	% TODO: @Rachael insert the powerlaw equation used to generate the distribution of the number of friends
 
 	\subsection{Risk Calculation}\label{subsec:risk}
 	% TODO:  @Josh insert mathematical model description, equation, and description of individual and portfolio risk calculation
@@ -83,10 +86,28 @@
 	\section{Results}\label{sec:results}
 	% Results: Description and discussion of results, with figures, tables, etc.
 	
+	% risk results
+	% Hopefully useful thoughts:
+	% - possibly include quick overview showing that high risk brokers tend to own few stocks total of higher value while ones in the middle show the more typical lots of stocks, and most conservative end up with less stocks and more liquid - requires figure of money at end, stock quantity to broker, and liquid money to broker
+	% - focus in on a point before 2008 and which level of risk broker is doing well in the wealth time series and then who is doing well after the crash ie high risk
+	% - examine immediately after crash wealth v in couple years after
+	% - for the case of stop_at_stable and not stop_at_stable, highlight differences in just sitting once at the desired risk v holding the desired risk by buying and selling
+	%
 	
 	
+	% here's our figure insertion template
+%	\begin{figure}[h]
+%		\centering
+%		\includegraphics[width=.8\textwidth]{policies01.png}
+%		\caption{Time series comparing a random move policy with the social network recommendation policy}
+%		\label{p2_ts}
+%	\end{figure}	
 	
-	% Seems like influence as is feeds into risk incorrectly
+	
+	% influence results
+	% show mediocre plot of influence to wealth with influence only plots (2 figs)
+	% Seems like influence as is feeds into risk incorrectly because the only difference between the broker's assessment is really how much of that stock they own and its value in their portfolio
+	% influence would be more relevant if partial information came into play instead of just how risky the broker wanted to be
 	
 	
 	
@@ -95,7 +116,7 @@
 	This project explored the value of different risk strategies in a simulated market of networked brokers with power law assumptions for risk. It showed ...
 	
 	\subsection{Future Work}\label{subsec:futurework}
-	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area in which limited advances were made was exploring the impact of the influence of neighbors' assessment of risk on the success of a strategy. Because all neighbors used the same information and formula, except for the accounting of their personal status, the impact of influence could be expanded. Further, the risk assessment would be modified to vary more between brokers based on partial information to better represent the real world and better account for the interconnections between stocks. 
+	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area in which limited advances were made was exploring the impact of the influence of neighbors' assessment of risk on the success of a strategy. Because all neighbors used the same information and formula, except for the accounting of their personal status, the impact of influence could be expanded. Further, the risk assessment would be modified to vary more between brokers based on partial information and stocks without full information available to better represent the real world and better account for the interconnections between stocks. 
 
 
 
