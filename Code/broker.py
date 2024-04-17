@@ -13,7 +13,7 @@ class Broker:
         self.portfolio = collections.defaultdict(lambda: 0)  # stock to quantity dictionary
 
         self.in_neighbors = dict()
-        self.neighbor_weight = 0  # number of in neighbors
+        self.neighbor_weight = 0  # percent of weight given to the neighbors decision in total
         # self.standard_neighbor_weight = neighbor_weight
         self.previous_status = self.money
 
@@ -146,12 +146,12 @@ class Broker:
             # random buys
             else:  # self.money > 100:
                 # print("rand om buys 123")
-                percentage_consider = .0002  # percent of the money to spend
+                percentage_consider = .02  # percent of the money to spend
 
                 risk_dict = dict()
                 quant_dict = dict()
                 for stock in available_stocks:
-                    quantity = int(max(max(self.money*percentage_consider, 200) / stocks[stock].date_to_price[date], 1))
+                    quantity = int(max(max(self.money*percentage_consider, 300) / stocks[stock].date_to_price[date], 1))
                     quant_dict[stock] = quantity
                     risk_dict[stock] = self.assess_risk(stock, quantity, stocks, date) * (1-self.neighbor_weight) + neighbor_factor1[stock] * self.neighbor_weight
                 sorted_list = sorted(risk_dict.keys(), key=risk_dict.get)
@@ -185,7 +185,7 @@ class Broker:
             for neighbor in self.in_neighbors:
                 n_change = id_to_broker_map[neighbor].get_status(stocks, date) - self._neighbor_history[neighbor]
 
-                self.in_neighbors[neighbor] += .0005 * np.sign(self_change - n_change)
+                self.in_neighbors[neighbor] += .0008 * np.sign(self_change - n_change)
                 self._neighbor_history[neighbor] = id_to_broker_map[neighbor].get_status(stocks, date)
 
             self.neighbor_weight = sum(self.in_neighbors[n] for n in self.in_neighbors)
