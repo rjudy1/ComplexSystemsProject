@@ -5,6 +5,7 @@ import math
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
+import os
 import pandas as pd
 import powerlaw
 import random
@@ -57,6 +58,10 @@ def plot(x, y, xlabel, ylabel, title, filename):
     plt.savefig(f'{figure_file_directory}/{filename}')
     plt.show()
 
+# -------------------------------------------------------------------------------------------------------
+# create directory if it does not exist 
+if not os.path.isdir(figure_file_directory):
+    os.makedirs(figure_file_directory)
 
 # -------------------------------------------------------------------------------------------------------
 # pull data from csv file of stock data
@@ -317,7 +322,7 @@ for trial in range(trials):
     plt.xlabel('Percentage')
     plt.ylabel('Portfolio Value')
     plt.title('Final Portfolio Values')
-    plt.savefig(f'figures2003-2012/finalValueHistogram')
+    plt.savefig(f'{figure_file_directory}/finalValueHistogram')
     plt.show()
 
     # plot value to risk, influence, friends
