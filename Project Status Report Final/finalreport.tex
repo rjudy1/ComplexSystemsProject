@@ -95,7 +95,7 @@
 	%
 	\subsection{Broker Tendencies}\label{subsec:tendencies}	
 	As mentioned in \ref{sec:methods}, the index at which each Broker is labeled as directly correlates with the relative initial risk compared to other indices. From this, information can be gleaned from figures of metrics vs broker ID and how these metrics relate to the risk adversion of the brokers. Notabily, a few tendencies commonly developed. These are the owership of individual stocks, the owership of total stocks, and the value of liquid assets.\par
-	Fig \ref{totalvID} shows that both low risk and high risk Brokers both tend to own few stocks compared to that of their medium-risk Brokers. Additionally this change in total stocks owned appears to have two critical points at which Brokers preference for total stock owership changes. Interestingly enough this not artifically introduced, but further understanding of this tendency can be descibed by the other tendencies. \par
+	Fig \ref{totalvID} shows that both low risk and high risk Brokers both tend to own few stocks compared to that of their medium-risk Brokers. This owership appears to be parabolic with flat curve defining the maximum. Further tedencies descibe why this shape appears. \par
 
 	\begin{figure}[h]
 		\centering
@@ -106,7 +106,7 @@
 	\end{figure}
 	\FloatBarrier
 
-	Fig \ref{uniquevID} assists in describing how the total number of stocks owned has two values. Here, the levels at which unique stocks are owned in inverted compared to Fig \ref{totalvID}. Both risk adverse and risky Brokers tend to own a number of unique stocks while those with medium risk tend to own less of the same type of stocks. The ownership of multiple stocks in different industries can be seen as less risky as owning more individual stocks allows certian investments to fail without affecting the total as much. This is compared to a high ownership of a specific stock, which if goes under, results in the entire portfolio going under as well.  
+	Fig \ref{uniquevID} assists in describing how the total number of stocks owned has two values. Here, the levels at which unique stocks are owned in inverted compared to Fig \ref{totalvID}. Both risk adverse and risky Brokers tend to own a number of unique stocks while those with medium risk tend to own more of the same type of stocks. The ownership of multiple stocks in different industries can be seen as less risky as owning more individual stocks allows certian investments to fail without affecting the total as much. This is compared to a high ownership of a specific stock, which if goes under, results in the entire portfolio going under as well.  
 
 	\begin{figure}[h]
 		\centering
@@ -116,7 +116,7 @@
 	\end{figure}
 	\FloatBarrier
 
-	Finally, the amount of liquid assets of each Broker paints a clear picture of the differing investment strategies of that of low and high risk investors. Fig \ref{liquidvID} shows that risk adverse Brokers tend to keep around 75\% of their assets liquid, that is not invested in the market. Meanwhile, the medium and high risk Brokers tend to invest most of their assests into the market. These three figures paint the various strategies that Brokers with varying levels of risk adversion use.
+	Finally, the amount of liquid assets of each Broker paints a clear picture of the differing investment strategies of that of low and high risk investors. Fig \ref{liquidvID} shows that risk adverse Brokers tend to keep as much as 100\% of their assets liquid, that is not invested in the market. Meanwhile, the medium and high risk Brokers tend to invest most of their assests into the market. These three figures paint the various strategies that Brokers with varying levels of risk adversion use.
 
 	\begin{figure}[h]
 		\centering
@@ -126,7 +126,36 @@
 	\end{figure}
 	\FloatBarrier	
 
+	\subsection{Market Strategies}\label{subsec:results_midpoint}
+	Each strategy is followed throughout the period of 2003 to 2012, with the occurance of the black swan event, the 2008 financial crisis occuring during this time period. Therefore, it is benifical to analyze how different risk stragies performed with and without the black swan event to determine if certian strategies are better given antifragile thinking. Fig \ref{interimRV} shows that pre 2008 both high and medium risk strategies outperformed low risk strategies. However, the most risky Brokers were significantly underperforming their peers. It is important to note that all brokers were able increase their portfolio value over this time.
 
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.4\textwidth]{interimRiskToValue.png}
+		\caption{Value of Portfolios before Black Swan event}
+		\label{interimRV}
+	\end{figure}
+	\FloatBarrier
+
+	% maybe inlcude stopatstable info
+
+	\subsection{Antifragile Strategies}\label{subsec:results_end}	
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.4\textwidth]{timeSeriesJoint.png}
+		\caption{Timeseries of Broker Wealth}
+		\label{ts_03-12}
+	\end{figure}
+	\FloatBarrier
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.4\textwidth]{valueToRisk.png}
+		\caption{Value of Portfolios}
+		\label{RV}
+	\end{figure}
+	\FloatBarrier
 
 	% here's our figure insertion template
 %	\begin{figure}[h]
