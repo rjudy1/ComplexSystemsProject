@@ -1,6 +1,6 @@
 \documentclass[letterpaper, 10 pt, proceedings]{ieeetran}
 \usepackage{amsmath}
-\usepackage[margin=.75in]{geometry}
+\usepackage[margin=.60in]{geometry}
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{graphicx} % Required for inserting images
@@ -48,15 +48,14 @@
 		This project explores the impact of risk strategies in a complex network of brokers, simulating the stock market over different intervals. It shows how some risk strategies can perform well over typical behavior of the market while others benefit from sudden volatile events. It also explores how influence of broker's friends on the risk assessment can affect the portfolio value over time. 
 	\end{abstract}
 
-%	\thanks{This work was contributed by }
 
 	\section{Introduction}\label{sec:intro}
 	% Introduction: The goals of the project, the motivation, and the approach used.
-	This project was designed with the objective of exploring the impact of risk as defined by a power law distribution and networked brokers in the context of neighbor influence on the brokers' portfolio values over different trading intervals. Economic markets are volatile and have been shown to contain many fat-tailed and power law distributions, such as in growth rates and stock returns \cite{gabix_powerlaws}. Many different models of the market have been created to explore these behaviors, and data is readily available to examine the impacts of different strategies and inter-dependencies on the market. Scholars have examined risk and risk aversion, explored modeling the market as a network of stocks or brokers, attempted to classify and group the networks, and attempted to design models of crashes that resemble the real world. This project combines the study of risk in psychology with the fat tailed distribution of network connections and the volatility of black swan \cite{taleb_antifragile} events to evaluate market broker strategies to maximize portfolio value over typical events and through drastic changes in the market.
+	This project was designed with the objective of exploring the impact of risk as defined by a power law distribution and networked brokers in the context of neighbor influence on the brokers' portfolio values over different trading intervals. Economic markets are volatile and have been shown to contain many fat-tailed and power law distributions, such as in growth rates and stock returns \cite{gabaix_powerlaws}. Many different models of the market have been created to explore these behaviors, and data is readily available to examine the impacts of different strategies and inter-dependencies on the market. Scholars have examined risk and risk aversion, explored modeling the market as a network of stocks or brokers, attempted to classify and group the networks, and attempted to design models of crashes that resemble the real world. This project combines the study of risk in psychology with the fat tailed distribution of network connections and the volatility of black swan \cite{taleb_antifragile} events to evaluate market broker strategies to maximize portfolio value over typical events and through drastic changes in the market.
 	
 	\section{Background}\label{sec:background}
 	% Background: Summary of important concepts and related previous work (with citations).
-	This topic has been explored from a variety of perspectives. Most work has been divided into exploring financial markets in terms of complex networks, looking at individuals' perspective on risk, and running case studies with different clustering and strategies in the market. The work in complex networks creates networks with either brokers or stocks at nodes \cite{kulmann_marketscomplexsystems,dimaggio_relevancebrokernetworks}. To create the edges, they have explored the diffusion of information \cite{dimaggio_relevancebrokernetworks}, spread of first and rebound shocks \cite{gai_contagion}, and correlation and mutual information of different stocks \cite{li_correlation, fiedor_networksmutualinformationrate}. This study models the market with brokers at the nodes with influence connecting the brokers. 
+	This topic has been explored from a variety of perspectives. Most work has been divided into exploring financial markets in terms of complex networks, looking at individuals' perspective on risk, and running case studies with different clustering and strategies in the market. The work in complex networks creates networks with either brokers or stocks at nodes \cite{baydelli_hierarchicalmarket,kulmann_marketscomplexsystems,dimaggio_relevancebrokernetworks}. To create the edges, they have explored the diffusion of information \cite{dimaggio_relevancebrokernetworks}, spread of first and rebound shocks \cite{gai_contagion}, and correlation and mutual information of different stocks \cite{li_correlation, fiedor_networksmutualinformationrate}. This study models the market with brokers at the nodes with influence connecting the brokers. 
 	
 	Further, several models for risk were presented. This involved quantifying the risk with the Chen, Roll, and Ross factors \cite{cooper_realinvestmentandrisk} to predict economic activity, assessing the importance of the distribution of risk aversion in the volatility of returns \cite{lansing_riskaversion}, and highlighted the importance of dividends in quantifying the risk level of stocks. These models provide a basis for developing a model of portfolio risk.
 	
@@ -65,7 +64,7 @@
 	
 	\section{Methods}\label{sec:methods}
 	% Methods: Detailed description of the methods used, including equations, algorithms, rules, etc. and a justification for the approach.
-	The exploration of the market was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and preferred risk levels. This included creating 100 brokers each with a preferred risk level and a number of friends sampled from a power law distribution. The friends also provided their assessment of risk for a given stock which was considered by the broker in their personal assessment. Data for every day in the interval was fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. For interpretation of results, the brokers' indices correspond to the level of preferred risk. 
+	The exploration of the market was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and preferred risk levels. This included creating 100 brokers each with a preferred risk level and a number of friends sampled from a power law distribution. The friends also provided their assessment of risk for a given stock which was considered by the broker in their personal assessment. Data for every day in the interval was fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. For interpretation of results, the brokers' indices correspond to the level of preferred risk. Running the simulation over 2003-2012 allows examining the results of strategies both in normal operating and in a drastic events such as the 2007-2008 financial crisis.
 	
 	\subsection{Data Collection and Filtering}\label{subsec:data}
 	% TODO: @Connor briefly discuss the data collection and filtering methods + what data was lost by the filtering process
@@ -73,18 +72,22 @@
 	
 	
 	\subsection{Influence and Friend Selection}\label{subsec:friends}
-	The number of friends for each broker was selected with a power law distribution with $\alpha = 3$ and a minimum value of $2$ friends. The set of friends F were selected randomly from a uniform distribution over all the brokers. Each friend started with a set percent $w_i$ of the broker i's risk assessment. Thus, the risk for a stock $s$ was represented with the formula 
-	$$R(\text{s}) = (1-\sum\limits_{f\in F} w_f) R_{broker}(\text{s}) + \sum\limits_{f\in \text{F}} w_f R_f(\text{s})$$
+	The number of friends for each broker was selected with a fat tailed distribution with $\alpha = 2.7$ and a minimum value of $2$ friends. The set of friends F were selected randomly from a uniform distribution over all the brokers. Each friend started with a set percent $w_i = .04$ controlled of the broker i's risk assessment. Thus, the risk for a stock $s$ was represented with the formula 
+	$$R(\text{s}) = (1-\sum\limits_{f\in F} w_f) R_{broker}(\text{s}) + \sum\limits_{f\in \text{F}} w_f R_f(\text{s.})$$
+	
+	
 
 	\subsection{Risk Calculation}\label{subsec:risk}
 	% TODO:  @Josh insert mathematical model description, equation, and description of individual and portfolio risk calculation
 	
 	\subsection{Metrics}\label{subsec:metrics}	
-	The portfolio value at any point in time was represented as the sum of the liquid money the broker had and the current value of every stock owned by the broker at the given time. Its risk is evaluated as the risk for every stock in the portfolio multiplied by its volume. The portfolio risk was used to quantify the level of risk each broker attempted to maintain while the portfolio value at different times in the interval was used to evaluate the strategy's overall performance.
+	The portfolio value $V(b_i)$ at any point in time was represented as the sum of the liquid money $m_i$ the broker $b_i$ had and the current value $v_s$ multiplied by the quantity $q_s$ of every stock owned by the broker at the given time: $V(b_i) = m_i + \sum\limits_{s\in\text{stocks}} v_s q_s$. Its risk is evaluated as the risk for every stock in the portfolio multiplied by its volume. The portfolio risk was used to quantify the level of risk each broker attempted to maintain while the portfolio value at different times in the interval was used to evaluate the strategy's overall performance.
 
 
 	\section{Results}\label{sec:results}
 	% Results: Description and discussion of results, with figures, tables, etc.
+	
+	\subsection{Risk}
 	
 	% risk results
 	% Hopefully useful thoughts:
@@ -104,16 +107,39 @@
 %	\end{figure}	
 	
 	
+	\subsection{Influence}
 	% influence results
-	% show mediocre plot of influence to wealth with influence only plots (2 figs)
 	% Seems like influence as is feeds into risk incorrectly because the only difference between the broker's assessment is really how much of that stock they own and its value in their portfolio
 	% influence would be more relevant if partial information came into play instead of just how risky the broker wanted to be
 	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=.52\textwidth]{valueToInfluence_influence04.png}
+		\caption{Plot of portfolio values to percent of decision made based on friends' recommendations on risk}
+		\label{fig:value_to_influence_influencerun}
+	\end{figure}	
+	
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=.5\textwidth]{timeSeriesJoint_influenceRun04_HighRisk.png}
+		\caption{Time series of portfolio values of brokers with high risk ordered by number of friends providing input on risk assessment for stock purchases}
+		\label{fig:high_risk_influence_time_series}
+	\end{figure}	
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=.5\textwidth]{timeSeriesJoint_influenceRun04_LowRisk.png}
+		\caption{Time series of portfolio values of brokers with low risk ordered by number of friends providing input on risk assessment for stock purchases}
+		\label{fig:low_risk_influence_time_series}
+	\end{figure}	
+
+	The simulation examining the impact of influence assigned the brokers to either a low, medium, or high risk level. Within each group, the brokers were ordered from lowest amount of initial friends to greatest quantity, sampled from the fat-tailed distribution discussed in \ref{subsec:friends}. The plot in Figure \ref{fig:value_to_influence_influencerun} shows that allowing a large 50-100\% portion of the purchase assessment to be made with input from neighbors improves the portfolio value. While there is a wide range of values coming from a given influence, it generally improves up to around 50\% of the risk assessment being provided by friends. This is likely because taking multiple neighbors' input highlights stocks that are doing well for multiple different brokers, making the decision easier and capturing the change in value directly that the risk assessment did not capture. Further, it can be seen that this benefit of influence was consistent across the different risk levels by examining Figures \ref{fig:low_risk_influence_time_series} and  and \ref{fig:high_risk_influence_time_series}. It is notable that basing the influence connections of the network around the risk assessment provides an expansion on a single broker's understanding of the stocks behavior  but did not entirely capture the additional benefit of accessing partial information as desired.
 	
 	
 	\section{Conclusion}\label{sec:conclusion}
 	% Conclusion: Summary of accomplishments, challenges and open issues
-	This project explored the value of different risk strategies in a simulated market of networked brokers with power law assumptions for risk. It showed ...
+	This project explored the value of different risk strategies in a simulated market of networked brokers with power law assumptions for risk and connectivities between brokers. It demonstrated the value of taking some input from neighbors' assessments on risk to filter which stocks are actually performing well and showed ... % highlight benefits of risk
 	
 	\subsection{Future Work}\label{subsec:futurework}
 	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area in which limited advances were made was exploring the impact of the influence of neighbors' assessment of risk on the success of a strategy. Because all neighbors used the same information and formula, except for the accounting of their personal status, the impact of influence could be expanded. Further, the risk assessment would be modified to vary more between brokers based on partial information and stocks without full information available to better represent the real world and better account for the interconnections between stocks. 
@@ -122,7 +148,7 @@
 
 	\bibliographystyle{ieeetran}
 	\begin{thebibliography}{99}	
-		\bibitem{gabix_powerlaws}
+		\bibitem{gabaix_powerlaws}
 		X. Gabaix, “Power laws in economics: an introduction,” \textit{Journal of Economic Perspectives}, vol. 30, no. 1, pp. 185–206, Feb. 2016.
 		
 		\bibitem{taleb_antifragile}
@@ -132,10 +158,7 @@
 		D. Easley and J. Kleinberg, Networks, crowds, and markets: Reasoning about a highly connected world. Cambridge, England: Cambridge University Press, 2012.
 		%- https://www.cs.cornell.edu/home/kleinber/networks-book/, particularly chapters 9-12, 17, 22
 		
-		\bibitem{thakkar_neuralnets}
-		A. Thakkar and K. Chaudhari, “A comprehensive survey on deep neural networks for stock market: The need, challenges, and future directions,” Expert Systems with Applications, vol. 177, p. 114800, Sep. 2021, doi: 10.1016/j.eswa.2021.114800.
-		%- https://www.sciencedirect.com/science/article/pii/S0957417421002414
-		
+	
 		\bibitem{hommes_complexmacroeconomics}
 		C. Hommes, “Behavioral and Experimental Macroeconomics and Policy Analysis: A Complex Systems Approach,” Journal of Economic Literature, vol. 59, no. 1, pp. 149–219, Mar. 2021, doi: 10.1257/jel.20191434.
 		%- https://pubs.aeaweb.org/doi/pdfplus/10.1257/jel.20191434
@@ -143,9 +166,6 @@
 		\bibitem{tse_networkstocks}
 		C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” Journal of Empirical Finance, vol. 17, no. 4, pp. 659–667, Sep. 2010, doi: 10.1016/j.jempfin.2010.04.008.
 		%- https://www.sciencedirect.com/science/article/pii/S0927539810000368
-		
-		\bibitem{wikipedia_marketcrashes}
-		“List of stock market crashes and bear markets,” Wikipedia. Jan. 24, 2024. Accessed: Feb. 13, 2024. [Online].
 		
 		\bibitem{kulmann_marketscomplexsystems}
 		M. Kuhlmann, "Explaining financial markets in terms of complex systems," \textit{Philosphy of Science}, vol. 81, no. 5, pp. 1117-1130, Dec. 2014. %doi: 10.1086/677699.
@@ -178,14 +198,13 @@
 		\bibitem{harmon_economicinterdependence}
 		D. Harmon, B. Stacey, Y. Bar-Yam, and Y. Bar-Yam, "Networks of economic market interdependence and systemic risk," New England Complex Systems Institute, Cambridge, MA, Tech. Report 1011.3707, Mar. 2009.
 		
-		\bibitem{park_complex}
-		J. Park, C. H. Cho, and J. W. Lee, "A perspective on complex networks in the stock market," \textit{Frontiers in Physics}, vol. 10, Dec. 2022. %[Online serial] %, doi: 10.3389/fphy.2022.1097489.
-		
 		\bibitem{baydelli_hierarchicalmarket}
 		Y. Y. Baydilli, S. Bayir, and I. Tuker, “A hierarchical view of a national stock market as a complex network,” \textit{Economic Computation \& Economic Cybernetics Studies \& Research}, vol. 51, no. 1, pp. 205–222, Jan. 2017.
 		
-		
-		
 	\end{thebibliography}
+
+		
+
+%	\thanks{This work was contributed by }
 
 \end{document}

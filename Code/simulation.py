@@ -18,11 +18,11 @@ from stock import Stock
 # Parameters for simulation - using 10000 as the normalizing value for risk percentile
 
 N = 100  # number of brokers
-neighbor_influence = 0.06  # initial percent of risk assessment provided by each neighbor
+neighbor_influence = 0.04  # initial percent of risk assessment provided by each neighbor
 adjust_influence = True
 use_influence_only = True
 seed_money = 1_000_000
-stop_at_stable = True
+stop_at_stable = False
 trials = 1  # not really using this since just doing a single run currently since its such a long runtime
 start = "01/01/2003"  # date to start simulation
 end = "12/31/2012"  # date to stop simulation
@@ -35,7 +35,7 @@ figure_file_directory = 'figures'
 def plot_times(x, ys, serieslabels, xlabel, ylabel, title, filename):
     plt.figure(figsize=(10, 6))
     for i in range(len(ys)):
-        plt.plot(x, ys[i], label=f'{serieslabels[i]}')
+        plt.plot(x, ys[i], label=f'{serieslabels[i]}', linewidth=.5)
 
     tick_locations = [len(x) // 7 * i for i in range(8)]
     labels = [x[t] for t in tick_locations[:-1]]
@@ -328,6 +328,17 @@ for trial in range(trials):
     influences = [broker.neighbor_weight for broker in brokers]
     plot(influences, final_portfolio_values, 'Influence summed inputs', 'Final portfolio value',
          'Portfolio value to influence', 'valueToInfluence.png')
+    if use_influence_only:
+        influences = [broker.neighbor_weight for broker in brokers[:len(brokers) // 3]]
+        plot(influences, final_portfolio_values[:len(brokers)//3], 'Influence summed inputs', 'Final portfolio value',
+             'Portfolio value to influence with low risk', 'valueToInfluenceLowRisk.png')
+        influences = [broker.neighbor_weight for broker in brokers[len(brokers) // 3:len(brokers)//3*2]]
+        plot(influences, final_portfolio_values[len(brokers) // 3:len(brokers)//3*2], 'Influence summed inputs', 'Final portfolio value',
+             'Portfolio value to influence with medium risk', 'valueToInfluenceMedRisk.png')
+        influences = [broker.neighbor_weight for broker in brokers[len(brokers)//3*2:]]
+        plot(influences, final_portfolio_values[len(brokers)//3*2:], 'Influence summed inputs', 'Final portfolio value',
+             'Portfolio value to influence with high risk', 'valueToInfluenceHighRisk.png')
+
 
     num_friends = [len(broker.in_neighbors) for broker in brokers]
     for b in random.sample(brokers, 10):
