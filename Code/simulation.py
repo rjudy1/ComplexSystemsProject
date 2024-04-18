@@ -23,12 +23,12 @@ neighbor_influence = 0.04  # initial percent of risk assessment provided by each
 adjust_influence = True
 use_influence_only = True
 seed_money = 1_000_000
-stop_at_stable = False
+stop_at_stable = True
 trials = 1  # not really using this since just doing a single run currently since its such a long runtime
 start = "01/01/2003"  # date to start simulation
 end = "12/31/2012"  # date to stop simulation
 input_data_filename = 'data/ticker_info_400_all_catagories.csv'
-figure_file_directory = 'figures'
+figure_file_directory = 'figures_influenceonly2003-2012_ni4_stop-at-stable'
 # -------------------------------------------------------------------------------------------------------------------- #
 
 
