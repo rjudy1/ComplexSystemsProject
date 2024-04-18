@@ -68,8 +68,8 @@
 	The exploration of the market was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and preferred risk levels. This included creating 100 brokers each with a preferred risk level and a number of friends sampled from a power law distribution. The friends also provided their assessment of risk for a given stock which was considered by the broker in their personal assessment. Data for every day in the interval was fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. For interpretation of results, the brokers' indices correspond to the level of preferred risk. 
 	
 	\subsection{Data Collection and Filtering}\label{subsec:data}
-	The available tickers were collected from Yahoo Finance's API, yfinance. This API made requests to Yahoo Finance with a request limit being placed on each IP. Fortunaty, the University of Cincinnati offers multiple CPUs in their computer labs. First, all the valid stock tickers were pulled that contained daily stock information from the time peroid of 2000 to 2020, totally 10,000 individual tickers. \par
-	These tickers were filtered to those with the information needed for the risk calculation in section \ref{subsec:risk} and 150 stocks were randomly selected from those options to be fed into the simulation. For these stocks, if the price data was missing on a specific day, its price was set to be the most recent value from the time series. Further certain values such as dividend rate and estimated earnings per share were available only as single values instead of time series. This creates inaccuracies in our risk calculation as these single values do flucuate over time, however it is a limitation of the API. This data was then stored in a pandas dataframe for quick accessbility by the simulations at runtime.
+	The available tickers were collected from Yahoo Finance's API, yfinance. This API made requests to Yahoo Finance with a request limit being placed on each IP. Fortunaty, the University of Cincinnati offers multiple CPUs in their computer labs. First, all the valid stock tickers were pulled that contained daily stock information from the time peroid of 2000 to 2020, totally 10,000 individual tickers. These tickers were filtered to those with the information needed for the risk calculation in section \ref{subsec:risk} and 150 stocks were randomly selected from those options to be fed into the simulation. This data was then stored in a pandas dataframe for quick accessbility by the simulations at runtime.\par
+	For these stocks, if the price data was missing on a specific day, its price was set to be the most recent value from the time series. Further certain values such as dividend rate and estimated earnings per share were available only as single values instead of time series. This creates inaccuracies in our risk calculation as these single values do flucuate over time, however it is a limitation of the API. Additionally, Yahoo finance does not record tickers that take their ticker off the public stock market, for reasons such as banrupcy or private buyout. This is a glaring limitation in this simulation as these stocks were not captures in the simulations.  
 	
 
 	\subsection{Influence and Friend Selection}\label{subsec:friends}
@@ -106,6 +106,18 @@
 	\end{figure}
 	\FloatBarrier
 
+	Fig \ref{uniquevID} assists in describing how the total number of stocks owned has two values. Here, the levels at which unique stocks are owned in inverted compared to Fig \ref{totalvID}. Both risk adverse and risky Brokers tend to own a number of unique stocks while those with medium risk tend to own less of the same type of stocks. The ownership of multiple stocks in different industries can be seen as less risky as owning more individual stocks allows certian investments to fail without affecting the total as much. This is compared to a high ownership of a specific stock, which if goes under, results in the entire portfolio going under as well.  
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.4\textwidth]{uniqueStockCountToBrokerIds.png}
+		\caption{Unique stocks owned by Broker Id}
+		\label{uniquevID}
+	\end{figure}
+	\FloatBarrier
+
+	Finally, the amount of liquid assets of each Broker paints a clear picture of the differing investment strategies of that of low and high risk investors. Fig \ref{liquidvID} shows that risk adverse Brokers tend to keep around 75\% of their assets liquid, that is not invested in the market. Meanwhile, the medium and high risk Brokers tend to invest most of their assests into the market. These three figures paint the various strategies that Brokers with varying levels of risk adversion use.
+
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.4\textwidth]{liquidCurrency.png}
@@ -114,13 +126,7 @@
 	\end{figure}
 	\FloatBarrier	
 
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.4\textwidth]{uniqueStockCountToBrokerIds.png}
-		\caption{Uniqie stocks owned by Broker Id}
-		\label{uniquevID}
-	\end{figure}
-	\FloatBarrier
+
 
 	% here's our figure insertion template
 %	\begin{figure}[h]
