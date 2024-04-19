@@ -97,8 +97,8 @@
 	% - for the case of stop_at_stable and not stop_at_stable, highlight differences in just sitting once at the desired risk v holding the desired risk by buying and selling
 	%
 	\subsection{Broker Tendencies}\label{subsec:tendencies}	
-	As mentioned in \ref{sec:methods}, the index at which each Broker is labeled as directly correlates with the relative initial risk compared to other indices. From this, information can be gleaned from figures of metrics vs broker ID and how these metrics relate to the risk adversion of the brokers. Notabily, a few tendencies commonly developed. These are the owership of individual stocks, the owership of total stocks, and the value of liquid assets.\par
-	Fig \ref{totalvID} shows that both low risk and high risk Brokers both tend to own few stocks compared to that of their medium-risk Brokers. This owership appears to be parabolic with flat curve defining the maximum. Further tedencies descibe why this shape appears. \par
+	As mentioned in \ref{sec:methods}, the index at which each Broker is labeled as directly correlates with the relative initial risk compared to other indices. From this, information can be gleaned from figures of metrics vs broker ID and how these metrics relate to the risk aversion of the brokers. Notably, a few tendencies commonly develop. These are the ownership of individual stocks, the ownership of total stocks, and the value of liquid assets.\par 
+	Fig \ref{totalvID} shows that both low-risk and high-risk brokers tend to own few stocks compared to that of their medium-risk brokers. This ownership appears to be parabolic with a flat curve defining the maximum. Further tendencies describe why this shape appears. \par
 
 	\begin{figure}[h]
 		\centering
@@ -109,7 +109,7 @@
 	\end{figure}
 	\FloatBarrier
 
-	Fig \ref{uniquevID} assists in describing how the total number of stocks owned has two values. Here, the levels at which unique stocks are owned in inverted compared to Fig \ref{totalvID}. Both risk adverse and risky Brokers tend to own a number of unique stocks while those with medium risk tend to own more of the same type of stocks. The ownership of multiple stocks in different industries can be seen as less risky as owning more individual stocks allows certian investments to fail without affecting the total as much. This is compared to a high ownership of a specific stock, which if goes under, results in the entire portfolio going under as well.  
+	Fig \ref{uniquevID} assists in describing how the total number of stocks owned has two values. Here, the levels at which unique stocks are owned are inverted compared to Fig \ref{totalvID}. Both risk-averse and risky brokers tend to own a number of unique stocks, while those with medium risk tend to own more of the same type of stocks. The ownership of multiple stocks in different industries can be seen as less risky, as owning more individual stocks allows certain investments to fail without affecting the total as much. This is compared to a high ownership of a specific stock, which, if it goes under, results in the entire portfolio going under as well. 
 
 	\begin{figure}[h]
 		\centering
@@ -119,7 +119,7 @@
 	\end{figure}
 	\FloatBarrier
 
-	Finally, the amount of liquid assets of each Broker paints a clear picture of the differing investment strategies of that of low and high risk investors. Fig \ref{liquidvID} shows that risk adverse Brokers tend to keep as much as 100\% of their assets liquid, that is not invested in the market. Meanwhile, the medium and high risk Brokers tend to invest most of their assests into the market. These three figures paint the various strategies that Brokers with varying levels of risk adversion use.
+	Finally, the amount of liquid assets of each broker paints a clear picture of the differing investment strategies of low and high-risk investors. Fig \ref{liquidvID} shows that risk-averse brokers tend to keep as much as 100\% of their assets liquid, meaning they are not invested in the market. Meanwhile, medium and high-risk brokers tend to invest most of their assets into the market. These three figures illustrate the various strategies that brokers with varying levels of risk aversion employ.
 
 	\begin{figure}[h]
 		\centering
@@ -130,7 +130,7 @@
 	\FloatBarrier	
 
 	\subsection{Market Strategies}\label{subsec:results_midpoint}
-	Each strategy is followed throughout the period of 2003 to 2012, with the occurance of the black swan event, the 2008 financial crisis occuring during this time period. Therefore, it is benifical to analyze how different risk stragies performed with and without the black swan event to determine if certian strategies are better given antifragile thinking. Fig \ref{interimRV} shows that pre 2008 both high and medium risk strategies outperformed low risk strategies. However, the most risky Brokers were significantly underperforming their peers. It is important to note that all brokers were able increase their portfolio value over this time.
+	Each strategy is followed throughout the period of 2003 to 2012, with the occurrence of the black swan event, the 2008 financial crisis, happening during this time period. Therefore, it is beneficial to analyze how different risk strategies performed with and without the black swan event to determine if certain strategies are better given antifragile thinking. Fig \ref{interimRV} shows that pre-2008, both high and medium-risk strategies outperformed low-risk strategies. However, the most risky brokers were significantly underperforming their peers. It is important to note that all brokers were able to increase their portfolio value over this time.
 
 	\begin{figure}[h]
 		\centering
@@ -140,11 +140,10 @@
 	\end{figure}
 	\FloatBarrier
 
-	% maybe inlcude stopatstable info
-
 	\subsection{Antifragile Strategies}\label{subsec:results_end}	
 	
-	Both Fig \ref{ts_03-12} and Fig \ref{RV} show the resultant wealth of Brokers throughout the simulation. Fig \ref{ts_03-12} shows the timeseries of each of the portfolios. A few tends are of note. Firstly, the total wealth of the Broker's assets all appear to follow the general market trendline, and therefore all follow eachother. All of the brokers hit a significant loss due to the 2008 financial crisis, however it is import to note that all the Brokers "road out the wave" and kept their assets. This resulted in, by 2012, the Broker's regaining the wealth that they aquired before 2008. Other Brokers rebounded significantly well as compared to their peers, specificly those brokers with medium risk.
+	Both Fig \ref{ts_03-12} and Fig \ref{RV} show the resultant wealth of brokers throughout the simulation. Fig \ref{ts_03-12} displays the time series of each of the portfolios. A few trends are of note. Firstly, the total wealth of the brokers' assets all appear to follow the general market trendline, and therefore all follow each other. All of the brokers experienced a significant loss due to the 2008 financial crisis; however, it is important to note that all the brokers "rode out the wave" and kept their assets. This resulted in, by 2012, the brokers regaining the wealth that they had acquired before 2008. Other brokers rebounded significantly well compared to their peers, specifically those brokers with medium risk.
+
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.4\textwidth]{timeSeriesJoint.png}
@@ -153,13 +152,23 @@
 	\end{figure}
 	\FloatBarrier
 
-	As was the case for the Fig \ref{interimRV}, the medium risk brokers appeared to have aquired the most wealth. Fig \ref{RV} differs from the pre-black swan event wealth in a few key catagories. First, high risk Brokers were punished significantly worse than before the black swan event. The curve in Fig \ref{RV} is very parabolic where both the low and high risk Brokers did not aquire as much wealth as the average risk Broker. This is in comparison to Fig \ref{interimRV}, where the curve flattens and stays flat. That is high risk Brokers also perform well.
+	As was the case for Fig \ref{interimRV}, the medium-risk brokers appeared to have acquired the most wealth. Fig \ref{RV} differs from the pre-black swan event wealth in a few key categories. First, high-risk brokers were punished significantly worse than before the black swan event. The curve in Fig \ref{RV} is very parabolic, where both the low and high-risk brokers did not acquire as much wealth as the average-risk broker. This is in comparison to Fig \ref{interimRV}, where the curve flattens and stays flat, indicating that high-risk brokers also perform well.
 
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.4\textwidth]{valueToRisk.png}
 		\caption{Value of Portfolios by Broker Id}
 		\label{RV}
+	\end{figure}
+	\FloatBarrier
+	
+	Additionally, simulations were performed where once a broker accomplished their desired risk, they would stop investing. This was to simulate a real-world strategy of investing and sitting on the investment. Interestingly, brokers, although starting with the same risks as in other simulations, ended up becoming less risky by the end of the simulation. Fig \ref{stopatstable} shows that most brokers decided to become less risky, some with zero risk. This is in comparison to Fig \ref{RV}, where the distribution of risk is linear by the end of the simulation. It is also important to note that brokers "sitting on their investments" performed similarly to brokers who continuously invested after the black swan event.
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.4\textwidth]{valueToRisk_stopatstable.png}
+		\caption{Portfolio values by risk when Brokers stop at their }
+		\label{stopatstable}
 	\end{figure}
 	\FloatBarrier
 
@@ -209,8 +218,7 @@
 	This project explored the value of different risk strategies in a simulated market of networked brokers with power law assumptions for risk and connectivities between brokers. It demonstrated the value of taking some input from neighbors' assessments on risk to filter which stocks are actually performing well and showed ... % highlight benefits of risk
 	
 	\subsection{Future Work}\label{subsec:futurework}
-	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area in which limited advances were made was exploring the impact of the influence of neighbors' assessment of risk on the success of a strategy. Because all neighbors used the same information and formula, except for the accounting of their personal status, the impact of influence could be expanded. Further, the risk assessment would be modified to vary more between brokers based on partial information and stocks without full information available to better represent the real world and better account for the interconnections between stocks. 
-	% When then invest, dipping at loss
+	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area in which limited advances were made was exploring the impact of the influence of neighbors' assessment of risk on the success of a strategy. Because all neighbors used the same information and formula, except for the accounting of their personal status, the impact of influence could be expanded. Further, the risk assessment would be modified to vary more between brokers based on partial information and stocks without full information available to better represent the real world and better account for the interconnections between stocks. \par
 
 
 
