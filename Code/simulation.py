@@ -27,8 +27,8 @@ stop_at_stable = True
 trials = 1  # not really using this since just doing a single run currently since its such a long runtime
 start = "01/01/2003"  # date to start simulation
 end = "12/31/2012"  # date to stop simulation
-input_data_filename = 'Code/data/ticker_info_400_all_catagories.csv'
-figure_file_directory = 'Code/figures2003-2012_inf8'
+input_data_filename = 'data/ticker_info_400_all_catagories.csv'
+figure_file_directory = 'figures'
 # -------------------------------------------------------------------------------------------------------------------- #
 
 
