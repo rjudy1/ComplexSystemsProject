@@ -20,15 +20,15 @@ from stock import Stock
 
 N = 100  # number of brokers
 neighbor_influence = 0.06  # initial percent of risk assessment provided by each neighbor
-adjust_influence = True
+adjust_influence = False
 use_influence_only = False
 seed_money = 1_000_000
-stop_at_stable = False
+stop_at_stable = True
 trials = 1  # not really using this since just doing a single run currently since its such a long runtime
 start = "01/01/2003"  # date to start simulation
 end = "12/31/2012"  # date to stop simulation
 input_data_filename = 'data/ticker_info_400_all_catagories.csv'
-figure_file_directory = 'figures_risk-only_2003-2012'
+figure_file_directory = 'figures'
 # -------------------------------------------------------------------------------------------------------------------- #
 
 
@@ -36,7 +36,7 @@ figure_file_directory = 'figures_risk-only_2003-2012'
 def plot_times(x, ys, serieslabels, xlabel, ylabel, title, filename):
     plt.figure(figsize=(10, 6))
     for i in range(len(ys)):
-        plt.plot(x, ys[i], label=f'{serieslabels[i]}', linewidth=.5)
+        plt.plot(x, ys[i], label=f'{serieslabels[i]}', linewidth=.75)
 
     tick_locations = [len(x) // 7 * i for i in range(8)]
     labels = [x[t] for t in tick_locations[:-1]]
