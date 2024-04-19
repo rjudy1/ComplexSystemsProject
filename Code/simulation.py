@@ -19,16 +19,16 @@ from stock import Stock
 # Parameters for simulation - using 10000 as the normalizing value for risk percentile
 
 N = 100  # number of brokers
-neighbor_influence = 0.04  # initial percent of risk assessment provided by each neighbor
+neighbor_influence = 0.06  # initial percent of risk assessment provided by each neighbor
 adjust_influence = True
 use_influence_only = True
 seed_money = 1_000_000
-stop_at_stable = False
+stop_at_stable = True
 trials = 1  # not really using this since just doing a single run currently since its such a long runtime
 start = "01/01/2003"  # date to start simulation
 end = "12/31/2012"  # date to stop simulation
-input_data_filename = 'data/ticker_info_400_all_catagories.csv'
-figure_file_directory = 'figures'
+input_data_filename = 'Code/data/ticker_info_400_all_catagories.csv'
+figure_file_directory = 'Code/figures2003-2012_inf8'
 # -------------------------------------------------------------------------------------------------------------------- #
 
 

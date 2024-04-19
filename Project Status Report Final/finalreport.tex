@@ -144,6 +144,7 @@
 
 	\subsection{Antifragile Strategies}\label{subsec:results_end}	
 	
+	Both Fig \ref{ts_03-12} and Fig \ref{RV} show the resultant wealth of Brokers throughout the simulation. Fig \ref{ts_03-12} shows the timeseries of each of the portfolios. A few tends are of note. Firstly, the total wealth of the Broker's assets all appear to follow the general market trendline, and therefore all follow eachother. All of the brokers hit a significant loss due to the 2008 financial crisis, however it is import to note that all the Brokers "road out the wave" and kept their assets. This resulted in, by 2012, the Broker's regaining the wealth that they aquired before 2008. Other Brokers rebounded significantly well as compared to their peers, specificly those brokers with medium risk.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.4\textwidth]{timeSeriesJoint.png}
@@ -152,10 +153,12 @@
 	\end{figure}
 	\FloatBarrier
 
+	As was the case for the Fig \ref{interimRV}, the medium risk brokers appeared to have aquired the most wealth. Fig \ref{RV} differs from the pre-black swan event wealth in a few key catagories. First, high risk Brokers were punished significantly worse than before the black swan event. The curve in Fig \ref{RV} is very parabolic where both the low and high risk Brokers did not aquire as much wealth as the average risk Broker. This is in comparison to Fig \ref{interimRV}, where the curve flattens and stays flat. That is high risk Brokers also perform well.
+
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.4\textwidth]{valueToRisk.png}
-		\caption{Value of Portfolios}
+		\caption{Value of Portfolios by Broker Id}
 		\label{RV}
 	\end{figure}
 	\FloatBarrier
@@ -176,25 +179,27 @@
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=.52\textwidth]{valueToInfluence_influence04.png}
+		\includegraphics[width=.4\textwidth]{valueToInfluence_influence04.png}
 		\caption{Plot of portfolio values to percent of decision made based on friends' recommendations on risk}
 		\label{fig:value_to_influence_influencerun}
 	\end{figure}	
-	
+	\FloatBarrier
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=.5\textwidth]{timeSeriesJoint_influenceRun04_HighRisk.png}
+		\includegraphics[width=.4\textwidth]{timeSeriesJoint_influenceRun04_HighRisk.png}
 		\caption{Time series of portfolio values of brokers with high risk ordered by number of friends providing input on risk assessment for stock purchases}
 		\label{fig:high_risk_influence_time_series}
 	\end{figure}	
+	\FloatBarrier
 
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=.5\textwidth]{timeSeriesJoint_influenceRun04_LowRisk.png}
+		\includegraphics[width=.4\textwidth]{timeSeriesJoint_influenceRun04_LowRisk.png}
 		\caption{Time series of portfolio values of brokers with low risk ordered by number of friends providing input on risk assessment for stock purchases}
 		\label{fig:low_risk_influence_time_series}
 	\end{figure}	
+	\FloatBarrier
 
 	The simulation examining the impact of influence assigned the brokers to either a low, medium, or high risk level. Within each group, the brokers were ordered from lowest amount of initial friends to greatest quantity, sampled from the fat-tailed distribution discussed in \ref{subsec:friends}. The plot in Figure \ref{fig:value_to_influence_influencerun} shows that allowing a large 50-100\% portion of the purchase assessment to be made with input from neighbors improves the portfolio value. While there is a wide range of values coming from a given influence, it generally improves up to around 50\% of the risk assessment being provided by friends. This is likely because taking multiple neighbors' input highlights stocks that are doing well for multiple different brokers, making the decision easier and capturing the change in value directly that the risk assessment did not capture. Further, it can be seen that this benefit of influence was consistent across the different risk levels by examining Figures \ref{fig:low_risk_influence_time_series} and  and \ref{fig:high_risk_influence_time_series}. It is notable that basing the influence connections of the network around the risk assessment provides an expansion on a single broker's understanding of the stocks behavior  but did not entirely capture the additional benefit of accessing partial information as desired.
 	
@@ -205,6 +210,7 @@
 	
 	\subsection{Future Work}\label{subsec:futurework}
 	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area in which limited advances were made was exploring the impact of the influence of neighbors' assessment of risk on the success of a strategy. Because all neighbors used the same information and formula, except for the accounting of their personal status, the impact of influence could be expanded. Further, the risk assessment would be modified to vary more between brokers based on partial information and stocks without full information available to better represent the real world and better account for the interconnections between stocks. 
+	% When then invest, dipping at loss
 
 
 
