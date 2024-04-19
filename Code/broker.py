@@ -185,7 +185,7 @@ class Broker:
             for neighbor in self.in_neighbors:
                 n_change = id_to_broker_map[neighbor].get_status(stocks, date) - self._neighbor_history[neighbor]
 
-                self.in_neighbors[neighbor] += .0008 * np.sign(self_change - n_change)
+                self.in_neighbors[neighbor] += .0006 * np.sign(self_change - n_change)
                 if self.in_neighbors[neighbor] < 0.0:
                     self.in_neighbors[neighbor] = 0
                 self._neighbor_history[neighbor] = id_to_broker_map[neighbor].get_status(stocks, date)

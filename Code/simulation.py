@@ -19,16 +19,16 @@ from stock import Stock
 # Parameters for simulation - using 10000 as the normalizing value for risk percentile
 
 N = 100  # number of brokers
-neighbor_influence = 0.04  # initial percent of risk assessment provided by each neighbor
+neighbor_influence = 0.06  # initial percent of risk assessment provided by each neighbor
 adjust_influence = True
-use_influence_only = True
+use_influence_only = False
 seed_money = 1_000_000
-stop_at_stable = True
+stop_at_stable = False
 trials = 1  # not really using this since just doing a single run currently since its such a long runtime
 start = "01/01/2003"  # date to start simulation
 end = "12/31/2012"  # date to stop simulation
 input_data_filename = 'data/ticker_info_400_all_catagories.csv'
-figure_file_directory = 'figures_influenceonly2003-2012_ni4_stop-at-stable'
+figure_file_directory = 'figures_risk-only_2003-2012'
 # -------------------------------------------------------------------------------------------------------------------- #
 
 
@@ -334,14 +334,14 @@ for trial in range(trials):
     plot(influences, final_portfolio_values, 'Influence summed inputs', 'Final portfolio value',
          'Portfolio value to influence', 'valueToInfluence.png')
     if use_influence_only:
-        influences = [broker.neighbor_weight for broker in brokers[:len(brokers) // 3]]
-        plot(influences, final_portfolio_values[:len(brokers)//3], 'Influence summed inputs', 'Final portfolio value',
+        influences0 = [broker.neighbor_weight for broker in brokers[:len(brokers) // 3]]
+        plot(influences0, final_portfolio_values[:len(brokers)//3], 'Influence summed inputs', 'Final portfolio value',
              'Portfolio value to influence with low risk', 'valueToInfluenceLowRisk.png')
-        influences = [broker.neighbor_weight for broker in brokers[len(brokers) // 3:len(brokers)//3*2]]
-        plot(influences, final_portfolio_values[len(brokers) // 3:len(brokers)//3*2], 'Influence summed inputs', 'Final portfolio value',
+        influences0 = [broker.neighbor_weight for broker in brokers[len(brokers) // 3:len(brokers)//3*2]]
+        plot(influences0, final_portfolio_values[len(brokers) // 3:len(brokers)//3*2], 'Influence summed inputs', 'Final portfolio value',
              'Portfolio value to influence with medium risk', 'valueToInfluenceMedRisk.png')
-        influences = [broker.neighbor_weight for broker in brokers[len(brokers)//3*2:]]
-        plot(influences, final_portfolio_values[len(brokers)//3*2:], 'Influence summed inputs', 'Final portfolio value',
+        influences0 = [broker.neighbor_weight for broker in brokers[len(brokers)//3*2:]]
+        plot(influences0, final_portfolio_values[len(brokers)//3*2:], 'Influence summed inputs', 'Final portfolio value',
              'Portfolio value to influence with high risk', 'valueToInfluenceHighRisk.png')
 
 
