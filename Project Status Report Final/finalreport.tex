@@ -1,6 +1,6 @@
-\documentclass[letterpaper, 10 pt, proceedings]{ieeetran}
+\documentclass[letterpaper, 11 pt, proceedings]{IEEEtran}
 \usepackage{amsmath}
-\usepackage[margin=.60in]{geometry}
+\usepackage[margin=.65in]{geometry}
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{graphicx} % Required for inserting images
@@ -11,10 +11,10 @@
 \usepackage{nameref}
 \usepackage{pgfplots}
 \usepackage{placeins}
-\usepackage{subcaption}
-\usepackage{titlesec}
-\usepackage{wrapfig}
-\renewcommand{\familydefault}{\sfdefault}
+%\usepackage{subcaption}
+%\usepackage{titlesec}
+%\usepackage{wrapfig}
+%\renewcommand{\familydefault}{\sfdefault}
 \graphicspath{{./figures/}}
 
 %\titlespacing*{\section}{0pt}{0.5\baselineskip}{0.25\baselineskip}
@@ -45,104 +45,125 @@
 	\maketitle
 
 	\begin{abstract}
-		This project explores the impact of risk strategies in a complex network of brokers, simulating the stock market over different intervals. It shows how some risk strategies can perform well over typical behavior of the market while others benefit from sudden volatile events. It also explores how influence of broker's friends on the risk assessment can affect the portfolio value over time. 
+		This paper explores the impact of risk strategies and influenced decisions in a complex network of brokers, simulating the stock market over different intervals. Using fat-tailed distribution assumptions for risk evaluation and friend count, it demonstrates how some risk strategies can perform well over typical behavior of the market while others can benefit from sudden volatile events. It also explores how the influence of a broker's neighbors within the network on the risk assessment can affect the broker's portfolio status over time. 
 	\end{abstract}
 
 
 	\section{Introduction}\label{sec:intro}
 	% Introduction: The goals of the project, the motivation, and the approach used.
-	This project was designed with the objective of exploring the impact of risk as defined by a power law distribution and networked brokers in the context of neighbor influence on the brokers' portfolio values over different trading intervals. Economic markets are volatile and have been shown to contain many fat-tailed and power law distributions, such as in growth rates and stock returns \cite{gabaix_powerlaws}. Many different models of the market have been created to explore these behaviors, and data is readily available to examine the impacts of different strategies and inter-dependencies on the market. Scholars have examined risk and risk aversion, explored modeling the market as a network of stocks or brokers, attempted to classify and group the networks, and attempted to design models of crashes that resemble the real world. This project combines the study of risk in psychology with the fat tailed distribution of network connections and the volatility of black swan \cite{taleb_antifragile} events to evaluate market broker strategies to maximize portfolio value over typical events and through drastic changes in the market.
+	This project was designed with the objective of exploring the impact of risk as defined by a power law distribution and networked brokers on the brokers' portfolio values over different trading intervals. The volatility of economic markets provides a popular area of study for many researchers, and these markets have been shown to contain many fat-tailed and power law distributions, such as in growth rates and stock returns \cite{gabaix_powerlaws}. Many different models of the market have been created to explore these behaviors, and data is readily available to examine the impacts of different strategies and inter-dependencies in the market. Scholars have examined risk and risk aversion, modeled the market as a network of stocks or brokers, attempted to classify and group cliques with the networks, and designed models of crashes that resemble the real world. This project combines the spread of individual risk adversity with the fat tailed distribution of network connections present in the real world and theory on the behavior of different strategies in volatile Black Swan \cite{taleb_antifragile} events to evaluate broker strategies for maximizing portfolio value over typical events and through drastic changes in the market.
 	
 	\section{Background}\label{sec:background}
 	% Background: Summary of important concepts and related previous work (with citations).
-	This topic has been explored from a variety of perspectives. Most work has been divided into exploring financial markets in terms of complex networks, looking at individuals' perspective on risk, and running case studies with different clustering and strategies in the market. The work in complex networks creates networks with either brokers or stocks at nodes \cite{baydelli_hierarchicalmarket,kulmann_marketscomplexsystems,dimaggio_relevancebrokernetworks}. To create the edges, they have explored the diffusion of information \cite{dimaggio_relevancebrokernetworks}, spread of first and rebound shocks \cite{gai_contagion}, and correlation and mutual information of different stocks \cite{li_correlation, fiedor_networksmutualinformationrate}. This study models the market with brokers at the nodes with influence connecting the brokers. 
+	Financial markets have been explored from a variety of fields, such as psychology, economics, statistics, graph theory, and complex systems. Each of these fields explores various aspects of the market  from modeling in terms of complex networks of agents and entities in the market, looking at individuals' and groups' perspective on risk, and running case studies with different clustering and strategies in the market. Within complex networks, the networks tend to place either brokers or stocks at the nodes \cite{baydelli_hierarchicalmarket,kulmann_marketscomplexsystems,dimaggio_relevancebrokernetworks}. For the edges of the network, the diffusion of information \cite{dimaggio_relevancebrokernetworks}, spread of first and rebound shocks \cite{gai_contagion}, and correlation and mutual information of different stocks \cite{li_correlation, fiedor_networksmutualinformationrate} have been evaluated. This study models the market with brokers at the nodes with influence on risk adversity connecting the brokers. 
 	
-	Further, several models for risk were presented. This involved quantifying the risk with the Chen, Roll, and Ross factors \cite{cooper_realinvestmentandrisk} to predict economic activity, assessing the importance of the distribution of risk aversion in the volatility of returns \cite{lansing_riskaversion}, and highlighted the importance of dividends in quantifying the risk level of stocks. These models provide a basis for developing a model of portfolio risk.
+	Further, several models for risk have been explored. These studies include quantifying the risk with the Chen, Roll, and Ross factors \cite{cooper_realinvestmentandrisk} to predict economic activity, assessing the importance of the distribution of risk aversion in the volatility of returns \cite{lansing_riskaversion}, and highlighting the importance of dividends in quantifying the risk level of stocks. These models provide a basis for developing a model of portfolio risk.
 	
-	Based on the ideas presented in Taleb's book \cite{taleb_antifragile}, it has been suggested that some strategies which perform best over typical market moves may not be optimal during sudden volatile events, which characterize the stock market. The idea that these strategies based on risk with the input on risk assessment from neighbors could be what differentiates the quality of the strategies.
+	Additionally, based on the ideas presented in Taleb's book \cite{taleb_antifragile}, it has been suggested that some strategies which perform well over typical market moves may not be optimal during sudden volatile events in the fat-tailed distribution of the stock market prices and behavior. Using strategies based on risk allows exploration of different levels of fat-tailed risk adversity and the impact of networked brokers sharing information about risk on portfolio value both during expected operation of the market and the aforementioned Black Swan events.
 	
 	
 	\section{Methods}\label{sec:methods}
 	% Methods: Detailed description of the methods used, including equations, algorithms, rules, etc. and a justification for the approach.
-	The exploration of the market was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and preferred risk levels. This included creating 100 brokers each with a preferred risk level and a number of friends sampled from a power law distribution. The friends also provided their assessment of risk for a given stock which was considered by the broker in their personal assessment. Data for every day in the interval was fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. For interpretation of results, the brokers' indices correspond to the level of preferred risk. Running the simulation over 2003-2012 allows examining the results of strategies both in normal operating and in a drastic events such as the 2007-2008 financial crisis.
+	The exploration of the market was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and with individually preferred risk levels. $n=100$ brokers were created each with a preferred risk level and a number of friends sampled from a power law distribution. The details of these selections are highlighted in the following subsections. The friends provide their assessment of risk for a given stock which is then considered by the broker with whom they are friends in their personal assessment. Data for every day in the interval is fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. A flag also allows for brokers to reach the preferred level of risk and then just hold that portfolio until the end of an interval. For the ease of interpretation of results, the brokers' indices correspond to the level of preferred risk. For this paper, the simulation was run over 2003-2012 allowing examination of the results of strategies both in normal operating conditions and in drastic events such as the 2007-2008 financial crisis.
 	
 	\subsection{Data Collection and Filtering}\label{subsec:data}
-	The available tickers were collected from Yahoo Finance's API, yfinance. This API made requests to Yahoo Finance with a request limit being placed on each IP. Fortunaty, the University of Cincinnati offers multiple CPUs in their computer labs. First, all the valid stock tickers were pulled that contained daily stock information from the time peroid of 2000 to 2020, totally 10,000 individual tickers. These tickers were filtered to those with the information needed for the risk calculation in section \ref{subsec:risk} and 150 stocks were randomly selected from those options to be fed into the simulation. This data was then stored in a pandas dataframe for quick accessbility by the simulations at runtime.\par
-	For these stocks, if the price data was missing on a specific day, its price was set to be the most recent value from the time series. Further certain values such as dividend rate and estimated earnings per share were available only as single values instead of time series. This creates inaccuracies in our risk calculation as these single values do flucuate over time, however it is a limitation of the API. Additionally, Yahoo finance does not record tickers that take their ticker off the public stock market, for reasons such as banrupcy or private buyout. This is a glaring limitation in this simulation as these stocks were not captures in the simulations.  
+	The available tickers were collected from Yahoo Finance's API \textit{yfinance}. This API makes requests to Yahoo Finance with a request limit being placed on each IP address so the University of Cincinnati's computer labs were used to farm the data. All valid stock tickers were pulled that contain daily stock information at any point from the time period of 2000 to 2020, totaling 10,000 individual tickers. These tickers were filtered to those with the information needed for the risk calculation discussed in section \ref{subsec:risk}, and 175 stocks were randomly selected from those options to be fed into the simulation. This limitation was imposed to only include stocks with necessary information and to not exceed a reasonable time frame for running the simulation. This data was then stored in a Pandas dataframe for quick accessibility by the simulation at runtime.
+	
+	For these stocks, if the price data was missing on a specific day, its price was set to be the most recent value from the time series. Further certain values such as dividend rate and estimated earnings per share were available only as single values instead of time series. This API limitation creates some inaccuracy in our risk calculation as these single values do fluctuate over time. Additionally, Yahoo finance does not record tickers that take their ticker off the public stock market, for reasons such as bankruptcy or private buyout. This limits some of the behavior of the simulation.  
 	
 
 	\subsection{Influence and Friend Selection}\label{subsec:friends}
-	The number of friends for each broker was selected with a fat tailed distribution with $\alpha = 2.7$ and a minimum value of $2$ friends. The set of friends F were selected randomly from a uniform distribution over all the brokers. Each friend started with a set percent $w_i = .04$ controlled of the broker i's risk assessment. Thus, the risk for a stock $s$ was represented with the formula 
-	$$R(\text{s}) = (1-\sum\limits_{f\in F} w_f) R_{broker}(\text{s}) + \sum\limits_{f\in \text{F}} w_f R_f(\text{s.})$$
+	The number of friends for each broker was selected with a fat-tailed distribution with $\alpha = 2.7$ and a minimum value of $2$ friends. This distribution was chosen to mimic the number of connections a given person has in actuality. The selection of that number of friends for set of friends F was than randomly chosen from a uniform distribution over all the possible brokers. These connections for influence were directed, giving each broker the given number of inputs on the risk assessment. Further, each friend started with a set percent $w_i = .04$ controlled of the broker i's risk assessment. Thus, the risk for a stock $s$ is represented with the formula 
+	\begin{align}
+		R(\text{s}) = (1-\sum\limits_{f\in F} w_f) R_{broker}(\text{s}) + \sum\limits_{f\in \text{F}} w_f R_f(\text{s}).\label{eq:weighted_assessment}
+	\end{align}	
 	
-	
+	The influence of each friend providing input was increased or decreased according to that broker's portfolio relative to the broker they advise. If a broker's neighbor's portfolio improved relative to the last check on the portfolio status, that neighbor is given more influence on the next risk assessment for the broker.
 
 	\subsection{Risk Calculation}\label{subsec:risk}
-	% TODO:  @Josh insert mathematical model description, equation, and description of individual and portfolio risk calculation
+	% TODO: @Josh insert mathematical model description, equation, and description of individual and portfolio risk calculation
+	
+	
+	In the simulation, the numerical values of risk from 0 to 10000 were linearly spread over the brokers. Brokers seeking to raise their risk level sell lower risk stocks and purchase from the riskier stocks evaluated with equation \ref{eq:weighted_assessment}.
 	
 	\subsection{Metrics}\label{subsec:metrics}	
-	The portfolio value $V(b_i)$ at any point in time was represented as the sum of the liquid money $m_i$ the broker $b_i$ had and the current value $v_s$ multiplied by the quantity $q_s$ of every stock owned by the broker at the given time: $V(b_i) = m_i + \sum\limits_{s\in\text{stocks}} v_s q_s$. Its risk is evaluated as the risk for every stock in the portfolio multiplied by its volume. The portfolio risk was used to quantify the level of risk each broker attempted to maintain while the portfolio value at different times in the interval was used to evaluate the strategy's overall performance.
+	The portfolio value $V(b_i)$ at any point in time is represented as the sum of the liquid money $m_i$ the broker $b_i$ has and the current value $v_s$ multiplied by the quantity $q_s$ of every stock owned by the broker at the given time: 
+	\begin{align}
+		V(b_i) = m_i + \sum\limits_{s\in\text{stocks}} v_s q_s\label{eq:portfolio_value}
+	\end{align}
+	Its risk is evaluated as the risk for every stock in the portfolio multiplied by its volume. The portfolio risk was used to quantify the level of risk each broker attempted to maintain while the portfolio value at different times in the interval was used to evaluate the strategy's overall performance.
 
 
 	\section{Results}\label{sec:results}
 	% Results: Description and discussion of results, with figures, tables, etc.
-	
-	\subsection{Risk}
-	
+		
 	% risk results
 	% Hopefully useful thoughts:
 	% - possibly include quick overview showing that high risk brokers tend to own few stocks total of higher value while ones in the middle show the more typical lots of stocks, and most conservative end up with less stocks and more liquid - requires figure of money at end, stock quantity to broker, and liquid money to broker
 	% - focus in on a point before 2008 and which level of risk broker is doing well in the wealth time series and then who is doing well after the crash ie high risk
 	% - examine immediately after crash wealth v in couple years after
 	% - for the case of stop_at_stable and not stop_at_stable, highlight differences in just sitting once at the desired risk v holding the desired risk by buying and selling
-	%
-	\subsection{Broker Tendencies}\label{subsec:tendencies}	
-	As mentioned in \ref{sec:methods}, the index at which each Broker is labeled as directly correlates with the relative initial risk compared to other indices. From this, information can be gleaned from figures of metrics vs broker ID and how these metrics relate to the risk aversion of the brokers. Notably, a few tendencies commonly develop. These are the ownership of individual stocks, the ownership of total stocks, and the value of liquid assets.\par 
-	Fig \ref{totalvID} shows that both low-risk and high-risk brokers tend to own few stocks compared to that of their medium-risk brokers. This ownership appears to be parabolic with a flat curve defining the maximum. Further tendencies describe why this shape appears. \par
+	
+	\subsection{Broker Tendencies Resulting from Risk Level}\label{subsec:tendencies}	
+	As discussed in section \ref{sec:methods}, the Broker index/id corresponds to its relative desired risk level. From this, conclusions can be drawn from the figures of metrics against broker ID and how these metrics relate to the risk aversion of the brokers. From the risk configuration and discussed simulation, brokers at different risk levels show the impact of the different risk strategies on portfolio statistics. These statistics include the total quantity of stocks in portfolio, the average value of stocks owned by a broker, and the value of liquid assets over time.
+	
 
 	\begin{figure}[h]
 		\centering
-		\twocolumn
-		\includegraphics[width=0.4\textwidth]{stocksOwnedToBrokerIds.png}
-		\caption{Total number of stocks owned by Broker Id}
+		\includegraphics[width=0.5\textwidth]{stocksOwnedToBrokerIds.png}
+		\caption{Total number of stocks owned by broker id (corresponding to risk level)}
 		\label{totalvID}
 	\end{figure}
-	\FloatBarrier
 
-	Fig \ref{uniquevID} assists in describing how the total number of stocks owned has two values. Here, the levels at which unique stocks are owned are inverted compared to Fig \ref{totalvID}. Both risk-averse and risky brokers tend to own a number of unique stocks, while those with medium risk tend to own more of the same type of stocks. The ownership of multiple stocks in different industries can be seen as less risky, as owning more individual stocks allows certain investments to fail without affecting the total as much. This is compared to a high ownership of a specific stock, which, if it goes under, results in the entire portfolio going under as well. 
-
+	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.4\textwidth]{uniqueStockCountToBrokerIds.png}
-		\caption{Unique stocks owned by Broker Id}
-		\label{uniquevID}
+		\includegraphics[width=0.5\textwidth]{averageDollarPerStockToBrokerIds.png}
+		\caption{Average dollar value of stock owned to broker id (corresponding to risk level)}
+		\label{dollarValue}
 	\end{figure}
 	\FloatBarrier
+	
+	Fig \ref{totalvID} shows that both low-risk and high-risk brokers tend to own few stocks compared to that of medium-risk brokers. This ownership appears to be parabolic with a flat curve defining the maximum. Looking at Figure \ref{dollarValue} in connection to the total stocks owned shows that high risk brokers tended to own a small number of expensive stocks while medium risk brokers acquired more lower value stocks. The high volume ownership of expensive stocks, as expected, was evaluated as a more risky portfolio as putting all money on a specific stock risks the entire portfolio failing on that stock.
 
-	Finally, the amount of liquid assets of each broker paints a clear picture of the differing investment strategies of low and high-risk investors. Fig \ref{liquidvID} shows that risk-averse brokers tend to keep as much as 100\% of their assets liquid, meaning they are not invested in the market. Meanwhile, medium and high-risk brokers tend to invest most of their assets into the market. These three figures illustrate the various strategies that brokers with varying levels of risk aversion employ.
+%	The two ends of this curve are explained in Fig \ref{uniquevID}. Here, the levels at which unique stocks are owned are inverted compared to Fig \ref{totalvID}. 
+	
+%	Both risk-averse and risky brokers tend to own a number of unique stocks, while those with medium risk tend to own more of the same type of stocks. The ownership of multiple stocks in different industries can be seen as less risky, as owning more individual stocks allows certain investments to fail without affecting the total as much. This is compared to a high ownership of a specific stock, which, if it goes under, results in the entire portfolio going under as well. 
+
+%	\begin{figure}[h]
+%		\centering
+%		\includegraphics[width=0.5\textwidth]{uniqueStockCountToBrokerIds.png}
+%		\caption{Unique stocks owned by Broker Id}
+%		\label{uniquevID}
+%	\end{figure}
+%	\FloatBarrier
 
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.4\textwidth]{liquidCurrency.png}
-		\caption{Liquid currency vs Broker Id}
+		\caption{Liquid currency at end of simulation vs broker id (corresponding to risk level)}
 		\label{liquidvID}
 	\end{figure}
 	\FloatBarrier	
 
-	\subsection{Market Strategies}\label{subsec:results_midpoint}
-	Each strategy is followed throughout the period of 2003 to 2012, with the occurrence of the black swan event, the 2008 financial crisis, happening during this time period. Therefore, it is beneficial to analyze how different risk strategies performed with and without the black swan event to determine if certain strategies are better given antifragile thinking. Fig \ref{interimRV} shows that pre-2008, both high and medium-risk strategies outperformed low-risk strategies. However, the most risky brokers were significantly underperforming their peers. It is important to note that all brokers were able to increase their portfolio value over this time.
+	Further, the liquid currency of each broker at the end of the interval expands the picture of the differing investment strategies of low and high-risk investors. Fig \ref{liquidvID} shows that risk-averse brokers tend to keep as much as 100\% of their assets liquid, meaning they are not invested in the market and their portfolio values can remain stable. Meanwhile, higher risk brokers tend to invest most of their assets into the market.
+	
+	These three aspects of quantity of stocks owned, average stock value, and currency show the behaviors of different brokers based on their desired levels of risk.
+
+	\subsection{Market Strategies Over Time}\label{subsec:results_midpoint}
+	The simulation was run over the period from the beginning of 2003 to the end of 2012, capturing the 2007-2008 financial crisis as well as some expected behavior of the market. It is beneficial to analyze how different risk strategies performed with and without the Black Swan event to determine if certain strategies are better given the goal of developing an antifragile strategy. Fig \ref{interimRV} shows that pre-2008, both high and medium-risk strategies were outperforming low-risk strategies. However, the most risky brokers were underperforming compared to the medium risk brokers in typical operation. It is important to note that all brokers were able to increase their portfolio value over this time.
 
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.4\textwidth]{interimRiskToValue.png}
-		\caption{Value of Portfolios before Black Swan event}
+		\includegraphics[width=0.5\textwidth]{interimRiskToValue.png}
+		\caption{Value of portfolios before Black Swan event}
 		\label{interimRV}
 	\end{figure}
 	\FloatBarrier
 
 	\subsection{Antifragile Strategies}\label{subsec:results_end}	
 	
-	Both Fig \ref{ts_03-12} and Fig \ref{RV} show the resultant wealth of brokers throughout the simulation. Fig \ref{ts_03-12} displays the time series of each of the portfolios. A few trends are of note. Firstly, the total wealth of the brokers' assets all appear to follow the general market trendline, and therefore all follow each other. All of the brokers experienced a significant loss due to the 2008 financial crisis; however, it is important to note that all the brokers "rode out the wave" and kept their assets. This resulted in, by 2012, the brokers regaining the wealth that they had acquired before 2008. Other brokers rebounded significantly well compared to their peers, specifically those brokers with medium risk.
+	Both Fig \ref{ts_03-12} and Fig \ref{RV} show the resultant wealth of brokers throughout the simulation. Fig \ref{ts_03-12} displays the time series of each of the portfolios. A few trends are of note. Firstly, the total wealth of the brokers' assets all appear to follow the general market trends and are growing together. All of the brokers experienced a significant loss due to the 2008 financial crisis; however, it is important to note that all the brokers "rode out the wave" and kept their assets. This resulted in, by 2012, the brokers regaining the wealth that they had acquired before 2008. Other brokers rebounded significantly well compared to their peers, specifically those brokers with medium risk.
 
 	\begin{figure}[h]
 		\centering
@@ -236,11 +257,11 @@
 		
 	
 		\bibitem{hommes_complexmacroeconomics}
-		C. Hommes, “Behavioral and Experimental Macroeconomics and Policy Analysis: A Complex Systems Approach,” Journal of Economic Literature, vol. 59, no. 1, pp. 149–219, Mar. 2021, doi: 10.1257/jel.20191434.
+		C. Hommes, “Behavioral and Experimental Macroeconomics and Policy Analysis: A Complex Systems Approach,” Journal of Economic Literature, vol. 59, no. 1, pp. 149–219, Mar. 2021.
 		%- https://pubs.aeaweb.org/doi/pdfplus/10.1257/jel.20191434
 		
 		\bibitem{tse_networkstocks}
-		C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” Journal of Empirical Finance, vol. 17, no. 4, pp. 659–667, Sep. 2010, doi: 10.1016/j.jempfin.2010.04.008.
+		C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” Journal of Empirical Finance, vol. 17, no. 4, pp. 659–667, Sep. 2010.
 		%- https://www.sciencedirect.com/science/article/pii/S0927539810000368
 		
 		\bibitem{kulmann_marketscomplexsystems}
