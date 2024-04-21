@@ -63,7 +63,7 @@
 	
 	Further, several models for risk have been explored. These studies include quantifying the risk with the Chen, Roll, and Ross factors \cite{cooper_realinvestmentandrisk} to predict economic activity, assessing the importance of the distribution of risk aversion in the volatility of returns \cite{lansing_riskaversion}, and highlighting the importance of dividends in quantifying the risk level of stocks. These models provide a basis for developing a model of portfolio risk.
 	
-	Additionally, based on the ideas presented in Taleb's book \cite{taleb_antifragile}, it has been suggested that some strategies which perform well over typical market moves may not be optimal during sudden volatile events in the fat-tailed distribution of stock market prices and behavior. Using strategies based on risk allows exploration of different levels of fat-tailed risk adversity and the impact of networked brokers sharing information about risk on portfolio value both during expected operation of the market and the aforementioned Black Swan events.
+	Additionally, based on the ideas presented in Taleb's book \cite{taleb_antifragile}, it has been suggested that some strategies which perform well over typical market moves may not be optimal during sudden volatile events in the fat-tailed distribution of stock market prices and behavior. Using strategies based on risk allows exploration of different levels of fat-tailed risk adversity and the impact of networked brokers sharing information about risk on portfolio value during both expected operation of the market and the aforementioned Black Swan events.
 	
 	
 	\section{Methods}\label{sec:methods}
@@ -85,7 +85,7 @@
 	The influence of each friend providing input is increased or decreased based on its own gains or losses compared to the broker being advised. If a broker's neighbor's portfolio improved relative to broker's status, that neighbor is given more influence on the next risk assessment.
 
 	\subsection{Risk Calculation}\label{subsec:risk}
-	The risk for an individual stock was calculated using the formula with a exponential representation of $a \cdot x^{-k}$ with:
+	The risk for an individual stock was calculated using the formula with a exponential representation of $R_f(s) = ax^{-k}$ with:
 	\begin{align}
 		x &= e^{|H_{52} - L_{52} - d_r \times m_{50}|} \\
 		a &= p_a \times f_{eps} \times (1 - e_g)\\
@@ -104,7 +104,7 @@
 	
 	The risk is represented by a fat-tailed distribution with an exponent of $k=3$ with $H_{52}$ as the 52-week high, $L_{52}$ as the 52-week low, $d_r$ as the dividend ratio, $m_{50}$ as the 50 day average, $e_g$ as the earnings growth, $f_{eps}$ as the forward earnings per share, and $p_a$ as the portfolio allocation of equity for the given stock. 
 	
-	Within this formula, $a$ represents the likelihood of risk to have major effects while $x$ is the representation of the potential impact of the stock, capturing the volatility of the stock minus an expected return. This value is an exponential so that it remains in the $[1, \infty)$.
+	Within this formula based on research on risk, $a$ represents the likelihood of risk to have major effects while $x$ is the representation of the potential impact of the stock, capturing the volatility of the stock minus an expected return. This value is an exponential so that it remains in the range $[1, \infty)$.
 	The product of these values represent the risk of the stock. The portfolio risk is then the sum of each individual stock risk multiplied by the volume in the portfolio. In the simulation, the numerical values of risk from 0 to 10000 were linearly spread over the brokers. Brokers seeking to raise their risk level sell lower risk stocks and purchase from the riskier stocks evaluated with equation \ref{eq:weighted_assessment}.
 
 	\begin{figure}[h]
@@ -202,7 +202,7 @@
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{valueToRisk.png}
-		\caption{Value of portfolios at end of simulation ordered by broker id (corresponding to risk level)}
+		\caption{Value of portfolios at end of simulation ordered by broker ids which correspond to risk level}
 		\label{RV}
 	\end{figure}
 	\FloatBarrier
@@ -257,7 +257,7 @@
 	This project explored the value of different risk strategies in a simulated market of networked brokers with power law assumptions for risk and connectivity between brokers. It demonstrated the value of taking some input from neighbors' assessments on risk to filter which stocks are performing well and showed that both risk adverse and risky market strategies underperform medium-risk strategies. Notably, during black swan events such as the 2008 financial crisis, low and high-risk strategies perform even worse compared to medium-risk strategies.
 	
 	\subsection{Future Work}\label{subsec:futurework}
-	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area is expanding the concept of influence as the method of all neighbors using the same information and formula acted as simply a factor of the risk calculation. Additionally, the random selection of neighbors may not capture the true clique structure of many relationships. Further, the risk assessment could be modified to vary more between brokers based on partial information and stocks without full information available to better represent the real world and better account for the interconnections between stocks.
+	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area is expanding the concept of influence, as the method of all neighbors using the same information and formula acted as simply a factor of the risk calculation. Additionally, the random selection of neighbors may not capture the true clique structure of many relationships. Further, the risk assessment could be modified to vary more between brokers based on partial information and stocks without full information available in order to better represent the real world and account for the interconnections between stocks.
 
 
 	\bibliographystyle{ieeetran}
