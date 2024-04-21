@@ -55,7 +55,7 @@
 	
 	\section{Background}\label{sec:background}
 	% Background: Summary of important concepts and related previous work (with citations).
-	Financial markets have been explored from a variety of fields, such as psychology, economics, statistics, graph theory, and complex systems. Each of these fields explores various aspects of the market  from modeling in terms of complex networks of agents and entities in the market, looking at individuals' and groups' perspective on risk, and running case studies with different clustering and strategies in the market. Within complex networks, the networks tend to place either brokers or stocks at the nodes \cite{baydelli_hierarchicalmarket,kulmann_marketscomplexsystems,dimaggio_relevancebrokernetworks}. For the edges of the network, the diffusion of information \cite{dimaggio_relevancebrokernetworks}, spread of first and rebound shocks \cite{gai_contagion}, and correlation and mutual information of different stocks \cite{li_correlation, fiedor_networksmutualinformationrate} have been evaluated. This study models the market with brokers at the nodes with influence on risk adversity connecting the brokers. 
+	Financial markets have been explored from a variety of fields, such as psychology, economics, statistics, graph theory, and complex systems. Each of these fields explores various aspects of the market  from modeling in terms of complex networks of agents and entities in the market, looking at individuals' and groups' perspective on risk, and running case studies with different clustering and strategies in the market. Within complex networks, the networks tend to place either brokers or stocks at the nodes \cite{baydelli_hierarchicalmarket,kulmann_marketscomplexsystems,dimaggio_relevancebrokernetworks,tse_networkstocks}. For the edges of the network, the diffusion of information \cite{dimaggio_relevancebrokernetworks}, spread of first and rebound shocks \cite{gai_contagion}, and correlation and mutual information of different stocks \cite{li_correlation, fiedor_networksmutualinformationrate} have been evaluated. This study models the market with brokers at the nodes with influence on risk adversity connecting the brokers. 
 	
 	Further, several models for risk have been explored. These studies include quantifying the risk with the Chen, Roll, and Ross factors \cite{cooper_realinvestmentandrisk} to predict economic activity, assessing the importance of the distribution of risk aversion in the volatility of returns \cite{lansing_riskaversion}, and highlighting the importance of dividends in quantifying the risk level of stocks. These models provide a basis for developing a model of portfolio risk.
 	
@@ -85,6 +85,15 @@
 	
 	
 	In the simulation, the numerical values of risk from 0 to 10000 were linearly spread over the brokers. Brokers seeking to raise their risk level sell lower risk stocks and purchase from the riskier stocks evaluated with equation \ref{eq:weighted_assessment}.
+
+
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{stocksOwnedToBrokerIds.png}
+		\caption{Total number of stocks owned by broker id (corresponding to risk level)}
+		\label{totalvID}
+	\end{figure}
+
 	
 	\subsection{Metrics}\label{subsec:metrics}	
 	The portfolio value $V(b_i)$ at any point in time is represented as the sum of the liquid money $m_i$ the broker $b_i$ has and the current value $v_s$ multiplied by the quantity $q_s$ of every stock owned by the broker at the given time: 
@@ -108,13 +117,6 @@
 	As discussed in section \ref{sec:methods}, the Broker index/id corresponds to its relative desired risk level. From this, conclusions can be drawn from the figures of metrics against broker ID and how these metrics relate to the risk aversion of the brokers. From the risk configuration and discussed simulation, brokers at different risk levels show the impact of the different risk strategies on portfolio statistics. These statistics include the total quantity of stocks in portfolio, the average value of stocks owned by a broker, and the value of liquid assets over time.
 	
 
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.5\textwidth]{stocksOwnedToBrokerIds.png}
-		\caption{Total number of stocks owned by broker id (corresponding to risk level)}
-		\label{totalvID}
-	\end{figure}
-
 	
 	\begin{figure}[h]
 		\centering
@@ -124,9 +126,9 @@
 	\end{figure}
 	\FloatBarrier
 	
-	Fig \ref{totalvID} shows that both low-risk and high-risk brokers tend to own few stocks compared to that of medium-risk brokers. This ownership appears to be parabolic with a flat curve defining the maximum. Looking at Figure \ref{dollarValue} in connection to the total stocks owned shows that high risk brokers tended to own a small number of expensive stocks while medium risk brokers acquired more lower value stocks. The high volume ownership of expensive stocks, as expected, was evaluated as a more risky portfolio as putting all money on a specific stock risks the entire portfolio failing on that stock.
+	Figure \ref{totalvID} shows that both low-risk and high-risk brokers tend to own few stocks compared to that of medium-risk brokers. This ownership appears to be parabolic with a flat curve defining the maximum. Looking at Figure \ref{dollarValue} in connection to the total stocks owned shows that high risk brokers tended to own a small number of expensive stocks while medium risk brokers acquired more lower value stocks. The high volume ownership of expensive stocks, as expected, was evaluated as a more risky portfolio as putting all money on a specific stock risks the entire portfolio failing on that stock.
 
-%	The two ends of this curve are explained in Fig \ref{uniquevID}. Here, the levels at which unique stocks are owned are inverted compared to Fig \ref{totalvID}. 
+%	The two ends of this curve are explained in Figure \ref{uniquevID}. Here, the levels at which unique stocks are owned are inverted compared to Figure \ref{totalvID}. 
 	
 %	Both risk-averse and risky brokers tend to own a number of unique stocks, while those with medium risk tend to own more of the same type of stocks. The ownership of multiple stocks in different industries can be seen as less risky, as owning more individual stocks allows certain investments to fail without affecting the total as much. This is compared to a high ownership of a specific stock, which, if it goes under, results in the entire portfolio going under as well. 
 
@@ -146,12 +148,12 @@
 	\end{figure}
 	\FloatBarrier	
 
-	Further, the liquid currency of each broker at the end of the interval expands the picture of the differing investment strategies of low and high-risk investors. Fig \ref{liquidvID} shows that risk-averse brokers tend to keep as much as 100\% of their assets liquid, meaning they are not invested in the market and their portfolio values can remain stable. Meanwhile, higher risk brokers tend to invest most of their assets into the market.
+	Further, the liquid currency of each broker at the end of the interval expands the picture of the differing investment strategies of low and high-risk investors. Figure \ref{liquidvID} shows that risk-averse brokers tend to keep as much as 100\% of their assets liquid, meaning they are not invested in the market and their portfolio values can remain stable. Meanwhile, higher risk brokers tend to invest most of their assets into the market.
 	
 	These three aspects of quantity of stocks owned, average stock value, and currency show the behaviors of different brokers based on their desired levels of risk.
 
 	\subsection{Market Strategies Over Time}\label{subsec:results_midpoint}
-	The simulation was run over the period from the beginning of 2003 to the end of 2012, capturing the 2007-2008 financial crisis as well as some expected behavior of the market. It is beneficial to analyze how different risk strategies performed with and without the Black Swan event to determine if certain strategies are better given the goal of developing an antifragile strategy. Fig \ref{interimRV} shows that pre-2008, both high and medium-risk strategies were outperforming low-risk strategies. However, the most risky brokers were underperforming compared to the medium risk brokers in typical operation. It is important to note that all brokers were able to increase their portfolio value over this time.
+	The simulation was run over the period from the beginning of 2003 to the end of 2012, capturing the 2007-2008 financial crisis as well as some expected behavior of the market. It is beneficial to analyze how different risk strategies performed with and without the Black Swan event to determine if certain strategies are better given the goal of developing an antifragile strategy. Figure \ref{interimRV} shows that pre-2008, both high and medium-risk strategies were outperforming low-risk strategies. However, the most risky brokers were underperforming compared to the medium risk brokers in typical operation. It is important to note that all brokers were able to increase their portfolio value over this time.
 
 	\begin{figure}[h]
 		\centering
@@ -163,44 +165,37 @@
 
 	\subsection{Antifragile Strategies}\label{subsec:results_end}	
 	
-	Both Fig \ref{ts_03-12} and Fig \ref{RV} show the resultant wealth of brokers throughout the simulation. Fig \ref{ts_03-12} displays the time series of each of the portfolios. A few trends are of note. Firstly, the total wealth of the brokers' assets all appear to follow the general market trends and are growing together. All of the brokers experienced a significant loss due to the 2008 financial crisis; however, it is important to note that all the brokers "rode out the wave" and kept their assets. This resulted in, by 2012, the brokers regaining the wealth that they had acquired before 2008. Other brokers rebounded significantly well compared to their peers, specifically those brokers with medium risk.
-
+	Figure \ref{ts_03-12} shows some examples of the wealth of brokers throughout the simulation. This shows the brokers making money over time and the results of the different strategies. A few trends are of note. Firstly, the total wealth of the brokers' assets all appear to follow the general market trends and are growing together. All of the brokers experienced a significant loss when the 2007-2008 financial crisis occurred; however, it is relevant to note that the brokers, who did not cash out when the stocks crashed, rebounded after the crisis. By 2010, the typical brokers regained the wealth that they had acquired before 2008. The high risk brokers can be seen to rebound more quickly and exceed their peers of medium risk in some cases. Further, it showed buying at the crash showed significant increase in portfolio value for brokers seeking medium and high levels of risk.
+	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.4\textwidth]{timeSeriesJoint.png}
-		\caption{Timeseries of Broker Wealth}
+		\includegraphics[width=0.5\textwidth]{timeSeriesJoint2.png}
+		\caption{Time series of selected brokers' wealth with ids corresponding to risk level}
 		\label{ts_03-12}
 	\end{figure}
 	\FloatBarrier
 
-	As was the case for Fig \ref{interimRV}, the medium-risk brokers appeared to have acquired the most wealth. Fig \ref{RV} differs from the pre-black swan event wealth in a few key categories. First, high-risk brokers were punished significantly worse than before the black swan event. The curve in Fig \ref{RV} is very parabolic, where both the low and high-risk brokers did not acquire as much wealth as the average-risk broker. This is in comparison to Fig \ref{interimRV}, where the curve flattens and stays flat, indicating that high-risk brokers also perform well.
 
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.4\textwidth]{valueToRisk.png}
-		\caption{Value of Portfolios by Broker Id}
+		\includegraphics[width=0.5\textwidth]{valueToRisk.png}
+		\caption{Value of portfolios at end of simulation ordered by broker id (corresponding to risk level)}
 		\label{RV}
 	\end{figure}
 	\FloatBarrier
+
+	As occurred under normal conditions in Figure \ref{interimRV}, the medium-risk brokers appeared to have acquired the most wealth. However, comparing the final values shows a slightly different behavior as in Figure \ref{RV}. First, high-risk brokers were punished significantly worse than before the black swan event. The curve in Figure \ref{RV} is very parabolic, where both the low and high-risk brokers did not acquire as much wealth as the average-risk broker. This is in comparison to Figure \ref{interimRV}, where the curve flattens and stays flat, indicating that high-risk brokers also perform well.
 	
-	Additionally, simulations were performed where once a broker accomplished their desired risk, they would stop investing. This was to simulate a real-world strategy of investing and sitting on the investment. Interestingly, brokers, although starting with the same risks as in other simulations, ended up becoming less risky by the end of the simulation. Fig \ref{stopatstable} shows that most brokers decided to become less risky, some with zero risk. This is in comparison to Fig \ref{RV}, where the distribution of risk is linear by the end of the simulation. It is also important to note that brokers "sitting on their investments" performed similarly to brokers who continuously invested after the black swan event.
+	Additionally, simulations were performed where once a broker accomplished their desired risk, they would stop investing. This was to simulate a real-world strategy of investing and sitting on the investment. Interestingly, brokers, although starting with the same risks as in other simulations, ended up becoming less risky by the end of the simulation. Figure \ref{stopatstable} shows that most portfolios became less stable without input from the brokers. This is in comparison to Figure \ref{RV}, where the distribution of risk remains consistent as was initialized. It is also important to note that brokers maintaining their investments performed similarly to brokers who continuously invested after the Black Swan event.
 
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.4\textwidth]{valueToRisk_stopatstable.png}
+		\includegraphics[width=0.5\textwidth]{valueToRisk_stopatstable.png}
 		\caption{Portfolio values by risk when Brokers stop at their }
 		\label{stopatstable}
 	\end{figure}
 	\FloatBarrier
 
-	% here's our figure insertion template
-%	\begin{figure}[h]
-%		\centering
-%		\includegraphics[width=.8\textwidth]{policies01.png}
-%		\caption{Time series comparing a random move policy with the social network recommendation policy}
-%		\label{p2_ts}
-%	\end{figure}	
-	
 	
 	\subsection{Influence}
 	% influence results
@@ -251,32 +246,22 @@
 		\bibitem{taleb_antifragile}
 		N. N. Taleb, Antifragile: Things that gain from disorder. Harlow, England: Penguin Books, 2013.
 		
-		\bibitem{easley_networkscrowdsmmarkets}
-		D. Easley and J. Kleinberg, Networks, crowds, and markets: Reasoning about a highly connected world. Cambridge, England: Cambridge University Press, 2012.
-		%- https://www.cs.cornell.edu/home/kleinber/networks-book/, particularly chapters 9-12, 17, 22
-		
-	
-		\bibitem{hommes_complexmacroeconomics}
-		C. Hommes, “Behavioral and Experimental Macroeconomics and Policy Analysis: A Complex Systems Approach,” Journal of Economic Literature, vol. 59, no. 1, pp. 149–219, Mar. 2021.
-		%- https://pubs.aeaweb.org/doi/pdfplus/10.1257/jel.20191434
-		
-		\bibitem{tse_networkstocks}
-		C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” Journal of Empirical Finance, vol. 17, no. 4, pp. 659–667, Sep. 2010.
-		%- https://www.sciencedirect.com/science/article/pii/S0927539810000368
-		
+		\bibitem{baydelli_hierarchicalmarket}
+		Y. Y. Baydilli, S. Bayir, and I. Tuker, “A hierarchical view of a national stock market as a complex network,” \textit{Economic Computation \& Economic Cybernetics Studies \& Research}, vol. 51, no. 1, pp. 205–222, Jan. 2017.
+
 		\bibitem{kulmann_marketscomplexsystems}
 		M. Kuhlmann, "Explaining financial markets in terms of complex systems," \textit{Philosphy of Science}, vol. 81, no. 5, pp. 1117-1130, Dec. 2014. %doi: 10.1086/677699.
 		
 		\bibitem{dimaggio_relevancebrokernetworks}
 		M. Di Maggio, F. Franzoni, A. Kermani, and C. Sommavilla, "The relevance of broker networks for information diffusion in the stock market," \textit{Journal of Financial Economics}, vol. 134, no. 2, pp. 419-446, Nov. 2019. %doi: 10.1016/j.jfineco.2019.04.002. 
-		
-		
+
+		\bibitem{tse_networkstocks}
+		C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” Journal of Empirical Finance, vol. 17, no. 4, pp. 659–667, Sep. 2010.
+		%- https://www.sciencedirect.com/science/article/pii/S0927539810000368
+
 		\bibitem{gai_contagion}
 		P. Gai and S. Kapadia, "Contagion in financial networks," \textit{Proceedings of the Royal Society}, vol. 466, no. 2120, pp. 2401–2423, Aug. 2010.
-		
-		\bibitem{liu_networkperspective}
-		C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” \textit{Journal of Empirical Finance}, vol. 17, no. 4, pp. 659–667, Sep. 2010. % doi: 10.1016/j.jempfin.2010.04.008.
-		
+
 		\bibitem{li_correlation}
 		G. Li, A. Zhang, Q. Zhang, D. Wu, and C. Zhan, “Pearson correlation coefficient-based performance enhancement of broad learning system for stock price prediction,” \textit{IEEE Transactions on Circuits and Systems II: Express Briefs}, vol. 69, no. 5, pp. 2413–2417, May 2022. %, doi: 10.1109/TCSII.2022.3160266.
 		
@@ -288,16 +273,24 @@
 		
 		\bibitem{lansing_riskaversion}
 		K. J. Lansing and S. F. LeRoy, “Risk aversion, investor information and stock market volatility,” \textit{European Economic Review}, vol. 70, pp. 88-107, July 2014. 
+
+
+		\bibitem{hommes_complexmacroeconomics}
+		C. Hommes, “Behavioral and Experimental Macroeconomics and Policy Analysis: A Complex Systems Approach,” Journal of Economic Literature, vol. 59, no. 1, pp. 149–219, Mar. 2021.
+		%- https://pubs.aeaweb.org/doi/pdfplus/10.1257/jel.20191434
 		
+
+		
+%		\bibitem{liu_networkperspective}
+%		C. K. Tse, J. Liu, and F. C. M. Lau, “A network perspective of the stock market,” \textit{Journal of Empirical Finance}, vol. 17, no. 4, pp. 659–667, Sep. 2010. % doi: 10.1016/j.jempfin.2010.04.008.
+
 		\bibitem{risktolerance}
 		J. E. Corter and Y. J. Chen, “Do investment risk tolerance attitudes predict portfolio risk?,” \textit{Journal of Business and Psychology}, vol. 20, no. 3, pp. 369-381, 2006.
 		
-		\bibitem{harmon_economicinterdependence}
-		D. Harmon, B. Stacey, Y. Bar-Yam, and Y. Bar-Yam, "Networks of economic market interdependence and systemic risk," New England Complex Systems Institute, Cambridge, MA, Tech. Report 1011.3707, Mar. 2009.
-		
-		\bibitem{baydelli_hierarchicalmarket}
-		Y. Y. Baydilli, S. Bayir, and I. Tuker, “A hierarchical view of a national stock market as a complex network,” \textit{Economic Computation \& Economic Cybernetics Studies \& Research}, vol. 51, no. 1, pp. 205–222, Jan. 2017.
-		
+%		\bibitem{harmon_economicinterdependence}
+%		D. Harmon, B. Stacey, Y. Bar-Yam, and Y. Bar-Yam, "Networks of economic market interdependence and systemic risk," New England Complex Systems Institute, Cambridge, MA, Tech. Report 1011.3707, Mar. 2009.
+
+
 	\end{thebibliography}
 
 		
