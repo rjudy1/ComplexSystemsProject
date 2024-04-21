@@ -78,7 +78,26 @@
 
 	\subsection{Risk Calculation}\label{subsec:risk}
 	% TODO:  @Josh insert mathematical model description, equation, and description of individual and portfolio risk calculation
-	
+	The risk for an individual stock was calculated using the formula \[
+		a \cdot x^{-k}
+		\]
+		
+		Where:
+		\[
+		x = e^{\left| \text{{high}} - \text{{low}} - \text{{dividend\_ratio}} \times \text{{fifty\_day\_average}} \right|}
+		\]
+		\[
+		a = \text{{portfolio\_allocation}} \times \text{{forward\_eps}} \times (1 - \text{{earnings\_growth}})
+		\]
+		This is in the format of a fat-tailed distribution, but since we wanted to have an average risk case, we set the exponent, k, to 3.
+
+		x is the representation of the potential impact of the stock, so the goal of this value is to capture the volatility of the stock, minus an expected return. The volatility minus expected return is set as an exponent of a exponential so that the value will stay in the [1, \infty).
+		Where volatility is represented as the 52week high minus the 52 week low, and expected return is the dividend ratio multiplied by the average stock price over the last 50 days.
+
+		a is the representation of the likelihood of the risk to have disasterous effects. This is formulated by the product of the portfolio allocation, the forward_eps, and the complement of the earnings growth. The portfolio allocation is the percentage of the portfolio that the stock represents, the forward_eps is the expected earnings per share, and the earnings growth is the expected growth of the earnings per share.
+
+		These values are then multiplied together to get the risk of the stock. The risk of the portfolio is then the sum of the risk of all the stocks in the portfolio.
+		
 	\subsection{Metrics}\label{subsec:metrics}	
 	The portfolio value at any point in time was represented as the sum of the liquid money the broker had and the current value of every stock owned by the broker at the given time. Its risk is evaluated as the risk for every stock in the portfolio multiplied by its volume. The portfolio risk was used to quantify the level of risk each broker attempted to maintain while the portfolio value at different times in the interval was used to evaluate the strategy's overall performance.
 
