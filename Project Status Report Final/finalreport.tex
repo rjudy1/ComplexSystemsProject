@@ -53,9 +53,9 @@
 
 	\section{Introduction}\label{sec:intro}
 	% Introduction: The goals of the project, the motivation, and the approach used.
-	The volatility of economic markets provides a popular area of study for many researchers, and these markets have been shown to contain many fat-tailed distributions and power laws, present in growth rates and stock returns \cite{gabaix_powerlaws}. Scholars have examined risk and risk aversion, modeled the market as a network of stocks or brokers, attempted to classify and group cliques within the network, and designed models of crashes that resemble the real world. This project combines the spread of individual risk adversity, fat tailed distribution of network connections, and theory on different strategies in volatile \cite{taleb_antifragile} events with the goal of evaluating broker strategies for maximizing portfolio value over typical events and through drastic changes in the market. This is explored through development of a simulation over different market intervals using the assumptions of complex networks and fat-tailed distributions from previous research.
+	The volatility of economic markets is a popular area of study for many researchers, and markets have been shown to contain many fat-tailed distributions and power laws, such as in growth rates and stock returns \cite{gabaix_powerlaws}. Scholars have examined risk and its aversion, modeled the market as a network of stocks or brokers, attempted to classify and group cliques within the network, and designed models of real-world crashes. This project combines the spread of individual risk adversity, a fat-tailed distribution of network connections, and theory on different strategies in volatile \cite{taleb_antifragile} events with the goal of evaluating broker strategies for maximizing portfolio value over typical events and through drastic changes in the market. This is explored through a simulation over different market intervals using the assumptions of complex networks and fat-tailed distributions from previous research.
 	
-	Section \ref{sec:background} discusses sources used for the assumptions, section \ref{sec:methods} discusses the design of the simulation, section \ref{sec:results} highlights key results, and section \ref{sec:conclusion} provides an overview of the results and future work.
+	Section \ref{sec:background} discusses background and assumptions, \ref{sec:methods} explains the simulation design, \ref{sec:results} highlights key results, and \ref{sec:conclusion} overviews the results and future work.
 	
 	\section{Background}\label{sec:background}
 	% Background: Summary of important concepts and related previous work (with citations).
@@ -68,7 +68,7 @@
 	
 	\section{Methods}\label{sec:methods}
 	% Methods: Detailed description of the methods used, including equations, algorithms, rules, etc. and a justification for the approach.
-	The exploration of the market was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and with individual preferred risk levels. $n=100$ brokers were created, each with a preferred risk level and a number of friends sampled from a power law distribution. The details of these selections are highlighted in the following subsections. The friends' assessments of the risk of a given stock are then used by the broker in their personal assessment. Data for every day in the interval is fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. A flag also allows for brokers to reach the preferred level of risk and then just hold that portfolio until the end of an interval. For the ease of interpretation of results, the brokers' indices correspond to the level of preferred risk. For this paper, the simulation was run over 2003-2012, allowing examination of the results of strategies both in normal operating conditions and in drastic events such as the 2007-2008 financial crisis.
+	The project was designed as a simulation to be run over various time intervals for interconnected brokers that can influence one another and with individual preferred risk levels. $n=100$ brokers were created, each with a preferred risk level and a number of friends sampled from a power law distribution. The details of these selections are highlighted in the following subsections. The friends' assessments of the risk of a given stock are then used by the broker in their personal assessment. Data for every day in the interval is fed into the simulation, allowing brokers, in a random order, to buy or sell stocks to maintain their preferred level of risk. Another option is for brokers to hold their portfolio until the end of interval once preferred risk is achieved. For the ease of interpretation of results, the brokers' indices correspond to the level of preferred risk. For this paper, the simulation was run over 2003-2012, allowing examination of the results of strategies both in normal operating conditions and in drastic events such as the 2007-2008 financial crisis.
 	
 	\subsection{Data Collection and Filtering}\label{subsec:data}
 	The available tickers were collected from Yahoo Finance's API \textit{yfinance}. Valid stock tickers were pulled that contain daily stock information at any point from the time period of 2000 to 2020, totaling 10,000 individual tickers. These tickers were filtered to those with the information needed for the risk calculation discussed in section \ref{subsec:risk}, and 175 stocks were randomly selected from those options to be fed into the simulation. This limitation was imposed to only include stocks with necessary information and to not exceed a reasonable time frame for running the simulation. This data was then stored in a Pandas dataframe for quick accessibility by the simulation at runtime.
@@ -214,7 +214,7 @@
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{valueToRisk_stopatstable.png}
-		\caption{Portfolio values by risk when Brokers stop at their }
+		\caption{Portfolio values by risk when brokers stop at preferred risk level}
 		\label{stopatstable}
 	\end{figure}
 	\FloatBarrier
@@ -233,7 +233,7 @@
 	\FloatBarrier
 
 
-	The simulation examining the impact of influence assigned the brokers to either a low, medium, or high risk level. Within each group, the brokers were ordered from lowest amount of initial friends to greatest quantity, sampled from the fat-tailed distribution discussed in \ref{subsec:friends}. The plot in Figure \ref{fig:value_to_influence_influencerun} shows that allowing a large 50-100\% portion of the purchase assessment to be made with input from neighbors improves the portfolio value. While there is a wide range of values coming from a given influence, it generally improves up to around 50\% of the risk assessment being provided by friends. This is likely because taking multiple neighbors' input highlights stocks that are doing well for multiple different brokers, making the decision easier and capturing the change in value directly that the risk assessment did not capture. Further, it can be seen that this benefit of influence was consistent across the different risk levels by examining Figures \ref{fig:low_risk_influence_time_series} and  and \ref{fig:high_risk_influence_time_series}. It is notable that basing the influence connections of the network around the risk assessment provides an expansion on a single broker's understanding of the stocks behavior  but did not entirely capture the additional benefit of accessing partial information as desired.
+	The simulation examining the impact of influence assigned the brokers to either a low, medium, or high risk level. Within each group, the brokers were ordered from lowest amount of initial friends to greatest quantity, sampled from the fat-tailed distribution discussed in \ref{subsec:friends}. The plot in Figure \ref{fig:value_to_influence_influencerun} shows that allowing a large 50-100\% portion of the purchase assessment to be made with input from neighbors improves the portfolio value. While there is a wide range of values at a given influence, it generally improves with up to around 50\% of the risk assessment being provided by friends. This is likely because taking multiple neighbors' input highlights stocks that are doing well for multiple different brokers, making the decision easier and capturing the change in value directly that the risk assessment did not capture. Further, it can be seen that this benefit of influence was consistent across the different risk levels by examining Figures \ref{fig:low_risk_influence_time_series} and  and \ref{fig:high_risk_influence_time_series}. Basing the influence connections of the network around the risk assessment provides an expansion on a single broker's understanding of the stocks behavior but did not entirely capture the additional benefit of accessing partial information as desired.
 	
 	\begin{figure}[h]
 		\centering
@@ -254,10 +254,10 @@
 	
 	\section{Conclusion}\label{sec:conclusion}
 	% Conclusion: Summary of accomplishments, challenges and open issues
-	This project explored the value of different risk strategies in a simulated market of networked brokers with power law assumptions for risk and connectivities between brokers. It demonstrated the value of taking some input from neighbors' assessments on risk to filter which stocks are actually performing well and showed ... % highlight benefits of risk
+	This project explored the value of different risk strategies in a simulated market of networked brokers with power law assumptions for risk and connectivity between brokers. It demonstrated the value of taking some input from neighbors' assessments on risk to filter which stocks are performing well and showed that both risk adverse and risky market strategies underperform medium-risk strategies. Notably, during black swan events such as the 2008 financial crisis, low and high-risk strategies perform even worse compared to medium-risk strategies.
 	
 	\subsection{Future Work}\label{subsec:futurework}
-	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area is expanding the concept of influence as the method of all neighbors using the same information and formula, except for the accounting of their personal status, acted as simply a factor of the risk calculation. Additionally, the random selection of neighbors may not capture the true clique structure of many relationships. Further, the risk assessment could be modified to vary more between brokers based on partial information and stocks without full information available to better represent the real world and better account for the interconnections between stocks.
+	Given the scope of time for the project, only limited aspects of market strategies could be explored. One open area is expanding the concept of influence as the method of all neighbors using the same information and formula acted as simply a factor of the risk calculation. Additionally, the random selection of neighbors may not capture the true clique structure of many relationships. Further, the risk assessment could be modified to vary more between brokers based on partial information and stocks without full information available to better represent the real world and better account for the interconnections between stocks.
 
 
 	\bibliographystyle{ieeetran}
@@ -266,7 +266,7 @@
 		X. Gabaix, “Power laws in economics: an introduction,” \textit{Journal of Economic Perspectives}, vol. 30, no. 1, pp. 185–206, Feb. 2016.
 		
 		\bibitem{taleb_antifragile}
-		N. N. Taleb, Antifragile: Things that gain from disorder. Harlow, England: Penguin Books, 2013.
+		N. N. Taleb, \textit{Antifragile: Things that gain from disorder}. Harlow, England: Penguin Books, 2013.
 		
 		\bibitem{baydelli_hierarchicalmarket}
 		Y. Y. Baydilli, S. Bayir, and I. Tuker, “A hierarchical view of a national stock market as a complex network,” \textit{Economic Computation \& Economic Cybernetics Studies \& Research}, vol. 51, no. 1, pp. 205–222, Jan. 2017.
